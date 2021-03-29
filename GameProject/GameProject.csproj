@@ -56,6 +56,8 @@
     <Compile Include="GameInput\Keyboard.cs" />
     <Compile Include="GameInput\KeyState.cs" />
     <Compile Include="GameMath\MathF.cs" />
+    <Compile Include="GameMath\Matrix3F.cs" />
+    <Compile Include="GameMath\MatrixTests.cs" />
     <Compile Include="GameMath\Vector3F.cs" />
     <Compile Include="GameMath\VectorTests.cs" />
     <Compile Include="GameGraphics\IRenderCommand.cs" />
