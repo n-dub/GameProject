@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using unvell.D2DLib;
 
 namespace GameProject.GameMath
 {
@@ -134,6 +136,23 @@ namespace GameProject.GameMath
                 scale.X, 0, 0,
                 0, scale.Y, 0,
                 0, 0, 1);
+        }
+
+        public static implicit operator Matrix(Matrix3F source)
+        {
+            source = source.Transpose();
+            return new Matrix(
+                source[0, 0], source[0, 1],
+                source[1, 0], source[1, 1],
+                source[2, 0], source[2, 1]);
+        }
+        
+        public static implicit operator D2DMatrix3x2(Matrix3F source)
+        {
+            return new D2DMatrix3x2(
+                source[0, 0], source[0, 1],
+                source[1, 0], source[1, 1],
+                source[2, 0], source[2, 1]);
         }
 
         public override bool Equals(object obj)

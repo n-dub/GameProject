@@ -2,12 +2,14 @@
 
 namespace GameProject.GameGraphics
 {
-    public interface IRenderCommand
+    internal interface IRenderCommand
     {
         bool IsActive { get; set; }
 
-        int Layer { get; set; }
+        int Layer { get; }
 
-        void Execute(Graphics graphics);
+        void Initialize(IGraphicsDevice device);
+        
+        void Execute(IGraphicsDevice device);
     }
 }
