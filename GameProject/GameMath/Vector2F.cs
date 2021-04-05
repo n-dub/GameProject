@@ -1,4 +1,6 @@
-﻿namespace GameProject.GameMath
+﻿using System.Drawing;
+
+namespace GameProject.GameMath
 {
     public struct Vector2F
     {
@@ -29,12 +31,19 @@
 
         public static bool operator !=(Vector2F a, Vector2F b) => !a.Equals(b);
 
-        public override bool Equals(object obj) => obj is Vector2F f && X == f.X && Y == f.Y;
+        public static implicit operator PointF(Vector2F vector) => new PointF(vector.X, vector.Y);
+
+        public override bool Equals(object obj) =>
+            obj is Vector2F f
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            && X == f.X
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            && Y == f.Y;
 
         public static bool AreAlmostEqual(Vector2F a, Vector2F b, float delta = 1e-6f)
         {
             return MathF.Abs(a.X - b.X) < delta
-                && MathF.Abs(a.Y - b.Y) < delta;
+                   && MathF.Abs(a.Y - b.Y) < delta;
         }
 
         public override int GetHashCode()

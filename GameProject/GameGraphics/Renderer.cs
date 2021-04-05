@@ -7,14 +7,30 @@ using System.Threading.Tasks;
 
 namespace GameProject.GameGraphics
 {
-    public class Renderer
+    internal class Renderer
     {
-        private readonly HashSet<IRenderCommand> commands = new HashSet<IRenderCommand>();
+        public bool Initialized { get; private set; }
+        private readonly HashSet<IRenderCommand> commands;
 
-        public void RenderAll(Graphics graphics)
+        public Renderer() => commands = new HashSet<IRenderCommand>();
+
+        public Renderer(IEnumerable<IRenderCommand> commands) => this.commands = commands.ToHashSet();
+
+        public void Initialize(IGraphicsDevice graphicsDevice)
         {
-            foreach (var cmd in commands.OrderBy(x => x.Layer))
-                cmd.Execute(graphics);
+            foreach (var cmd in commands)
+                cmd.Initialize(graphicsDevice);
+            Initialized = true;
+        }
+        
+        public void RenderAll(IGraphicsDevice graphicsDevice)
+        {
+            graphicsDevice.BeginRender();
+            foreach (var cmd in commands
+                .OrderBy(x => x.Layer)
+                .Where(x => x.IsActive))
+                cmd.Execute(graphicsDevice);
+            graphicsDevice.EndRender();
         }
 
         public void AddCommand(IRenderCommand command)
