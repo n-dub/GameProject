@@ -28,7 +28,7 @@ namespace GameProject.GameGraphics
 
         public void Initialize(IGraphicsDevice device)
         {
-            var img = ResourceManager.LoadResource(File.ReadAllBytes, "test.png");
+            var img = ResourceManager.LoadResource(File.ReadAllBytes, "Resources/test.png");
             Image = device.CreateBitmap(img);
         }
 
