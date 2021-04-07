@@ -52,7 +52,7 @@ namespace GameProject.GameMath
         public void TestTranspose()
         {
             var m = GenerateRandomMatrix();
-            var t = m.Transpose();
+            var t = m.Transposed;
 
             Assert.AreEqual(m.Row1, t.Column1);
             Assert.AreEqual(m.Row2, t.Column2);

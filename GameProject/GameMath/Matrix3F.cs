@@ -22,6 +22,8 @@ namespace GameProject.GameMath
         public Vector3F Column2 => new Vector3F(matrix[0, 1], matrix[1, 1], matrix[2, 1]);
         public Vector3F Column3 => new Vector3F(matrix[0, 2], matrix[1, 2], matrix[2, 2]);
 
+        public Matrix3F Transposed => new Matrix3F(Column1, Column2, Column3);
+
         public static readonly Matrix3F Identity;
 
         private readonly float[,] matrix;
@@ -59,8 +61,6 @@ namespace GameProject.GameMath
 
             Identity = new Matrix3F(identityArray);
         }
-
-        public Matrix3F Transpose() => new Matrix3F(Column1, Column2, Column3);
 
         public static Matrix3F operator +(Matrix3F a, Matrix3F b)
         {
@@ -140,7 +140,7 @@ namespace GameProject.GameMath
 
         public static implicit operator Matrix(Matrix3F source)
         {
-            source = source.Transpose();
+            source = source.Transposed;
             return new Matrix(
                 source[0, 0], source[0, 1],
                 source[1, 0], source[1, 1],
