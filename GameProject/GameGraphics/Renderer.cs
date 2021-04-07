@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace GameProject.GameGraphics
                 cmd.Initialize(graphicsDevice);
             Initialized = true;
         }
-        
+
         public void RenderAll(IGraphicsDevice graphicsDevice)
         {
             graphicsDevice.BeginRender();
@@ -35,9 +36,8 @@ namespace GameProject.GameGraphics
 
         public void AddCommand(IRenderCommand command)
         {
-            if (commands.Contains(command))
-                command.IsActive = true;
-            else
+            command.IsActive = true;
+            if (!commands.Contains(command))
                 commands.Add(command);
         }
 
@@ -45,6 +45,8 @@ namespace GameProject.GameGraphics
         {
             if (commands.Contains(command))
                 command.IsActive = false;
+            else
+                throw new ArgumentException();
         }
     }
 }

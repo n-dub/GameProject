@@ -10,6 +10,8 @@
 
         public float Length => MathF.Sqrt(LengthSquared);
 
+        public Vector3F Normalized => this / Length;
+
         public Vector3F(Vector2F vector, float z) => (X, Y, Z) = (vector.X, vector.Y, z);
 
         public Vector3F(float x, float y, float z) => (X, Y, Z) = (x, y, z);
@@ -23,6 +25,8 @@
         public static Vector3F operator *(Vector3F v, float a) => new Vector3F(v.X * a, v.Y * a, v.Z * a);
 
         public static Vector3F operator *(float a, Vector3F v) => v * a;
+        
+        public static Vector3F operator /(Vector3F v, float a) => v * (1.0f / a);
 
         public static bool operator ==(Vector3F a, Vector3F b) => a.Equals(b);
 

@@ -11,6 +11,8 @@ namespace GameProject.GameMath
 
         public float Length => MathF.Sqrt(LengthSquared);
 
+        public Vector2F Normalized => this / Length;
+
         public Vector2F(float x, float y) => (X, Y) = (x, y);
 
         public Vector2F(Vector3F vector) => (X, Y) = (vector.X, vector.Y);
@@ -24,6 +26,8 @@ namespace GameProject.GameMath
         public static Vector2F operator *(Vector2F v, float a) => new Vector2F(v.X * a, v.Y * a);
 
         public static Vector2F operator *(float a, Vector2F v) => v * a;
+        
+        public static Vector2F operator /(Vector2F v, float a) => v * (1.0f / a);
 
         public Vector2F TransformBy(Matrix3F matrix) => new Vector2F(matrix * new Vector3F(this, 1));
 
