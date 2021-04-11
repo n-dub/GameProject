@@ -1,29 +1,27 @@
 ﻿using GameProject.CoreEngine;
 using GameProject.GameMath;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameProject.GameGraphics
 {
-    internal class RenderQuadCommand : IRenderCommand
+    internal class QuadRenderShape : IRenderShape
     {
         public bool IsActive { get; set; }
         public int Layer { get; }
         public Matrix3F Transform { get; set; }
         public IBitmap Image { get; set; }
 
-        public RenderQuadCommand(int layer)
+        private static readonly Random rand = new Random();
+        
+        public QuadRenderShape(int layer)
         {
             Layer = layer;
             Transform = Matrix3F.Identity;
-            Transform *= Matrix3F.CreateScale(new Vector2F(2, 2));
-            Transform *= Matrix3F.CreateTranslation(new Vector2F(100, 50));
-            Transform *= Matrix3F.CreateRotation(MathF.PI / 10);
+            //Transform *= Matrix3F.CreateTranslation(new Vector2F(rand.Next(0, 300), rand.Next(0, 300)));
+            Transform *= Matrix3F.CreateTranslation(new Vector2F(0, 0));
+            Transform *= Matrix3F.CreateRotation(MathF.PI / 4);
+            //Transform *= Matrix3F.CreateScale(new Vector2F(2, 2));
         }
 
         public void Initialize(IGraphicsDevice device)
@@ -32,8 +30,9 @@ namespace GameProject.GameGraphics
             Image = device.CreateBitmap(img);
         }
 
-        public void Execute(IGraphicsDevice device)
+        public void Draw(IGraphicsDevice device)
         {
+            device.SetInterpolationMode(InterpolationMode.Linear);
             device.SetTransform(Transform);
             device.DrawBitmap(Image);
         }

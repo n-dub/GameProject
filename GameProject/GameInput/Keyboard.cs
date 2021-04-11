@@ -11,35 +11,38 @@ namespace GameProject.GameInput
     public class Keyboard
     {
         public KeyState this[Keys key] =>
-            states.TryGetValue(key, out var state)
-            ? state
-            : KeyState.None;
+            States.TryGetValue(key, out var state)
+                ? state
+                : KeyState.None;
 
-        private readonly ConcurrentDictionary<Keys, KeyState> states;
+        private ConcurrentDictionary<Keys, KeyState> States { get; }
 
         public Keyboard()
         {
-            states = new ConcurrentDictionary<Keys, KeyState>(Environment.ProcessorCount, 256);
+            States = new ConcurrentDictionary<Keys, KeyState>(Environment.ProcessorCount, 256);
         }
 
-        public void PushKey(Keys key) => states[key] = KeyState.Down;
+        public void PushKey(Keys key) => States[key] = KeyState.Down;
 
-        public void ReleaseKey(Keys key) => states[key] = KeyState.Up;
+        public void ReleaseKey(Keys key) => States[key] = KeyState.Up;
 
         public void UpdateKeyStates()
         {
-            foreach (var keyState in states)
+            foreach (var (key, state) in States.Select(p => (p.Key, p.Value)))
             {
-                var (key, state) = (keyState.Key, keyState.Value);
-
                 switch (state)
                 {
                     case KeyState.Down:
-                        states[key] = KeyState.Pushing;
+                        States[key] = KeyState.Pushing;
                         break;
                     case KeyState.Up:
-                        states[key] = KeyState.None;
+                        States[key] = KeyState.None;
                         break;
+                    case KeyState.Pushing:
+                    case KeyState.None:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }

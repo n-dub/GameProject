@@ -46,10 +46,7 @@ namespace GameProject.GameMath
         {
         }
 
-        private Matrix3F(float[,] matrix)
-        {
-            this.matrix = matrix;
-        }
+        private Matrix3F(float[,] matrix) => this.matrix = matrix;
 
         static Matrix3F()
         {
@@ -119,7 +116,7 @@ namespace GameProject.GameMath
             return new Matrix3F(
                 1, 0, position.X,
                 0, 1, position.Y,
-                0, 0, 0);
+                0, 0, 1);
         }
 
         public static Matrix3F CreateRotation(float angle)
@@ -149,6 +146,7 @@ namespace GameProject.GameMath
         
         public static implicit operator D2DMatrix3x2(Matrix3F source)
         {
+            source = source.Transposed;
             return new D2DMatrix3x2(
                 source[0, 0], source[0, 1],
                 source[1, 0], source[1, 1],

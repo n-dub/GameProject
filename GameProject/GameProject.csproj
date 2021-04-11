@@ -63,14 +63,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoreEngine\GameState.cs" />
     <Compile Include="CoreEngine\ResourceManager.cs" />
     <Compile Include="CoreEngine\Time.cs" />
+    <Compile Include="Ecs\GameEntity.cs" />
+    <Compile Include="Ecs\Graphics\SpriteComponent.cs" />
+    <Compile Include="Ecs\IGameComponent.cs" />
     <Compile Include="GameGraphics\Direct2D\D2DGraphicsBitmap.cs" />
     <Compile Include="GameGraphics\Direct2D\D2DGraphicsDevice.cs" />
     <Compile Include="GameGraphics\IBitmap.cs" />
     <Compile Include="GameGraphics\IGraphicsDevice.cs" />
     <Compile Include="GameGraphics\InterpolationMode.cs" />
-    <Compile Include="GameGraphics\RenderQuadCommand.cs" />
+    <Compile Include="GameGraphics\QuadRenderShape.cs" />
     <Compile Include="GameGraphics\WinForms\WinFormsBitmap.cs" />
     <Compile Include="GameGraphics\WinForms\WinFormsGraphicsDevice.cs" />
     <Compile Include="GameInput\Keyboard.cs" />
@@ -80,7 +84,7 @@
     <Compile Include="GameMath\MatrixTests.cs" />
     <Compile Include="GameMath\Vector3F.cs" />
     <Compile Include="GameMath\VectorTests.cs" />
-    <Compile Include="GameGraphics\IRenderCommand.cs" />
+    <Compile Include="GameGraphics\IRenderShape.cs" />
     <Compile Include="GameGraphics\Renderer.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
