@@ -6,11 +6,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
 using GameProject.GameGraphics.Direct2D;
 using GameProject.GameGraphics.WinForms;
+using Microsoft.Xna.Framework;
 
 namespace GameProject
 {
@@ -25,13 +27,12 @@ namespace GameProject
         {
             InitializeComponent();
 
+            Entities = new List<GameEntity>();
             var renderer = new Renderer(Enumerable
                 .Range(0, 1000)
                 .Select(_ => new QuadRenderShape(0) {IsActive = true}));
-            var keyboard = new Keyboard();
-            var time = new Time();
-            Entities = new List<GameEntity>();
-            GameState = new GameState(renderer, keyboard, time);
+            var physicsWorld = new World(new Vector2(0, 9.81f));
+            GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld);
 
             Application.Idle += (s, e) => UpdateGame();
 
@@ -46,7 +47,7 @@ namespace GameProject
                 Entities.AddRange(Enumerable
                     .Range(1, 1000)
                     .Select(_ => new GameEntity()));
-                Entities.ForEach(entity => entity.AddComponent(new SpriteComponent(new QuadRenderShape(1))));
+                Entities.ForEach(entity => entity.AddComponent(new Sprite(new QuadRenderShape(1))));
             }
             GameState.Renderer.Initialize(new D2DGraphicsDevice(this));
             DoubleBuffered = GameState.Renderer.Device is WinFormsGraphicsDevice;

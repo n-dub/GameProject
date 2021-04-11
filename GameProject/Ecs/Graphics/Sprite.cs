@@ -3,13 +3,13 @@ using GameProject.GameGraphics;
 
 namespace GameProject.Ecs.Graphics
 {
-    internal class SpriteComponent : IGameComponent
+    internal class Sprite : IGameComponent
     {
         public GameEntity Entity { get; set; }
         
         public IRenderShape Shape { get; }
 
-        public SpriteComponent(IRenderShape shape) => Shape = shape;
+        public Sprite(IRenderShape shape) => Shape = shape;
 
         public void Initialize(GameState state)
         {

@@ -1,4 +1,5 @@
-﻿using GameProject.GameGraphics;
+﻿using FarseerPhysics.Dynamics;
+using GameProject.GameGraphics;
 using GameProject.GameInput;
 
 namespace GameProject.CoreEngine
@@ -24,6 +25,11 @@ namespace GameProject.CoreEngine
         public Time Time { get; }
 
         /// <summary>
+        /// An instance of <see cref="World"/> being used for physics simulation in the game.
+        /// </summary>
+        public World PhysicsWorld { get; }
+
+        /// <summary>
         /// Create a copy of another instance of <see cref="GameState"/>
         /// </summary>
         /// <param name="other">Instance to copy</param>
@@ -32,16 +38,18 @@ namespace GameProject.CoreEngine
             Renderer = other.Renderer;
             Keyboard = other.Keyboard;
             Time = other.Time;
+            PhysicsWorld = other.PhysicsWorld;
         }
 
         /// <summary>
         /// Create a new instance of <see cref="GameState"/>
         /// </summary>
-        public GameState(Renderer renderer, Keyboard keyboard, Time time)
+        public GameState(Renderer renderer, Keyboard keyboard, Time time, World physicsWorld)
         {
             Renderer = renderer;
             Keyboard = keyboard;
             Time = time;
+            PhysicsWorld = physicsWorld;
         }
     }
 }
