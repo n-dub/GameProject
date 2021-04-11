@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Microsoft.Xna.Framework;
 
 namespace GameProject.GameMath
 {
@@ -36,6 +37,8 @@ namespace GameProject.GameMath
         public static bool operator !=(Vector2F a, Vector2F b) => !a.Equals(b);
 
         public static implicit operator PointF(Vector2F vector) => new PointF(vector.X, vector.Y);
+
+        public static implicit operator Vector2(Vector2F vector) => new Vector2(vector.X, vector.Y);
 
         public override bool Equals(object obj) =>
             obj is Vector2F f
