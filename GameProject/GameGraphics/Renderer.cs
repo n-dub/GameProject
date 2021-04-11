@@ -11,40 +11,47 @@ namespace GameProject.GameGraphics
     internal class Renderer
     {
         public bool Initialized { get; private set; }
-        private readonly HashSet<IRenderCommand> commands;
+        public IGraphicsDevice Device { get; private set; }
 
-        public Renderer() => commands = new HashSet<IRenderCommand>();
+        private readonly HashSet<IRenderShape> renderShapes;
+        
+        public Renderer() => renderShapes = new HashSet<IRenderShape>();
 
-        public Renderer(IEnumerable<IRenderCommand> commands) => this.commands = commands.ToHashSet();
+        public Renderer(IEnumerable<IRenderShape> shapes) => renderShapes = shapes.ToHashSet();
 
         public void Initialize(IGraphicsDevice graphicsDevice)
         {
-            foreach (var cmd in commands)
-                cmd.Initialize(graphicsDevice);
+            Device = graphicsDevice;
             Initialized = true;
         }
 
-        public void RenderAll(IGraphicsDevice graphicsDevice)
+        public void RenderAll()
         {
-            graphicsDevice.BeginRender();
-            foreach (var cmd in commands
-                .OrderBy(x => x.Layer)
-                .Where(x => x.IsActive))
-                cmd.Execute(graphicsDevice);
-            graphicsDevice.EndRender();
+            Device.BeginRender();
+            foreach (var grouping in renderShapes
+                .GroupBy(x => x.Layer)
+                .OrderBy(g => g.Key))
+            {
+                Device.PushLayer();
+                foreach (var shape in grouping)
+                    shape.Draw(Device);
+                Device.PopLayer();
+            }
+
+            Device.EndRender();
         }
 
-        public void AddCommand(IRenderCommand command)
+        public void AddShape(IRenderShape shape)
         {
-            command.IsActive = true;
-            if (!commands.Contains(command))
-                commands.Add(command);
+            shape.IsActive = true;
+            if (!renderShapes.Contains(shape))
+                renderShapes.Add(shape);
         }
 
-        public void RemoveCommand(IRenderCommand command)
+        public void RemoveShape(IRenderShape shape)
         {
-            if (commands.Contains(command))
-                command.IsActive = false;
+            if (renderShapes.Contains(shape))
+                shape.IsActive = false;
             else
                 throw new ArgumentException();
         }

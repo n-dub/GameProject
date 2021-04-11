@@ -10,5 +10,7 @@ namespace GameProject.GameGraphics
         void EndRender();
         void SetInterpolationMode(InterpolationMode mode);
         void DrawBitmap(IBitmap bitmap);
+        void PushLayer();
+        void PopLayer();
     }
 }

@@ -7,18 +7,35 @@ namespace GameProject.GameGraphics.Direct2D
 {
     internal class D2DGraphicsDevice : IGraphicsDevice
     {
-        public D2DDevice Device { get; }
+        private D2DDevice Device { get; }
         private D2DGraphics Graphics { get; }
         private Form Form { get; }
 
+        private D2DBitmapInterpolationMode D2DInterpolationMode
+        {
+            get
+            {
+                switch (interpolationMode)
+                {
+                    case InterpolationMode.Linear:
+                        return D2DBitmapInterpolationMode.Linear;
+                    case InterpolationMode.Nearest:
+                        return D2DBitmapInterpolationMode.NearestNeighbor;
+                    default:
+                        throw new NotImplementedException(
+                            $"Interpolation mode '{interpolationMode}' is not implemented");
+                }
+            }
+        }
+        
         private InterpolationMode interpolationMode;
 
         public D2DGraphicsDevice(Form form)
         {
             Form = form;
             Device = D2DDevice.FromHwnd(Form.Handle);
+            Device.Resize();
             Form.Resize += (sender, args) => Device.Resize();
-            Form.Resize += (sender, args) => Form.Invalidate(false);
             Form.HandleDestroyed += (sender, args) => Device.Dispose();
             Graphics = new D2DGraphics(Device);
             Graphics.SetDPI(96, 96);
@@ -38,20 +55,18 @@ namespace GameProject.GameGraphics.Direct2D
         {
             if (!(bitmap is D2DGraphicsBitmap bm))
                 return;
-            var rect = new D2DRect(bm.Origin.X, bm.Origin.Y,
-                bm.NativeBitmap.Width, bm.NativeBitmap.Height);
-            switch (interpolationMode)
-            {
-                case InterpolationMode.Linear:
-                    Graphics.DrawBitmap(bm.NativeBitmap, rect);
-                    break;
-                case InterpolationMode.Nearest:
-                    Graphics.DrawBitmap(bm.NativeBitmap, rect, 1f, D2DBitmapInterpolationMode.NearestNeighbor);
-                    break;
-                default:
-                    throw new NotImplementedException(
-                        $"Interpolation mode '{interpolationMode}' is not implemented");
-            }
+            
+            var imageCenter = new Vector2F(bm.NativeBitmap.Width / 2, bm.NativeBitmap.Height / 2);
+            var imageOrigin = bm.Origin - imageCenter;
+            var rect = new D2DRect(imageOrigin.X, imageOrigin.Y, bm.NativeBitmap.Width, bm.NativeBitmap.Height);
+            
+            Graphics.TranslateTransform(imageCenter.X, imageCenter.Y);
+            Graphics.DrawBitmap(bm.NativeBitmap, rect, 1f, D2DInterpolationMode);
+            Graphics.TranslateTransform(-imageCenter.X, -imageCenter.Y);
         }
+
+        public void PushLayer() => Graphics.PushLayer();
+
+        public void PopLayer() => Graphics.PopLayer();
     }
 }

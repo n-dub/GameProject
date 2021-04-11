@@ -6,12 +6,10 @@ using WFInterpolationMode = System.Drawing.Drawing2D.InterpolationMode;
 
 namespace GameProject.GameGraphics.WinForms
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     internal class WinFormsGraphicsDevice : IGraphicsDevice
     {
         public Graphics Graphics { get; set; }
-
-        internal WinFormsGraphicsDevice(Graphics graphics) =>
-            Graphics = graphics;
 
         public IBitmap CreateBitmap(byte[] imageData)
         {
@@ -52,6 +50,14 @@ namespace GameProject.GameGraphics.WinForms
         {
             if (bitmap is WinFormsBitmap bm)
                 Graphics.DrawImage(bm.NativeImage, bm.Origin);
+        }
+
+        public void PushLayer()
+        {
+        }
+
+        public void PopLayer()
+        {
         }
     }
 }
