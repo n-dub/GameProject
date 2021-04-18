@@ -22,7 +22,7 @@ namespace GameProject.GameGraphics.Direct2D
                     case InterpolationMode.Nearest:
                         return D2DBitmapInterpolationMode.NearestNeighbor;
                     default:
-                        throw new NotImplementedException(
+                        throw new InvalidOperationException(
                             $"Interpolation mode '{interpolationMode}' is not implemented");
                 }
             }
@@ -61,6 +61,7 @@ namespace GameProject.GameGraphics.Direct2D
             var rect = new D2DRect(imageOrigin.X, imageOrigin.Y, bm.NativeBitmap.Width, bm.NativeBitmap.Height);
             
             Graphics.TranslateTransform(imageCenter.X, imageCenter.Y);
+            Graphics.ScaleTransform(1 / bm.NativeBitmap.Width, 1 / bm.NativeBitmap.Height);
             Graphics.DrawBitmap(bm.NativeBitmap, rect, 1f, D2DInterpolationMode);
             Graphics.TranslateTransform(-imageCenter.X, -imageCenter.Y);
         }

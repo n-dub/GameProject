@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using unvell.D2DLib;
 
 namespace GameProject.GameMath
 {
-    public class Matrix3F
+    internal class Matrix3F
     {
         public const int Size = 3;
 

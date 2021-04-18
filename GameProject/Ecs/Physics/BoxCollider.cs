@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
-using GameProject.CoreEngine;
 using Microsoft.Xna.Framework;
 
 namespace GameProject.Ecs.Physics
 {
     internal class BoxCollider : Collider
     {
-        public float SizeX { get; set; }
+        public float SizeX { get; set; } = 1f;
 
-        public float SizeY { get; set; }
+        public float SizeY { get; set; } = 1f;
 
         public override Shape GetFarseerShape() => new PolygonShape(new Vertices(GetVertices()), 1.0f);
 

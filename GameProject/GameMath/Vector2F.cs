@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace GameProject.GameMath
 {
-    public struct Vector2F
+    internal readonly struct Vector2F
     {
         public readonly float X;
         public readonly float Y;
@@ -14,13 +14,24 @@ namespace GameProject.GameMath
 
         public Vector2F Normalized => this / Length;
 
+        public static readonly Vector2F UnitX = new Vector2F(1, 0);
+        public static readonly Vector2F UnitY = new Vector2F(0, 1);
+
+        public Vector2F(float value) : this(value, value)
+        {
+        }
+        
         public Vector2F(float x, float y) => (X, Y) = (x, y);
 
         public Vector2F(Vector3F vector) => (X, Y) = (vector.X, vector.Y);
 
+        public Vector2F(Vector2 vector) => (X, Y) = (vector.X, vector.Y);
+
         public static Vector2F operator +(Vector2F a, Vector2F b) => new Vector2F(a.X + b.X, a.Y + b.Y);
 
         public static Vector2F operator -(Vector2F a, Vector2F b) => new Vector2F(a.X - b.X, a.Y - b.Y);
+
+        public static Vector2F operator -(Vector2F vector) => vector * -1;
 
         public static float operator *(Vector2F a, Vector2F b) => a.X * b.X + a.Y * b.Y;
 

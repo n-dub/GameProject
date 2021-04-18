@@ -62,7 +62,7 @@ namespace GameProject.Ecs
 
         private Vector2F position;
         private float rotation;
-        private Vector2F scale;
+        private Vector2F scale = new Vector2F(1, 1);
 
         public GameEntity()
         {
@@ -115,7 +115,13 @@ namespace GameProject.Ecs
             components[typeof(T)] = component;
         }
 
-        public T GetComponent<T>() where T : class, IGameComponent => components[typeof(T)] as T;
+        public T GetComponent<T>() where T : class, IGameComponent =>
+            components.TryGetValue(typeof(T), out var value)
+                ? value as T
+                : null;
+
+        public IEnumerable<T> GetComponentsOfType<T>() =>
+            components.Values.OfType<T>();
 
         public bool TryGetComponent<T>(out T component) where T : class, IGameComponent
         {
