@@ -14,11 +14,13 @@ namespace GameProject.Ecs.Graphics
         public void Initialize(GameState state)
         {
             state.Renderer.AddShape(Shape);
+            Shape.Transform = Entity.GlobalTransform;
             Shape.Initialize(state.Renderer.Device);
         }
 
         public void Update(GameState state)
         {
+            Shape.Transform = Entity.GlobalTransform;
         }
     }
 }

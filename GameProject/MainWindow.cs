@@ -10,8 +10,10 @@ using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
+using GameProject.Ecs.Physics;
 using GameProject.GameGraphics.Direct2D;
 using GameProject.GameGraphics.WinForms;
+using GameProject.GameScripts;
 using Microsoft.Xna.Framework;
 
 namespace GameProject
@@ -28,9 +30,7 @@ namespace GameProject
             InitializeComponent();
 
             Entities = new List<GameEntity>();
-            var renderer = new Renderer(Enumerable
-                .Range(0, 1000)
-                .Select(_ => new QuadRenderShape(0) {IsActive = true}));
+            var renderer = new Renderer();
             var physicsWorld = new World(new Vector2(0, 9.81f));
             GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld);
 
@@ -45,9 +45,16 @@ namespace GameProject
             {
                 // TODO: TEST CODE - TO BE REMOVED
                 Entities.AddRange(Enumerable
-                    .Range(1, 1000)
+                    .Range(1, 5)
                     .Select(_ => new GameEntity()));
                 Entities.ForEach(entity => entity.AddComponent(new Sprite(new QuadRenderShape(1))));
+                Entities.ForEach(entity => entity.Rotation = 0.7f);
+                Entities[0].AddComponent<TestCamera>();
+                foreach (var entity in Entities)
+                {
+                    entity.AddComponent<PhysicsBody>();
+                    entity.AddComponent(new BoxCollider{ SizeX = 1f, SizeY = 1f });
+                }
             }
             GameState.Renderer.Initialize(new D2DGraphicsDevice(this));
             DoubleBuffered = GameState.Renderer.Device is WinFormsGraphicsDevice;
@@ -61,7 +68,8 @@ namespace GameProject
             Stopwatch.Restart();
 
             Entities.ForEach(entity => entity.Update(GameState));
-
+            
+            GameState.PhysicsWorld.Step(GameState.Time.DeltaTime / 1000);
             GameState.Keyboard.UpdateKeyStates();
             Invalidate();
         }
@@ -97,9 +105,17 @@ namespace GameProject
             );
         }
 
-        protected override void OnKeyDown(KeyEventArgs e) => GameState.Keyboard.PushKey(e.KeyCode);
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            GameState.Keyboard.PushKey(e.KeyCode);
+        }
 
-        protected override void OnKeyUp(KeyEventArgs e) => GameState.Keyboard.ReleaseKey(e.KeyCode);
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            GameState.Keyboard.ReleaseKey(e.KeyCode);
+        }
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {

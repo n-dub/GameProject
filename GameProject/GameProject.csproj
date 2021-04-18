@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoreEngine\Camera.cs" />
+    <Compile Include="CoreEngine\GameScript.cs" />
     <Compile Include="CoreEngine\GameState.cs" />
     <Compile Include="CoreEngine\ResourceManager.cs" />
     <Compile Include="CoreEngine\Time.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="GameMath\VectorTests.cs" />
     <Compile Include="GameGraphics\IRenderShape.cs" />
     <Compile Include="GameGraphics\Renderer.cs" />
+    <Compile Include="GameScripts\TestCamera.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

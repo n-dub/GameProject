@@ -1,6 +1,6 @@
 ﻿namespace GameProject.GameMath
 {
-    public struct Vector3F
+    internal readonly struct Vector3F
     {
         public readonly float X;
         public readonly float Y;
@@ -12,6 +12,10 @@
 
         public Vector3F Normalized => this / Length;
 
+        public static readonly Vector3F UnitX = new Vector3F(1, 0, 0);
+        public static readonly Vector3F UnitY = new Vector3F(0, 1, 0);
+        public static readonly Vector3F UnitZ = new Vector3F(0, 0, 1);
+        
         public Vector3F(Vector2F vector, float z) => (X, Y, Z) = (vector.X, vector.Y, z);
 
         public Vector3F(float x, float y, float z) => (X, Y, Z) = (x, y, z);
@@ -19,6 +23,8 @@
         public static Vector3F operator +(Vector3F a, Vector3F b) => new Vector3F(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 
         public static Vector3F operator -(Vector3F a, Vector3F b) => new Vector3F(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+
+        public static Vector3F operator -(Vector3F vector) => vector * -1;
 
         public static float operator *(Vector3F a, Vector3F b) => a.X * b.X + a.Y * b.Y + a.Z * b.Z;
 

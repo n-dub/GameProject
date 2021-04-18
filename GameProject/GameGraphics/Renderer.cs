@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GameProject.CoreEngine;
 
 namespace GameProject.GameGraphics
 {
     internal class Renderer
     {
+        public Camera Camera { get; } = new Camera();
+        
         public bool Initialized { get; private set; }
         public IGraphicsDevice Device { get; private set; }
 
@@ -27,6 +26,8 @@ namespace GameProject.GameGraphics
 
         public void RenderAll()
         {
+            var viewMatrix = Camera.GetViewMatrix();
+            
             Device.BeginRender();
             foreach (var grouping in renderShapes
                 .GroupBy(x => x.Layer)
@@ -34,7 +35,7 @@ namespace GameProject.GameGraphics
             {
                 Device.PushLayer();
                 foreach (var shape in grouping)
-                    shape.Draw(Device);
+                    shape.Draw(Device, viewMatrix);
                 Device.PopLayer();
             }
 
