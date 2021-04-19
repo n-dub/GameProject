@@ -6,13 +6,21 @@ using GameProject.GameMath;
 
 namespace GameProject.Ecs.Physics
 {
+    /// <summary>
+    ///     Represents a dynamic or static physical rigid body
+    /// </summary>
     internal class PhysicsBody : IGameComponent
     {
-        public GameEntity Entity { get; set; }
+        /// <summary>
+        ///     If True this body's state won't be changed by any other bodies
+        /// </summary>
         public bool IsStatic { get; set; }
 
-        private Shape shape;
+        public GameEntity Entity { get; set; }
+
         private Body body;
+
+        private Shape shape;
 
         public void Initialize(GameState state)
         {

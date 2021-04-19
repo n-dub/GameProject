@@ -5,8 +5,15 @@ using System.Windows.Forms;
 
 namespace GameProject.GameInput
 {
+    /// <summary>
+    ///     Represents current state of keyboard input
+    /// </summary>
     public class Keyboard
     {
+        /// <summary>
+        ///     Get state of a certain key
+        /// </summary>
+        /// <param name="key">Key to get state of</param>
         public KeyState this[Keys key] =>
             States.TryGetValue(key, out var state)
                 ? state
@@ -14,19 +21,45 @@ namespace GameProject.GameInput
 
         private ConcurrentDictionary<Keys, KeyState> States { get; }
 
+        /// <summary>
+        ///     Create a new keyboard
+        /// </summary>
         public Keyboard()
         {
             States = new ConcurrentDictionary<Keys, KeyState>(Environment.ProcessorCount, 256);
         }
 
-        public void PushKey(Keys key) => States[key] = KeyState.Down;
+        /// <summary>
+        ///     Update state of key being pushed at this frame
+        /// </summary>
+        /// <param name="key">The key that have been pushed</param>
+        public void PushKey(Keys key)
+        {
+            States[key] = this[key] == KeyState.Pushing
+                ? KeyState.Pushing
+                : KeyState.Down;
+        }
 
-        public void ReleaseKey(Keys key) => States[key] = KeyState.Up;
+        /// <summary>
+        ///     Update state of key being released at this frame
+        /// </summary>
+        /// <param name="key">The key that have been released</param>
+        public void ReleaseKey(Keys key)
+        {
+            States[key] = this[key] == KeyState.None
+                ? KeyState.None
+                : KeyState.Up;
+        }
 
+        /// <summary>
+        ///     Update state of all keys, called every frame
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown if some keys have invalid values
+        /// </exception>
         public void UpdateKeyStates()
         {
             foreach (var (key, state) in States.Select(p => (p.Key, p.Value)))
-            {
                 switch (state)
                 {
                     case KeyState.Down:
@@ -41,7 +74,6 @@ namespace GameProject.GameInput
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-            }
         }
     }
 }

@@ -7,15 +7,7 @@ namespace GameProject.GameScripts
 {
     internal class TestCamera : GameScript
     {
-        protected override void Initialize()
-        {
-        }
-
-        protected override void Update()
-        {
-            ControlRotationZoom();
-            ControlPosition();
-        }
+        private GameState GameState;
 
         private void ControlPosition()
         {
@@ -29,7 +21,7 @@ namespace GameProject.GameScripts
                 y -= 1;
             if (GameState.Keyboard[Keys.Down] == KeyState.Down)
                 y += 1;
-            
+
             GameState.Renderer.Camera.Position = new Vector2F(x, y);
         }
 
@@ -43,6 +35,13 @@ namespace GameProject.GameScripts
                 GameState.Renderer.Camera.Rotation -= 0.1f;
             if (GameState.Keyboard[Keys.D] == KeyState.Down)
                 GameState.Renderer.Camera.Rotation += 0.1f;
+        }
+
+        public override void Update(GameState state)
+        {
+            GameState = state;
+            ControlRotationZoom();
+            ControlPosition();
         }
     }
 }

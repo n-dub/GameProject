@@ -76,6 +76,7 @@
     <Compile Include="Ecs\Graphics\Sprite.cs" />
     <Compile Include="Ecs\IGameComponent.cs" />
     <Compile Include="Ecs\Physics\BoxCollider.cs" />
+    <Compile Include="Ecs\Physics\CircleCollider.cs" />
     <Compile Include="Ecs\Physics\Collider.cs" />
     <Compile Include="Ecs\Physics\PhysicsBody.cs" />
     <Compile Include="GameGraphics\Direct2D\D2DGraphicsBitmap.cs" />

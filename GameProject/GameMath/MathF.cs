@@ -2,16 +2,42 @@
 
 namespace GameProject.GameMath
 {
+    /// <summary>
+    ///     An adapter for <see cref="Math" /> that uses <see cref="float" /> instead of <see cref="double" />
+    /// </summary>
     public static class MathF
     {
-        public const float PI = (float)Math.PI;
+        /// <summary>
+        ///     Acceleration of gravity (in meters/second^2)
+        /// </summary>
+        public const float Gravity = 9.806f;
 
-        public static float Sqrt(float value) => (float)Math.Sqrt(value);
+        /// <inheritdoc cref="Math.PI" />
+        // ReSharper disable once InconsistentNaming
+        public const float PI = (float) Math.PI;
 
-        public static float Sin(float value) => (float)Math.Sin(value);
+        /// <inheritdoc cref="Math.Sqrt" />
+        public static float Sqrt(float value)
+        {
+            return (float) Math.Sqrt(value);
+        }
 
-        public static float Cos(float value) => (float)Math.Cos(value);
+        /// <inheritdoc cref="Math.Sin" />
+        public static float Sin(float value)
+        {
+            return (float) Math.Sin(value);
+        }
 
-        public static float Abs(float value) => Math.Abs(value);
+        /// <inheritdoc cref="Math.Cos" />
+        public static float Cos(float value)
+        {
+            return (float) Math.Cos(value);
+        }
+
+        /// <inheritdoc cref="Math.Abs(float)" />
+        public static float Abs(float value)
+        {
+            return Math.Abs(value);
+        }
     }
 }

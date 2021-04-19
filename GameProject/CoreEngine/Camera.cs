@@ -3,32 +3,32 @@
 namespace GameProject.CoreEngine
 {
     /// <summary>
-    /// Represents game camera
+    ///     Represents game camera
     /// </summary>
     internal class Camera
     {
         /// <summary>
-        /// Position of camera's center point
+        ///     Position of camera's center point
         /// </summary>
-        public Vector2F Position { get; set; } = new Vector2F(0, 0);
-        
+        public Vector2F Position { get; set; }
+
         /// <summary>
-        /// Camera's rotation
+        ///     Camera's rotation
         /// </summary>
         public float Rotation { get; set; }
 
         /// <summary>
-        /// Width and Height of screen resolution
+        ///     Width and Height of screen resolution
         /// </summary>
-        public Vector2F ScreenSize { get; set; } = new Vector2F(800, 600);
+        public Vector2F ScreenSize { get; set; }
 
         /// <summary>
-        /// How wide is camera's field of view in meters
+        ///     How wide is camera's field of view in meters
         /// </summary>
-        public float ViewWidth { get; set; } = 80f;
+        public float ViewWidth { get; set; } = 20f;
 
         /// <summary>
-        /// Get matrix to apply to all sprite vertices to correctly project them on the screen
+        ///     Get matrix to apply to all sprite vertices to correctly project them on the screen
         /// </summary>
         /// <returns>View matrix</returns>
         public Matrix3F GetViewMatrix()
