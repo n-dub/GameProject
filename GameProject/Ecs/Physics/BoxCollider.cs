@@ -5,20 +5,38 @@ using Microsoft.Xna.Framework;
 
 namespace GameProject.Ecs.Physics
 {
+    /// <summary>
+    ///     Represents rectangular collision model for an entity
+    /// </summary>
     internal class BoxCollider : Collider
     {
+        /// <summary>
+        ///     Width of the collider rectangle
+        /// </summary>
         public float SizeX { get; set; } = 1f;
 
+        /// <summary>
+        ///     Height of the collider rectangle
+        /// </summary>
         public float SizeY { get; set; } = 1f;
 
-        public override Shape GetFarseerShape() => new PolygonShape(new Vertices(GetVertices()), 1.0f);
-
+        /// <summary>
+        ///     Calculates position of rectangle vertices according to collider width,
+        ///     height and entity scale
+        /// </summary>
+        /// <returns></returns>
         private IEnumerable<Vector2> GetVertices()
         {
-            yield return new Vector2(SizeX / 2, SizeY / 2);
-            yield return new Vector2(SizeX / -2, SizeY / 2);
-            yield return new Vector2(SizeX / 2, SizeY / -2);
-            yield return new Vector2(SizeX / -2, SizeY / -2);
+            var (sx, sy) = (Entity.Scale.X, Entity.Scale.Y);
+            yield return new Vector2(SizeX * sx / 2, SizeY * sy / 2);
+            yield return new Vector2(SizeX * sx / -2, SizeY * sy / 2);
+            yield return new Vector2(SizeX * sx / 2, SizeY * sy / -2);
+            yield return new Vector2(SizeX * sx / -2, SizeY * sy / -2);
+        }
+
+        public override Shape GetFarseerShape()
+        {
+            return new PolygonShape(new Vertices(GetVertices()), 1.0f);
         }
     }
 }

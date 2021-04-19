@@ -1,5 +1,6 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace GameProject.GameMath
 {
@@ -12,28 +13,30 @@ namespace GameProject.GameMath
         {
             var array = new float[3, 3];
             for (var i = 0; i < 3; ++i)
-                for (var j = 0; j < 3; ++j)
-                    array[i, j] = GetRandomFloat();
+            for (var j = 0; j < 3; ++j)
+                array[i, j] = GetRandomFloat();
 
             return Matrix3F.CreateFromArray(array);
         }
 
-        private Vector2F GenerateRandomVector2(float factor = 1000f) =>
-            new Vector2F(GetRandomFloat(factor), GetRandomFloat(factor));
+        private Vector2F GenerateRandomVector2(float factor = 1000f)
+        {
+            return new Vector2F(GetRandomFloat(factor), GetRandomFloat(factor));
+        }
 
-        private Matrix3F CreateMatrixFromArray(float[] array)
+        private static Matrix3F CreateMatrixFromArray(IReadOnlyList<float> array)
         {
             var m = new float[3, 3];
             for (var i = 0; i < 3; ++i)
-                for (var j = 0; j < 3; ++j)
-                    m[i, j] = array[3 * i + j];
+            for (var j = 0; j < 3; ++j)
+                m[i, j] = array[3 * i + j];
 
             return Matrix3F.CreateFromArray(m);
         }
 
         private float GetRandomFloat(float factor = 1000f)
         {
-            return (float)random.NextDouble() * factor;
+            return (float) random.NextDouble() * factor;
         }
 
         [Test]
@@ -108,6 +111,7 @@ namespace GameProject.GameMath
                 ));
                 return;
             }
+
             Assert.IsTrue(Vector3F.AreAlmostEqual(
                 new Vector3F(result[0], result[1], result[2]),
                 CreateMatrixFromArray(m1) * new Vector3F(m2[0], m2[1], m2[2]),

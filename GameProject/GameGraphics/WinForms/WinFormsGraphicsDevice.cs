@@ -6,6 +6,9 @@ using WFInterpolationMode = System.Drawing.Drawing2D.InterpolationMode;
 
 namespace GameProject.GameGraphics.WinForms
 {
+    /// <summary>
+    ///     An implementation of <see cref="IGraphicsDevice" /> for WinForms
+    /// </summary>
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class WinFormsGraphicsDevice : IGraphicsDevice
     {
@@ -14,7 +17,9 @@ namespace GameProject.GameGraphics.WinForms
         public IBitmap CreateBitmap(byte[] imageData)
         {
             using (var stream = new MemoryStream(imageData))
+            {
                 return new WinFormsBitmap(new Bitmap(stream));
+            }
         }
 
         public void SetTransform(Matrix3F transformMatrix)
@@ -50,6 +55,11 @@ namespace GameProject.GameGraphics.WinForms
         {
             if (bitmap is WinFormsBitmap bm)
                 Graphics.DrawImage(bm.NativeImage, bm.Origin);
+        }
+
+        public void DrawRectangle(Vector2F location, Vector2F size, Color color)
+        {
+            Graphics.FillRectangle(new SolidBrush(color), new RectangleF(location, new SizeF(size)));
         }
 
         public void PushLayer()
