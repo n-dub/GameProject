@@ -22,7 +22,7 @@ namespace GameProject.GameGraphics.WinForms
         public WinFormsBitmap(Image image)
         {
             NativeImage = image;
-            Origin = new Vector2F();
+            Origin = Vector2F.Zero;
         }
     }
 }

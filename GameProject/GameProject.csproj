@@ -72,6 +72,7 @@
     <Compile Include="CoreEngine\GameState.cs" />
     <Compile Include="CoreEngine\ISceneFactory.cs" />
     <Compile Include="CoreEngine\ResourceManager.cs" />
+    <Compile Include="CoreEngine\SceneData.cs" />
     <Compile Include="CoreEngine\Time.cs" />
     <Compile Include="Ecs\GameEntity.cs" />
     <Compile Include="Ecs\Graphics\Sprite.cs" />
@@ -90,6 +91,10 @@
     <Compile Include="GameGraphics\WinForms\WinFormsGraphicsDevice.cs" />
     <Compile Include="GameInput\Keyboard.cs" />
     <Compile Include="GameInput\KeyState.cs" />
+    <Compile Include="GameLogic\Levels\GameLevel1.cs" />
+    <Compile Include="GameLogic\Levels\TestSceneFactory.cs" />
+    <Compile Include="GameLogic\LevelUtility.cs" />
+    <Compile Include="GameLogic\Scripts\TestCamera.cs" />
     <Compile Include="GameMath\MathF.cs" />
     <Compile Include="GameMath\Matrix3F.cs" />
     <Compile Include="GameMath\MatrixTests.cs" />
@@ -97,8 +102,6 @@
     <Compile Include="GameMath\VectorTests.cs" />
     <Compile Include="GameGraphics\IRenderShape.cs" />
     <Compile Include="GameGraphics\Renderer.cs" />
-    <Compile Include="GameScripts\TestSceneFactory.cs" />
-    <Compile Include="GameScripts\TestCamera.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

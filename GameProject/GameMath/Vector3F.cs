@@ -18,6 +18,16 @@
         public static readonly Vector3F UnitZ = new Vector3F(0, 0, 1);
 
         /// <summary>
+        ///     A vector which coordinates are only ones
+        /// </summary>
+        public static readonly Vector3F One = new Vector3F(1, 1, 1);
+
+        /// <summary>
+        ///     A vector which coordinates are only zeros
+        /// </summary>
+        public static readonly Vector3F Zero = new Vector3F(0, 0, 0);
+
+        /// <summary>
         ///     X component of the vector
         /// </summary>
         public readonly float X;
@@ -55,6 +65,36 @@
         public Vector3F(float x, float y, float z)
         {
             (X, Y, Z) = (x, y, z);
+        }
+
+        /// <summary>
+        ///     Duplicate this vector but set another X coordinate
+        /// </summary>
+        /// <param name="x">New X coordinate</param>
+        /// <returns>Created vector</returns>
+        public Vector3F WithX(float x)
+        {
+            return new Vector3F(x, Y, Z);
+        }
+
+        /// <summary>
+        ///     Duplicate this vector but set another Y coordinate
+        /// </summary>
+        /// <param name="y">New Y coordinate</param>
+        /// <returns>Created vector</returns>
+        public Vector3F WithY(float y)
+        {
+            return new Vector3F(X, y, Z);
+        }
+
+        /// <summary>
+        ///     Duplicate this vector but set another Z coordinate
+        /// </summary>
+        /// <param name="z">New Z coordinate</param>
+        /// <returns>Created vector</returns>
+        public Vector3F WithZ(float z)
+        {
+            return new Vector3F(X, Y, z);
         }
 
         /// <summary>

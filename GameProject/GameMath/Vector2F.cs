@@ -14,6 +14,12 @@ namespace GameProject.GameMath
         /// <inheritdoc cref="Vector3F.UnitY" />
         public static readonly Vector2F UnitY = new Vector2F(0, 1);
 
+        /// <inheritdoc cref="Vector3F.One" />
+        public static readonly Vector2F One = new Vector2F(1, 1);
+
+        /// <inheritdoc cref="Vector3F.Zero" />
+        public static readonly Vector2F Zero = new Vector2F(0, 0);
+
         /// <inheritdoc cref="Vector3F.X" />
         public readonly float X;
 
@@ -50,6 +56,18 @@ namespace GameProject.GameMath
         public Vector2F(Vector2 vector)
         {
             (X, Y) = (vector.X, vector.Y);
+        }
+
+        /// <inheritdoc cref="Vector3F.WithX" />
+        public Vector2F WithX(float x)
+        {
+            return new Vector2F(x, Y);
+        }
+
+        /// <inheritdoc cref="Vector3F.WithY" />
+        public Vector2F WithY(float y)
+        {
+            return new Vector2F(X, y);
         }
 
         /// <inheritdoc cref="Vector3F.operator+" />

@@ -8,10 +8,10 @@
         /// <summary>
         ///     Current framerate
         /// </summary>
-        public float Fps => 1000.0f / DeltaTime;
+        public float Fps => 1f / DeltaTime;
 
         /// <summary>
-        ///     Duration of last frame in milliseconds
+        ///     Duration of last frame in seconds
         /// </summary>
         public float DeltaTime { get; private set; }
 
@@ -24,10 +24,10 @@
         ///     Set delta time, increment frame index
         ///     Must be used in <see cref="MainWindow" /> only
         /// </summary>
-        /// <param name="dt">New value of <see cref="DeltaTime" /></param>
+        /// <param name="dt">New value of <see cref="DeltaTime" /> in milliseconds</param>
         public void UpdateForNextFrame(float dt)
         {
-            DeltaTime = dt;
+            DeltaTime = dt / 1000;
             ++FrameIndex;
         }
     }
