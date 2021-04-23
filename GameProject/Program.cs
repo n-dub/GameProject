@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Windows.Forms;
-using GameProject.GameScripts;
+using GameProject.CoreEngine;
+using GameProject.GameLogic.Levels;
 
 namespace GameProject
 {
     internal static class Program
     {
+        private static readonly ISceneFactory[] levels =
+        {
+            new TestSceneFactory(),
+            new GameLevel1(),
+            new TestSceneFactory()
+        };
+
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
@@ -14,7 +22,7 @@ namespace GameProject
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow(new TestSceneFactory()));
+            Application.Run(new MainWindow(levels));
         }
     }
 }

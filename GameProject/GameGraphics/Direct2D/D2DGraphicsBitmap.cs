@@ -22,7 +22,7 @@ namespace GameProject.GameGraphics.Direct2D
         public D2DGraphicsBitmap(D2DBitmap nativeBitmap)
         {
             NativeBitmap = nativeBitmap;
-            Origin = new Vector2F();
+            Origin = Vector2F.Zero;
         }
     }
 }

@@ -93,7 +93,7 @@ namespace GameProject.Ecs
 
         private Vector2F position;
         private float rotation;
-        private Vector2F scale = new Vector2F(1, 1);
+        private Vector2F scale = Vector2F.One;
 
         /// <summary>
         ///     Create a new game entity
@@ -262,9 +262,8 @@ namespace GameProject.Ecs
         /// <param name="state">Current game state</param>
         public void Initialize(GameState state)
         {
-            DoForAllChildren(c => c.Initialize(state), c => c.Initialize(state));
+            DoForAllChildren(c => c.Initialize(state), c => c.Initialize(state), false);
         }
-
 
         /// <summary>
         ///     Call `Update()` recursively for all children and components
@@ -272,7 +271,7 @@ namespace GameProject.Ecs
         /// <param name="state">Current game state</param>
         public void Update(GameState state)
         {
-            DoForAllChildren(c => c.Update(state), c => c.Update(state));
+            DoForAllChildren(c => c.Update(state), c => c.Update(state), false);
         }
 
         /// <summary>
@@ -280,8 +279,11 @@ namespace GameProject.Ecs
         /// </summary>
         /// <param name="forChildren">An action to perform on child entities</param>
         /// <param name="forComponents">An action to perform on components</param>
-        public void DoForAllChildren(Action<GameEntity> forChildren, Action<IGameComponent> forComponents)
+        /// <param name="self">If true <see cref="forChildren" /> will be called on this</param>
+        public void DoForAllChildren(Action<GameEntity> forChildren, Action<IGameComponent> forComponents,
+            bool self = true)
         {
+            if (self) forChildren(this);
             foreach (var component in components.Values)
                 forComponents(component);
             foreach (var entity in children)

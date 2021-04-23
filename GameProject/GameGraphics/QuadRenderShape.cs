@@ -17,15 +17,14 @@ namespace GameProject.GameGraphics
         /// </summary>
         public IBitmap Image { get; set; }
 
+        /// <summary>
+        ///     Color to use if <see cref="Image" /> is null
+        /// </summary>
+        public Color Color { get; set; } = Color.Black;
+
         public bool IsActive { get; set; }
 
         public Matrix3F Transform { get; set; }
-
-        // TODO: TEST CODE - TO BE REMOVED
-        private static int colorId;
-
-        // TODO: TEST CODE - TO BE REMOVED
-        private Color? color;
 
         /// <summary>
         ///     Create a new render shape with certain layer
@@ -46,14 +45,8 @@ namespace GameProject.GameGraphics
         {
             device.SetInterpolationMode(InterpolationMode.Linear);
             device.SetTransform(viewMatrix * Transform);
-            {
-                // TODO: TEST CODE - TO BE REMOVED
-                var c = new[] {Color.Aqua, Color.Brown, Color.Black, Color.Green};
-                if (color is null)
-                    color = c[colorId++];
-            }
             if (Image is null)
-                device.DrawRectangle(new Vector2F(), new Vector2F(1, 1), color.Value);
+                device.DrawRectangle(Vector2F.Zero, Vector2F.One, Color);
             else
                 device.DrawBitmap(Image);
         }
