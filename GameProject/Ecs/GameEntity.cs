@@ -96,6 +96,24 @@ namespace GameProject.Ecs
         private Vector2F scale = new Vector2F(1, 1);
 
         /// <summary>
+        ///     Create a new game entity
+        /// </summary>
+        public GameEntity()
+        {
+            components = new Dictionary<Type, IGameComponent>();
+            children = new List<GameEntity>();
+        }
+
+        /// <summary>
+        ///     Create an entity and attach to parent
+        /// </summary>
+        /// <param name="parent">Parent of the entity being created</param>
+        public GameEntity(GameEntity parent) : this()
+        {
+            ConnectEntities(this, parent);
+        }
+
+        /// <summary>
         ///     Connect two entities - a child and a parent
         /// </summary>
         /// <param name="child">A child entity</param>
@@ -131,24 +149,6 @@ namespace GameProject.Ecs
             component.Entity?.components.Remove(typeof(T));
             component.Entity = this;
             components[typeof(T)] = component;
-        }
-
-        /// <summary>
-        ///     Create a new game entity
-        /// </summary>
-        public GameEntity()
-        {
-            components = new Dictionary<Type, IGameComponent>();
-            children = new List<GameEntity>();
-        }
-
-        /// <summary>
-        ///     Create an entity and attach to parent
-        /// </summary>
-        /// <param name="parent">Parent of the entity being created</param>
-        public GameEntity(GameEntity parent) : this()
-        {
-            ConnectEntities(this, parent);
         }
 
         /// <summary>

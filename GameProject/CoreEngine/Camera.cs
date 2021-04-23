@@ -8,6 +8,11 @@ namespace GameProject.CoreEngine
     internal class Camera
     {
         /// <summary>
+        ///     Aspect ratio of screen's resolution
+        /// </summary>
+        public float AspectRatio => ScreenSize.X / ScreenSize.Y;
+
+        /// <summary>
         ///     Position of camera's center point
         /// </summary>
         public Vector2F Position { get; set; }
@@ -33,12 +38,12 @@ namespace GameProject.CoreEngine
         /// <returns>View matrix</returns>
         public Matrix3F GetViewMatrix()
         {
-            var position = Position - ScreenSize / 2;
-            var rot = Matrix3F.CreateRotation(Rotation);
-            var pos = Matrix3F.CreateTranslation(-position);
+            var center = Matrix3F.CreateTranslation(ScreenSize / 2);
             var scale = Matrix3F.CreateScale(new Vector2F(ScreenSize.X / ViewWidth));
+            var rot = Matrix3F.CreateRotation(Rotation);
+            var pos = Matrix3F.CreateTranslation(-Position);
 
-            return pos * rot * scale;
+            return center * scale * rot * pos;
         }
     }
 }
