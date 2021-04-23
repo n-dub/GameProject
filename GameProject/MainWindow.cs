@@ -2,19 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
-using GameProject.Ecs.Graphics;
-using GameProject.Ecs.Physics;
 using GameProject.GameGraphics;
 using GameProject.GameGraphics.Direct2D;
 using GameProject.GameGraphics.WinForms;
 using GameProject.GameInput;
 using GameProject.GameMath;
-using GameProject.GameScripts;
 using Microsoft.Xna.Framework;
 
 namespace GameProject
@@ -29,33 +25,29 @@ namespace GameProject
 
         private List<GameEntity> Entities { get; }
 
+        private float cachedFps;
+        private float fpsShowTimer;
+
+        public MainWindow(ISceneFactory sceneFactory)
+        {
+            InitializeComponent();
+            (Width, Height) = (800, 600);
+            Application.Idle += (s, e) => UpdateGame();
+            
+            Entities = sceneFactory.CreateScene();
+            var renderer = new Renderer();
+            var physicsWorld = new World(new Vector2(0, MathF.Gravity));
+            GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld);
+
+            Stopwatch = Stopwatch.StartNew();
+            renderer.Camera.ScreenSize = new Vector2F(Width, Height);
+        }
+
         protected override void OnLoad(EventArgs e)
         {
-            {
-                // TODO: TEST CODE - TO BE REMOVED
-                Entities.AddRange(Enumerable
-                    .Range(0, 3)
-                    .Select(_ => new GameEntity()));
-
-                Entities.ForEach(entity => entity.AddComponent(new Sprite(new QuadRenderShape(1))));
-                Entities.ForEach(entity => entity.AddComponent<PhysicsBody>());
-
-                Entities[0].AddComponent<BoxCollider>();
-                Entities[1].AddComponent<BoxCollider>();
-                Entities[2].AddComponent<CircleCollider>();
-                Entities[2].GetComponent<CircleCollider>().Radius = 0.5f;
-
-                Entities[0].Scale = new Vector2F(7, 1);
-                Entities[1].Scale = new Vector2F(5, 1);
-                Entities[0].GetComponent<PhysicsBody>().IsStatic = true;
-
-                Entities[1].Position = new Vector2F(0, -3);
-                Entities[2].Position = new Vector2F(0.5f, -2);
-                Entities[0].AddComponent<TestCamera>();
-            }
             GameState.Renderer.Initialize(new D2DGraphicsDevice(this));
-            DoubleBuffered = GameState.Renderer.Device is WinFormsGraphicsDevice;
             Entities.ForEach(entity => entity.Initialize(GameState));
+            DoubleBuffered = GameState.Renderer.Device is WinFormsGraphicsDevice;
             base.OnLoad(e);
         }
 
@@ -87,16 +79,23 @@ namespace GameProject
 
         private void ShowFps(Graphics graphics)
         {
+            fpsShowTimer += GameState.Time.DeltaTime;
+            if (fpsShowTimer > 1000 || cachedFps == 0 || float.IsInfinity(cachedFps))
+            {
+                fpsShowTimer = 0;
+                cachedFps = GameState.Time.Fps;
+            }
+
             graphics.ResetTransform();
             graphics.DrawString(
-                $"{GameState.Time.Fps:F3} FPS",
-                new Font("Arial", 16),
+                $"{Math.Round(cachedFps)} FPS",
+                new Font("Arial", 10),
                 Brushes.Black,
-                new Rectangle(0, 0, 250, 100),
+                new Rectangle(5, 5, 250, 100),
                 new StringFormat
                 {
                     Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Near,
                     FormatFlags = StringFormatFlags.FitBlackBox
                 }
             );
@@ -118,22 +117,6 @@ namespace GameProject
         {
             if (GameState.Renderer.Device is WinFormsGraphicsDevice)
                 base.OnPaintBackground(e);
-        }
-
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            Entities = new List<GameEntity>();
-            var renderer = new Renderer();
-            var physicsWorld = new World(new Vector2(0, MathF.Gravity));
-            GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld);
-
-            Application.Idle += (s, e) => UpdateGame();
-
-            Stopwatch = Stopwatch.StartNew();
-            (Width, Height) = (800, 600); // TODO: don't hard-code this???
-            renderer.Camera.ScreenSize = new Vector2F(Width, Height);
         }
     }
 }

@@ -62,12 +62,12 @@ namespace GameProject.GameGraphics
             var viewMatrix = Camera.GetViewMatrix();
 
             Device.BeginRender();
-            foreach (var grouping in renderShapes
+            foreach (var layerGrouping in renderShapes
                 .GroupBy(x => x.Layer)
                 .OrderBy(g => g.Key))
             {
                 Device.PushLayer();
-                foreach (var shape in grouping.Where(s => s.IsActive))
+                foreach (var shape in layerGrouping.Where(s => s.IsActive))
                     shape.Draw(Device, viewMatrix);
                 Device.PopLayer();
             }

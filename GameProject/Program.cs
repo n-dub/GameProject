@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using GameProject.GameScripts;
 
 namespace GameProject
 {
@@ -13,7 +14,7 @@ namespace GameProject
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+            Application.Run(new MainWindow(new TestSceneFactory()));
         }
     }
 }
