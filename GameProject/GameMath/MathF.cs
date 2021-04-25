@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace GameProject.GameMath
 {
@@ -17,24 +18,28 @@ namespace GameProject.GameMath
         public const float PI = (float) Math.PI;
 
         /// <inheritdoc cref="Math.Sqrt" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sqrt(float value)
         {
             return (float) Math.Sqrt(value);
         }
 
         /// <inheritdoc cref="Math.Sin" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sin(float value)
         {
             return (float) Math.Sin(value);
         }
 
         /// <inheritdoc cref="Math.Cos" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cos(float value)
         {
             return (float) Math.Cos(value);
         }
 
         /// <inheritdoc cref="Math.Abs(float)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Abs(float value)
         {
             return Math.Abs(value);

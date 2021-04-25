@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using GameProject.CoreEngine;
+using GameProject.GameDebug;
 using GameProject.GameMath;
 
 namespace GameProject.Ecs
@@ -9,7 +11,7 @@ namespace GameProject.Ecs
     /// <summary>
     ///     Represents a game entity (game object)
     /// </summary>
-    internal class GameEntity
+    internal class GameEntity : IDebuggable
     {
         /// <summary>
         ///     A collection of all components attached to this entity
@@ -84,6 +86,10 @@ namespace GameProject.Ecs
                 LocalTransform = null;
             }
         }
+        
+        public Vector2F Right => Vector2F.UnitX.Rotate(Rotation);
+        
+        public Vector2F Up => -Vector2F.UnitY.Rotate(Rotation);
 
         private readonly List<GameEntity> children;
 
@@ -288,6 +294,12 @@ namespace GameProject.Ecs
                 forComponents(component);
             foreach (var entity in children)
                 forChildren(entity);
+        }
+
+        public void DrawDebugOverlay(DebugDraw debugDraw)
+        {
+            debugDraw.DrawVector(Position, Right, Color.Red);
+            debugDraw.DrawVector(Position, Up, Color.Red);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
 using unvell.D2DLib;
 
 namespace GameProject.GameMath
@@ -66,6 +67,7 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Create a new matrix with specified elements
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Matrix3F(
             float a00, float a01, float a02,
             float a10, float a11, float a12,
@@ -80,6 +82,7 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Create a new matrix with specified rows
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Matrix3F(Vector3F row1, Vector3F row2, Vector3F row3)
             : this(row1.X, row1.Y, row1.Z,
                 row2.X, row2.Y, row2.Z,
@@ -98,6 +101,7 @@ namespace GameProject.GameMath
             Identity = new Matrix3F(identityArray);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Matrix3F(float[,] matrix)
         {
             this.matrix = matrix;
@@ -106,6 +110,7 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Add two matrices
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator +(Matrix3F a, Matrix3F b)
         {
             var result = new float[Size, Size];
@@ -120,6 +125,7 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Subtract two matrices
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator -(Matrix3F a, Matrix3F b)
         {
             var result = new float[Size, Size];
@@ -134,6 +140,7 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Multiply two matrices
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator *(Matrix3F a, Matrix3F b)
         {
             var result = new float[Size, Size];
@@ -149,6 +156,7 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Multiply a matrix by a 3-dimensional vector
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3F operator *(Matrix3F a, Vector3F b)
         {
             return new Vector3F(a.Row1 * b, a.Row2 * b, a.Row3 * b);
@@ -157,6 +165,7 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Multiply a matrix by a scalar value
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator *(Matrix3F m, float a)
         {
             return new Matrix3F(m.Row1 * a, m.Row2 * a, m.Row3 * a);
@@ -168,6 +177,7 @@ namespace GameProject.GameMath
         /// <param name="source">An array of elements</param>
         /// <returns>The created matrix</returns>
         /// <exception cref="ArgumentException">Thrown if the array isn't exactly [Size x Size]</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F CreateFromArray(float[,] source)
         {
             if (source.GetLength(0) != Size || source.GetLength(1) != Size)
@@ -184,6 +194,7 @@ namespace GameProject.GameMath
         /// </summary>
         /// <param name="position">Translation vector to use</param>
         /// <returns>The created matrix</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F CreateTranslation(Vector2F position)
         {
             return new Matrix3F(
@@ -197,6 +208,7 @@ namespace GameProject.GameMath
         /// </summary>
         /// <param name="angle">Angle in radians</param>
         /// <returns>The created matrix</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F CreateRotation(float angle)
         {
             return new Matrix3F(
@@ -210,6 +222,7 @@ namespace GameProject.GameMath
         /// </summary>
         /// <param name="scale">Vector that represents scaling</param>
         /// <returns>The created matrix</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F CreateScale(Vector2F scale)
         {
             return new Matrix3F(
@@ -218,6 +231,7 @@ namespace GameProject.GameMath
                 0, 0, 1);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Matrix(Matrix3F source)
         {
             source = source.Transposed;
@@ -227,6 +241,7 @@ namespace GameProject.GameMath
                 source[2, 0], source[2, 1]);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator D2DMatrix3x2(Matrix3F source)
         {
             source = source.Transposed;
@@ -236,16 +251,19 @@ namespace GameProject.GameMath
                 source[2, 0], source[2, 1]);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Matrix3F a, Matrix3F b)
         {
             return AreAlmostEqual(a, b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Matrix3F a, Matrix3F b)
         {
             return !AreAlmostEqual(a, b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
             return obj is Matrix3F f
@@ -261,6 +279,7 @@ namespace GameProject.GameMath
         /// <param name="b">Second matrix</param>
         /// <param name="delta">Allowed difference</param>
         /// <returns>True if matrices are almost equal</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AreAlmostEqual(Matrix3F a, Matrix3F b, float delta = 1e-6f)
         {
             return Vector3F.AreAlmostEqual(a.Row1, b.Row1, delta)

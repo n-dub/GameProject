@@ -88,18 +88,22 @@ namespace GameProject.GameGraphics.Direct2D
         public void DrawRectangle(Vector2F location, Vector2F size, Color color)
         {
             Graphics.ScaleTransform(0.5f, 0.5f);
-            Graphics.DrawRectangle(new D2DPoint(location.X, location.Y),
-                new D2DSize(size.X, size.Y), D2DColor.FromGDIColor(color));
+            Graphics.DrawRectangle(location, size, D2DColor.FromGDIColor(color));
+        }
+
+        public void DrawLine(Vector2F start, Vector2F end, Color color, float weight)
+        {
+            Graphics.DrawLine(start, end, D2DColor.FromGDIColor(color), weight);
         }
 
         public void PushLayer()
         {
-            Graphics.PushLayer();
+            //Graphics.PushLayer();
         }
 
         public void PopLayer()
         {
-            Graphics.PopLayer();
+            //Graphics.PopLayer();
         }
     }
 }
