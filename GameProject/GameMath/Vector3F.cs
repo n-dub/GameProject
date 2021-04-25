@@ -1,4 +1,6 @@
-﻿namespace GameProject.GameMath
+﻿using System.Runtime.CompilerServices;
+
+namespace GameProject.GameMath
 {
     internal readonly struct Vector3F
     {
@@ -57,11 +59,13 @@
         /// </summary>
         public Vector3F Normalized => this / Length;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3F(Vector2F vector, float z)
         {
             (X, Y, Z) = (vector.X, vector.Y, z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3F(float x, float y, float z)
         {
             (X, Y, Z) = (x, y, z);
@@ -72,6 +76,7 @@
         /// </summary>
         /// <param name="x">New X coordinate</param>
         /// <returns>Created vector</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3F WithX(float x)
         {
             return new Vector3F(x, Y, Z);
@@ -82,6 +87,7 @@
         /// </summary>
         /// <param name="y">New Y coordinate</param>
         /// <returns>Created vector</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3F WithY(float y)
         {
             return new Vector3F(X, y, Z);
@@ -92,6 +98,7 @@
         /// </summary>
         /// <param name="z">New Z coordinate</param>
         /// <returns>Created vector</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3F WithZ(float z)
         {
             return new Vector3F(X, Y, z);
@@ -103,6 +110,7 @@
         /// <param name="a">First vector</param>
         /// <param name="b">Second vector</param>
         /// <returns>Sum of two vectors</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3F operator +(Vector3F a, Vector3F b)
         {
             return new Vector3F(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
@@ -114,6 +122,7 @@
         /// <param name="a">First vector</param>
         /// <param name="b">Second vector</param>
         /// <returns>Difference of two vectors</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3F operator -(Vector3F a, Vector3F b)
         {
             return new Vector3F(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
@@ -124,6 +133,7 @@
         /// </summary>
         /// <param name="vector">Vector to negate</param>
         /// <returns>A negated vector</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3F operator -(Vector3F vector)
         {
             return vector * -1;
@@ -135,6 +145,7 @@
         /// <param name="a">First vector</param>
         /// <param name="b">Second vector</param>
         /// <returns>Dot product</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float operator *(Vector3F a, Vector3F b)
         {
             return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
@@ -146,12 +157,14 @@
         /// <param name="v">Vector</param>
         /// <param name="a">Scalar</param>
         /// <returns>The result of multiplication</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3F operator *(Vector3F v, float a)
         {
             return new Vector3F(v.X * a, v.Y * a, v.Z * a);
         }
 
         /// <inheritdoc cref="operator*(Vector3F, float)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3F operator *(float a, Vector3F v)
         {
             return v * a;
@@ -163,21 +176,25 @@
         /// <param name="v">Vector</param>
         /// <param name="a">Scalar</param>
         /// <returns>The result of division</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3F operator /(Vector3F v, float a)
         {
             return v * (1.0f / a);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Vector3F a, Vector3F b)
         {
             return AreAlmostEqual(a, b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Vector3F a, Vector3F b)
         {
             return !AreAlmostEqual(a, b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
             return obj is Vector3F f
@@ -196,6 +213,7 @@
         /// <param name="b">Second vector</param>
         /// <param name="delta">Allowed difference</param>
         /// <returns>True if vectors are almost equal</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AreAlmostEqual(Vector3F a, Vector3F b, float delta = 1e-6f)
         {
             return MathF.Abs(a.X - b.X) < delta

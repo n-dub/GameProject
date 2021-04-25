@@ -62,6 +62,11 @@ namespace GameProject.GameGraphics.WinForms
             Graphics.FillRectangle(new SolidBrush(color), new RectangleF(location, new SizeF(size)));
         }
 
+        public void DrawLine(Vector2F start, Vector2F end, Color color, float weight)
+        {
+            Graphics.DrawLine(new Pen(color, weight), start, end);
+        }
+
         public void PushLayer()
         {
         }

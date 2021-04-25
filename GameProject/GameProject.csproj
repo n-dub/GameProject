@@ -81,6 +81,8 @@
     <Compile Include="Ecs\Physics\CircleCollider.cs" />
     <Compile Include="Ecs\Physics\Collider.cs" />
     <Compile Include="Ecs\Physics\PhysicsBody.cs" />
+    <Compile Include="GameDebug\DebugDraw.cs" />
+    <Compile Include="GameDebug\IDebuggable.cs" />
     <Compile Include="GameGraphics\Direct2D\D2DGraphicsBitmap.cs" />
     <Compile Include="GameGraphics\Direct2D\D2DGraphicsDevice.cs" />
     <Compile Include="GameGraphics\IBitmap.cs" />

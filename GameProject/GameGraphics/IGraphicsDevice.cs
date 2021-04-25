@@ -44,7 +44,7 @@ namespace GameProject.GameGraphics
         void DrawBitmap(IBitmap bitmap);
 
         /// <summary>
-        ///     Draw rectangle of certain color
+        ///     Draw a rectangle of certain color
         /// </summary>
         /// <param name="location">Position of a rectangle to draw</param>
         /// <param name="size">Size of a rectangle to draw</param>
@@ -52,15 +52,12 @@ namespace GameProject.GameGraphics
         void DrawRectangle(Vector2F location, Vector2F size, Color color);
 
         /// <summary>
-        ///     Push a new layer<br />
-        ///     <seealso cref="PopLayer" />
+        ///     Draw a line of certain color
         /// </summary>
-        void PushLayer();
-
-        /// <summary>
-        ///     Pop previously pushed layer<br />
-        ///     <seealso cref="PushLayer" />
-        /// </summary>
-        void PopLayer();
+        /// <param name="start">Start of a segment to draw</param>
+        /// <param name="end">End of a segment to draw</param>
+        /// <param name="color">Color of a segment to draw</param>
+        /// <param name="weight">Weight of a segment to draw</param>
+        void DrawLine(Vector2F start, Vector2F end, Color color, float weight = 0.01f);
     }
 }

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
+using GameProject.GameDebug;
 using GameProject.GameGraphics;
 using GameProject.GameGraphics.Direct2D;
 using GameProject.GameGraphics.WinForms;
@@ -101,17 +102,33 @@ namespace GameProject
             if (GameState.Renderer.Device is WinFormsGraphicsDevice winFormsGraphicsDevice)
                 winFormsGraphicsDevice.Graphics = e.Graphics;
 
+            GameState.Renderer.Device.BeginRender();
+            
             GameState.Renderer.RenderAll();
-            {
-                // TODO: TEST CODE - TO BE REMOVED
-                ShowFps(e.Graphics);
-            }
+            DrawDebug(e.Graphics);
+            
+            GameState.Renderer.Device.EndRender();
+        }
+
+        private void DrawDebug(Graphics g)
+        {
+            var debugger = new DebugDraw(GameState.Renderer);
+            //debugger.BeginRender();
+            foreach (var gameEntity in Entities)
+                gameEntity.DoForAllChildren(
+                    c => c.DrawDebugOverlay(debugger),
+                    c =>
+                    {
+                        if (c is IDebuggable d)
+                            d.DrawDebugOverlay(debugger);
+                    });
+            ShowFps(g);
         }
 
         private void ShowFps(Graphics graphics)
         {
-            fpsShowTimer += GameState.Time.DeltaTime * 1000;
-            if (fpsShowTimer > 1000 || cachedFps == 0 || float.IsInfinity(cachedFps))
+            fpsShowTimer += GameState.Time.DeltaTime * 1;
+            if (fpsShowTimer > 1 || cachedFps == 0 || float.IsInfinity(cachedFps))
             {
                 fpsShowTimer = 0;
                 cachedFps = GameState.Time.Fps;
