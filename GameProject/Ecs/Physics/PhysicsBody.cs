@@ -5,6 +5,7 @@ using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.GameDebug;
 using GameProject.GameMath;
+using Microsoft.Xna.Framework;
 
 namespace GameProject.Ecs.Physics
 {
@@ -49,6 +50,8 @@ namespace GameProject.Ecs.Physics
 
         public void DrawDebugOverlay(DebugDraw debugDraw)
         {
+            if (body is null)
+                return;
             debugDraw.DrawVector(Entity.Position, new Vector2F(body.LinearVelocity), Color.Blue);
         }
     }

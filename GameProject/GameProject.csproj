@@ -94,6 +94,7 @@
     <Compile Include="GameGraphics\InterpolationMode.cs" />
     <Compile Include="GameGraphics\RenderShapes\CircleRenderShape.cs" />
     <Compile Include="GameGraphics\RenderShapes\IRenderShape.cs" />
+    <Compile Include="GameGraphics\RenderShapes\PolygonRenderShape.cs" />
     <Compile Include="GameGraphics\RenderShapes\QuadRenderShape.cs" />
     <Compile Include="GameInput\Keyboard.cs" />
     <Compile Include="GameInput\KeyState.cs" />

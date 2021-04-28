@@ -141,22 +141,22 @@ namespace GameProject.Ecs
         ///     Null will delete existing components of a certain type.
         ///     Non-null value will overwrite existing component.
         /// </summary>
+        /// <param name="type">Type of component</param>
         /// <param name="component">Component to set</param>
-        /// <typeparam name="T">Type of the component</typeparam>
-        private void SetComponent<T>(T component) where T : class, IGameComponent
+        private void SetComponent(Type type, IGameComponent component)
         {
-            if (components.TryGetValue(typeof(T), out var previous))
+            if (components.TryGetValue(type, out var previous))
             {
                 previous.Entity = null;
-                components.Remove(typeof(T));
+                components.Remove(type);
             }
 
             if (component is null)
                 return;
 
-            component.Entity?.components.Remove(typeof(T));
+            component.Entity?.components.Remove(type);
             component.Entity = this;
-            components[typeof(T)] = component;
+            components[type] = component;
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace GameProject.Ecs
         public T AddComponent<T>() where T : class, IGameComponent, new()
         {
             var component = new T();
-            SetComponent(component);
+            SetComponent(typeof(T), component);
             return component;
         }
 
@@ -216,7 +216,7 @@ namespace GameProject.Ecs
                 throw new ArgumentNullException(nameof(component));
             if (component.Entity != null)
                 throw new ArgumentException(nameof(component));
-            SetComponent(component);
+            SetComponent(component.GetType(), component);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace GameProject.Ecs
         /// <typeparam name="T">Type of component to remove</typeparam>
         public void RemoveComponent<T>() where T : class, IGameComponent
         {
-            SetComponent(null as T);
+            SetComponent(typeof(T), null);
         }
 
         /// <summary>

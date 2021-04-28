@@ -57,7 +57,12 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Get normalized vector
         /// </summary>
-        public Vector3F Normalized => this / Length;
+        public Vector3F Normalized => LengthSquared == 0 ? this : this / Length;
+
+        /// <summary>
+        ///     True if vector is equal to zero
+        /// </summary>
+        public bool IsZero => LengthSquared < 0.01f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3F(Vector2F vector, float z)

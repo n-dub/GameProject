@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using GameProject.GameMath;
 
 namespace GameProject.GameGraphics
@@ -60,8 +61,28 @@ namespace GameProject.GameGraphics
         /// <param name="weight">Weight of a segment to draw</param>
         void DrawLine(Vector2F start, Vector2F end, Color color, float weight = 0.01f);
 
+        /// <summary>
+        ///     Draw an ellipse and fill it with color
+        /// </summary>
+        /// <param name="location">Location of an ellipse to draw</param>
+        /// <param name="size">Size of an ellipse to draw</param>
+        /// <param name="color">Color of an ellipse to draw</param>
         void FillEllipse(Vector2F location, Vector2F size, Color color);
 
+        /// <summary>
+        ///     Draw an ellipse
+        /// </summary>
+        /// <param name="location">Location of an ellipse to draw</param>
+        /// <param name="size">Size of an ellipse to draw</param>
+        /// <param name="color">Color of an ellipse to draw</param>
+        /// <param name="weight">Width of line</param>
         void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f);
+
+        /// <summary>
+        ///     Draw a polygon and fill it with color
+        /// </summary>
+        /// <param name="points">Points of a polygon to draw</param>
+        /// <param name="color">Color of a polygon to draw</param>
+        void FillPolygon(IEnumerable<Vector2F> points, Color color);
     }
 }

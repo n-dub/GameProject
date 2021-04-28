@@ -37,6 +37,13 @@ namespace GameProject.GameMath
         {
             return (float) Math.Cos(value);
         }
+        
+        /// <inheritdoc cref="Math.Acos" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Acos(float value)
+        {
+            return (float) Math.Acos(value);
+        }
 
         /// <inheritdoc cref="Math.Abs(float)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

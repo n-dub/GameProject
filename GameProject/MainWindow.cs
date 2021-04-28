@@ -26,7 +26,11 @@ namespace GameProject
         private Stopwatch Stopwatch { get; }
         private GameState GameState { get; }
 
-        private bool DebugEnabled { get; set; }
+#if DEBUG
+        private bool DebugEnabled { get; set; } = true;
+#else
+        private bool DebugEnabled { get; set; } = false;
+#endif
 
         private float cachedFps;
         private float fpsShowTimer;

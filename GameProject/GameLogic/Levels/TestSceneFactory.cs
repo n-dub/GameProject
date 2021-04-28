@@ -15,7 +15,11 @@ namespace GameProject.GameLogic.Levels
                 {
                     LevelUtility.CreateRectangle(Vector2F.Zero, Vector2F.One.WithX(7), true),
                     LevelUtility.CreateRectangle(new Vector2F(0, -3), Vector2F.One.WithX(5)),
-                    LevelUtility.CreateCircle(new Vector2F(0.5f, -2), 0.5f)
+                    LevelUtility.CreateCircle(new Vector2F(0.5f, -2), 0.5f),
+                    LevelUtility.CreatePolygon(Vector2F.UnitY * -7, false,
+                        new Vector2F(0, -0.5f),
+                        new Vector2F(0.5f, 0.5f),
+                        new Vector2F(-0.5f, 0.5f))
                 },
                 Width = 7f,
                 Offset = -3.5f

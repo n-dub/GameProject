@@ -29,5 +29,15 @@ namespace GameProject.GameLogic
             entity.Scale = size;
             return entity;
         }
+
+        public static GameEntity CreatePolygon(Vector2F position, bool isStatic, params Vector2F[] vertices)
+        {
+            var entity = new GameEntity();
+            entity.AddComponent(new Sprite(new PolygonRenderShape(1) {Points = vertices}));
+            entity.AddComponent<PhysicsBody>().IsStatic = isStatic;
+            entity.AddComponent<PolygonCollider>().Vertices = vertices;
+            entity.Position = position;
+            return entity;
+        }
     }
 }

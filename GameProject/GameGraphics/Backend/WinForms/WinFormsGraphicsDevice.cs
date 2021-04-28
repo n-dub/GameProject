@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using GameProject.GameMath;
 using WFInterpolationMode = System.Drawing.Drawing2D.InterpolationMode;
 
@@ -75,6 +77,11 @@ namespace GameProject.GameGraphics.Backend.WinForms
         public void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f)
         {
             Graphics.DrawEllipse(new Pen(color, weight), new RectangleF(location, size));
+        }
+
+        public void FillPolygon(IEnumerable<Vector2F> points, Color color)
+        {
+            Graphics.FillPolygon(new SolidBrush(color), points.Select(x => (PointF)x).ToArray());
         }
     }
 }
