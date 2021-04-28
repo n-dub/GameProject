@@ -23,15 +23,16 @@ namespace GameProject.GameDebug
 
         public void DrawVector(Vector2F origin, Vector2F vector, Color color)
         {
+            if (vector.IsZero)
+                return;
             DrawImpl(device =>
             {
                 device.DrawLine(origin, origin + vector, color);
-                var factor1 = 2 / vector.Length;
-                var factor2 = 10 * vector.Length;
-                var arrow1 = (vector * factor1 + vector.Rotate(MathF.PI / 2)) / -factor2;
-                var arrow2 = (vector * factor1 + vector.Rotate(MathF.PI / -2)) / -factor2;
-                device.DrawLine(vector + origin, vector + origin + arrow1, color);
-                device.DrawLine(vector + origin, vector + origin + arrow2, color);
+                var angle = vector.Angle;
+                var arrow1 = new Vector2F(-0.15f, -0.1f).Rotate(angle);
+                var arrow2 = new Vector2F(-0.15f, +0.1f).Rotate(angle);
+                device.DrawLine(origin + vector, origin + vector + arrow1, color);
+                device.DrawLine(origin + vector, origin + vector + arrow2, color);
             });
         }
 

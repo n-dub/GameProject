@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using GameProject.GameMath;
 using unvell.D2DLib;
@@ -109,6 +111,14 @@ namespace GameProject.GameGraphics.Backend.Direct2D
             var radial = size / 2;
             var origin = location + radial;
             Graphics.DrawEllipse(origin, radial, D2DColor.FromGDIColor(color), weight);
+        }
+
+        public void FillPolygon(IEnumerable<Vector2F> points, Color color)
+        {
+#pragma warning disable 618
+            // the new method doesn't work properly, so I have to use the obsolete one here
+            Graphics.FillPolygon(points.Select(x => (D2DPoint) x).ToArray(), D2DColor.FromGDIColor(color));
+#pragma warning restore 618
         }
     }
 }
