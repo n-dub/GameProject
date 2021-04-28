@@ -70,7 +70,7 @@ namespace GameProject.GameMath
         {
             return new Vector2F(x, Y);
         }
-        
+
         /// <summary>
         ///     Rotate vector by a certain angle
         /// </summary>
@@ -83,7 +83,7 @@ namespace GameProject.GameMath
                 X * MathF.Cos(angle) - Y * MathF.Sin(angle),
                 X * MathF.Sin(angle) + Y * MathF.Cos(angle));
         }
-        
+
         /// <inheritdoc cref="Vector3F.WithY" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2F WithY(float y)
@@ -167,6 +167,12 @@ namespace GameProject.GameMath
         public static implicit operator PointF(Vector2F vector)
         {
             return new PointF(vector.X, vector.Y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator SizeF(Vector2F vector)
+        {
+            return new SizeF(vector.X, vector.Y);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

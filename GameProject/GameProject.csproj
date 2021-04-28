@@ -70,6 +70,7 @@
     <Compile Include="CoreEngine\Camera.cs" />
     <Compile Include="CoreEngine\GameScript.cs" />
     <Compile Include="CoreEngine\GameState.cs" />
+    <Compile Include="CoreEngine\GeometryUtility.cs" />
     <Compile Include="CoreEngine\ISceneFactory.cs" />
     <Compile Include="CoreEngine\ResourceManager.cs" />
     <Compile Include="CoreEngine\SceneData.cs" />
@@ -81,16 +82,19 @@
     <Compile Include="Ecs\Physics\CircleCollider.cs" />
     <Compile Include="Ecs\Physics\Collider.cs" />
     <Compile Include="Ecs\Physics\PhysicsBody.cs" />
+    <Compile Include="Ecs\Physics\PolygonCollider.cs" />
     <Compile Include="GameDebug\DebugDraw.cs" />
     <Compile Include="GameDebug\IDebuggable.cs" />
-    <Compile Include="GameGraphics\Direct2D\D2DGraphicsBitmap.cs" />
-    <Compile Include="GameGraphics\Direct2D\D2DGraphicsDevice.cs" />
+    <Compile Include="GameGraphics\Backend\Direct2D\D2DGraphicsBitmap.cs" />
+    <Compile Include="GameGraphics\Backend\Direct2D\D2DGraphicsDevice.cs" />
+    <Compile Include="GameGraphics\Backend\WinForms\WinFormsBitmap.cs" />
+    <Compile Include="GameGraphics\Backend\WinForms\WinFormsGraphicsDevice.cs" />
     <Compile Include="GameGraphics\IBitmap.cs" />
     <Compile Include="GameGraphics\IGraphicsDevice.cs" />
     <Compile Include="GameGraphics\InterpolationMode.cs" />
-    <Compile Include="GameGraphics\QuadRenderShape.cs" />
-    <Compile Include="GameGraphics\WinForms\WinFormsBitmap.cs" />
-    <Compile Include="GameGraphics\WinForms\WinFormsGraphicsDevice.cs" />
+    <Compile Include="GameGraphics\RenderShapes\CircleRenderShape.cs" />
+    <Compile Include="GameGraphics\RenderShapes\IRenderShape.cs" />
+    <Compile Include="GameGraphics\RenderShapes\QuadRenderShape.cs" />
     <Compile Include="GameInput\Keyboard.cs" />
     <Compile Include="GameInput\KeyState.cs" />
     <Compile Include="GameLogic\Levels\GameLevel1.cs" />
@@ -102,7 +106,6 @@
     <Compile Include="GameMath\MatrixTests.cs" />
     <Compile Include="GameMath\Vector3F.cs" />
     <Compile Include="GameMath\VectorTests.cs" />
-    <Compile Include="GameGraphics\IRenderShape.cs" />
     <Compile Include="GameGraphics\Renderer.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -143,6 +146,9 @@
     <Content Include="Resources\test.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GameGraphics\Backend" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

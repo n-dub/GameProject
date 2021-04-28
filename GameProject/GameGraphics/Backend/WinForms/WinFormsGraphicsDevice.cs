@@ -4,7 +4,7 @@ using System.IO;
 using GameProject.GameMath;
 using WFInterpolationMode = System.Drawing.Drawing2D.InterpolationMode;
 
-namespace GameProject.GameGraphics.WinForms
+namespace GameProject.GameGraphics.Backend.WinForms
 {
     /// <summary>
     ///     An implementation of <see cref="IGraphicsDevice" /> for WinForms
@@ -59,7 +59,7 @@ namespace GameProject.GameGraphics.WinForms
 
         public void DrawRectangle(Vector2F location, Vector2F size, Color color)
         {
-            Graphics.FillRectangle(new SolidBrush(color), new RectangleF(location, new SizeF(size)));
+            Graphics.FillRectangle(new SolidBrush(color), new RectangleF(location, size));
         }
 
         public void DrawLine(Vector2F start, Vector2F end, Color color, float weight)
@@ -67,12 +67,14 @@ namespace GameProject.GameGraphics.WinForms
             Graphics.DrawLine(new Pen(color, weight), start, end);
         }
 
-        public void PushLayer()
+        public void FillEllipse(Vector2F location, Vector2F size, Color color)
         {
+            Graphics.FillEllipse(new SolidBrush(color), new RectangleF(location, size));
         }
 
-        public void PopLayer()
+        public void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f)
         {
+            Graphics.DrawEllipse(new Pen(color, weight), new RectangleF(location, size));
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using GameProject.CoreEngine;
-using GameProject.GameGraphics;
+using GameProject.GameGraphics.RenderShapes;
 
 namespace GameProject.Ecs.Graphics
 {
@@ -35,6 +35,11 @@ namespace GameProject.Ecs.Graphics
         public void Update(GameState state)
         {
             Shape.Transform = Entity.GlobalTransform;
+        }
+
+        public void Destroy(GameState state)
+        {
+            state.Renderer.RemoveShape(Shape);
         }
     }
 }

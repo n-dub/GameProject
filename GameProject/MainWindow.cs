@@ -9,8 +9,8 @@ using GameProject.CoreEngine;
 using GameProject.Ecs;
 using GameProject.GameDebug;
 using GameProject.GameGraphics;
-using GameProject.GameGraphics.Direct2D;
-using GameProject.GameGraphics.WinForms;
+using GameProject.GameGraphics.Backend.Direct2D;
+using GameProject.GameGraphics.Backend.WinForms;
 using GameProject.GameInput;
 using GameProject.GameLogic.Scripts;
 using GameProject.GameMath;
@@ -26,7 +26,7 @@ namespace GameProject
         private Stopwatch Stopwatch { get; }
         private GameState GameState { get; }
 
-        private List<GameEntity> Entities { get; }
+        private bool DebugEnabled { get; set; }
 
         private float cachedFps;
         private float fpsShowTimer;
@@ -41,12 +41,11 @@ namespace GameProject
             renderer.Camera.ScreenSize = new Vector2F(Width, Height);
             var physicsWorld = new World(new Vector2(0, MathF.Gravity));
 
-            GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld);
-            Entities = CollectEntities(levels);
+            GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld, CollectEntities(levels));
 
             {
                 // TODO: TEST CODE - TO BE REMOVED
-                Entities.First().AddComponent<TestCamera>();
+                GameState.Entities.First().AddComponent<TestCamera>();
             }
 
             Stopwatch = Stopwatch.StartNew();
@@ -78,17 +77,25 @@ namespace GameProject
         protected override void OnLoad(EventArgs e)
         {
             GameState.Renderer.Initialize(new D2DGraphicsDevice(this));
-            Entities.ForEach(entity => entity.Initialize(GameState));
             DoubleBuffered = GameState.Renderer.Device is WinFormsGraphicsDevice;
             base.OnLoad(e);
         }
 
         private void UpdateGame()
         {
+            GameState.InitializeAdded();
+            GameState.RemoveDestroyed();
             GameState.Time.UpdateForNextFrame(Stopwatch.ElapsedMilliseconds);
             Stopwatch.Restart();
 
-            Entities.ForEach(entity => entity.Update(GameState));
+            if (GameState.Keyboard[Keys.F3] == KeyState.Down)
+                DebugEnabled = !DebugEnabled;
+
+            foreach (var entity in GameState.Entities)
+                entity.Update(GameState);
+
+            foreach (var entity in GameState.Entities.Where(entity => entity.Destroyed))
+                entity.DoForAllChildren(c => c.Destroy(), c => c.Destroy(GameState));
 
             GameState.PhysicsWorld.Step(GameState.Time.DeltaTime);
             GameState.Keyboard.UpdateKeyStates();
@@ -103,10 +110,11 @@ namespace GameProject
                 winFormsGraphicsDevice.Graphics = e.Graphics;
 
             GameState.Renderer.Device.BeginRender();
-            
+
             GameState.Renderer.RenderAll();
-            DrawDebug(e.Graphics);
-            
+            if (DebugEnabled)
+                DrawDebug(e.Graphics);
+
             GameState.Renderer.Device.EndRender();
         }
 
@@ -114,7 +122,7 @@ namespace GameProject
         {
             var debugger = new DebugDraw(GameState.Renderer);
             //debugger.BeginRender();
-            foreach (var gameEntity in Entities)
+            foreach (var gameEntity in GameState.Entities)
                 gameEntity.DoForAllChildren(
                     c => c.DrawDebugOverlay(debugger),
                     c =>

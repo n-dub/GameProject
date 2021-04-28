@@ -6,7 +6,7 @@ using GameProject.GameMath;
 namespace GameProject.GameDebug
 {
     /// <summary>
-    ///     Debug drawing utility, unlike <see cref="Renderer"/> draws immediately and
+    ///     Debug drawing utility, unlike <see cref="Renderer" /> draws immediately and
     ///     doesn't store render shapes in queue, therefore is easier to use for debugging purposes
     /// </summary>
     internal class DebugDraw
@@ -21,13 +21,15 @@ namespace GameProject.GameDebug
             Renderer = renderer;
         }
 
-        public void DrawVector(Vector2F origin, Vector2F vector, Color color, Matrix3F transform = null)
+        public void DrawVector(Vector2F origin, Vector2F vector, Color color)
         {
             DrawImpl(device =>
             {
                 device.DrawLine(origin, origin + vector, color);
-                var arrow1 = (vector * 2 + vector.Rotate(MathF.PI / 2)) / -10;
-                var arrow2 = (vector * 2 + vector.Rotate(MathF.PI / -2)) / -10;
+                var factor1 = 2 / vector.Length;
+                var factor2 = 10 * vector.Length;
+                var arrow1 = (vector * factor1 + vector.Rotate(MathF.PI / 2)) / -factor2;
+                var arrow2 = (vector * factor1 + vector.Rotate(MathF.PI / -2)) / -factor2;
                 device.DrawLine(vector + origin, vector + origin + arrow1, color);
                 device.DrawLine(vector + origin, vector + origin + arrow2, color);
             });
@@ -36,6 +38,11 @@ namespace GameProject.GameDebug
         public void DrawLine(Vector2F start, Vector2F end, Color color, float weight = 0.01f)
         {
             DrawImpl(device => device.DrawLine(start, end, color, weight));
+        }
+
+        public void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f)
+        {
+            DrawImpl(device => device.DrawEllipse(location, size, color, weight));
         }
 
         private void DrawImpl(Action<IGraphicsDevice> drawAction)

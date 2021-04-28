@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using GameProject.GameMath;
 
-namespace GameProject.GameGraphics.WinForms
+namespace GameProject.GameGraphics.Backend.WinForms
 {
     /// <summary>
     ///     An implementation of <see cref="IBitmap" /> for WinForms render device

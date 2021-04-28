@@ -10,7 +10,6 @@ namespace GameProject
         private static readonly ISceneFactory[] levels =
         {
             new TestSceneFactory(),
-            new GameLevel1(),
             new TestSceneFactory()
         };
 
