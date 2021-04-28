@@ -1,6 +1,6 @@
 ﻿using GameProject.GameMath;
 
-namespace GameProject.GameGraphics
+namespace GameProject.GameGraphics.RenderShapes
 {
     /// <summary>
     ///     Graphical representation of an entity

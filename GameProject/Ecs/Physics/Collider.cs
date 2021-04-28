@@ -26,6 +26,10 @@ namespace GameProject.Ecs.Physics
         {
         }
 
+        public void Destroy(GameState state)
+        {
+        }
+
         /// <summary>
         ///     Convert this collision model to FarseerPhysics' <see cref="Shape" />
         /// </summary>

@@ -59,5 +59,9 @@ namespace GameProject.GameGraphics
         /// <param name="color">Color of a segment to draw</param>
         /// <param name="weight">Weight of a segment to draw</param>
         void DrawLine(Vector2F start, Vector2F end, Color color, float weight = 0.01f);
+
+        void FillEllipse(Vector2F location, Vector2F size, Color color);
+
+        void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f);
     }
 }

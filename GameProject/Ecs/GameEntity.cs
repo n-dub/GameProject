@@ -30,6 +30,10 @@ namespace GameProject.Ecs
             ? LocalTransform
             : Parent.GlobalTransform * LocalTransform;
 
+        public Vector2F Right => Vector2F.UnitX.Rotate(Rotation);
+
+        public Vector2F Up => -Vector2F.UnitY.Rotate(Rotation);
+
         /// <summary>
         ///     Parent of this game entity
         /// </summary>
@@ -86,10 +90,8 @@ namespace GameProject.Ecs
                 LocalTransform = null;
             }
         }
-        
-        public Vector2F Right => Vector2F.UnitX.Rotate(Rotation);
-        
-        public Vector2F Up => -Vector2F.UnitY.Rotate(Rotation);
+
+        internal bool Destroyed { get; private set; }
 
         private readonly List<GameEntity> children;
 
@@ -283,17 +285,25 @@ namespace GameProject.Ecs
         /// <summary>
         ///     Do a certain action for all children and components, components of children, etc.
         /// </summary>
-        /// <param name="forChildren">An action to perform on child entities</param>
+        /// <param name="forEntities">An action to perform on child entities</param>
         /// <param name="forComponents">An action to perform on components</param>
-        /// <param name="self">If true <see cref="forChildren" /> will be called on this</param>
-        public void DoForAllChildren(Action<GameEntity> forChildren, Action<IGameComponent> forComponents,
+        /// <param name="self">If true <see cref="forEntities" /> will be called on this</param>
+        public void DoForAllChildren(Action<GameEntity> forEntities, Action<IGameComponent> forComponents,
             bool self = true)
         {
-            if (self) forChildren(this);
+            if (self) forEntities(this);
             foreach (var component in components.Values)
                 forComponents(component);
             foreach (var entity in children)
-                forChildren(entity);
+                entity.DoForAllChildren(forEntities, forComponents);
+        }
+
+        /// <summary>
+        ///     Defer destruction of this entity, it will be actually deleted when all update logic is finished
+        /// </summary>
+        public void Destroy()
+        {
+            Destroyed = true;
         }
 
         public void DrawDebugOverlay(DebugDraw debugDraw)

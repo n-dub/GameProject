@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
+using GameProject.GameDebug;
 using GameProject.GameMath;
 
 namespace GameProject.Ecs.Physics
@@ -9,7 +11,7 @@ namespace GameProject.Ecs.Physics
     /// <summary>
     ///     Represents a dynamic or static physical rigid body
     /// </summary>
-    internal class PhysicsBody : IGameComponent
+    internal class PhysicsBody : IGameComponent, IDebuggable
     {
         /// <summary>
         ///     If True this body's state won't be changed by any other bodies
@@ -38,6 +40,16 @@ namespace GameProject.Ecs.Physics
             body.IsStatic = IsStatic;
             Entity.Position = new Vector2F(body.Position);
             Entity.Rotation = body.Rotation;
+        }
+
+        public void Destroy(GameState state)
+        {
+            state.PhysicsWorld.RemoveBody(body);
+        }
+
+        public void DrawDebugOverlay(DebugDraw debugDraw)
+        {
+            debugDraw.DrawVector(Entity.Position, new Vector2F(body.LinearVelocity), Color.Blue);
         }
     }
 }

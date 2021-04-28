@@ -1,7 +1,7 @@
 ﻿using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
 using GameProject.Ecs.Physics;
-using GameProject.GameGraphics;
+using GameProject.GameGraphics.RenderShapes;
 using GameProject.GameMath;
 
 namespace GameProject.GameLogic
@@ -11,7 +11,7 @@ namespace GameProject.GameLogic
         public static GameEntity CreateCircle(Vector2F position, float radius, bool isStatic = false)
         {
             var entity = new GameEntity();
-            entity.AddComponent(new Sprite(new QuadRenderShape(1)));
+            entity.AddComponent(new Sprite(new CircleRenderShape(1)));
             entity.AddComponent<PhysicsBody>().IsStatic = isStatic;
             entity.AddComponent<CircleCollider>().Radius = radius;
             entity.Position = position;

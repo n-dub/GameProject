@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using GameProject.GameMath;
 using unvell.D2DLib;
 
-namespace GameProject.GameGraphics.Direct2D
+namespace GameProject.GameGraphics.Backend.Direct2D
 {
     /// <summary>
     ///     An implementation of <see cref="IGraphicsDevice" /> for Direct2D
@@ -96,14 +96,19 @@ namespace GameProject.GameGraphics.Direct2D
             Graphics.DrawLine(start, end, D2DColor.FromGDIColor(color), weight);
         }
 
-        public void PushLayer()
+        public void FillEllipse(Vector2F location, Vector2F size, Color color)
         {
-            //Graphics.PushLayer();
+            var radial = size / 2;
+            var origin = location + radial;
+            Graphics.ScaleTransform(0.5f, 0.5f);
+            Graphics.DrawEllipse(origin, radial, D2DColor.FromGDIColor(color));
         }
 
-        public void PopLayer()
+        public void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f)
         {
-            //Graphics.PopLayer();
+            var radial = size / 2;
+            var origin = location + radial;
+            Graphics.DrawEllipse(origin, radial, D2DColor.FromGDIColor(color), weight);
         }
     }
 }

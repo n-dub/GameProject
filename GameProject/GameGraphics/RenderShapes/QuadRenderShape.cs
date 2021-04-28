@@ -3,7 +3,7 @@ using System.IO;
 using GameProject.CoreEngine;
 using GameProject.GameMath;
 
-namespace GameProject.GameGraphics
+namespace GameProject.GameGraphics.RenderShapes
 {
     /// <summary>
     ///     An implementation of <see cref="IRenderShape" /> that draws a quad
@@ -29,7 +29,7 @@ namespace GameProject.GameGraphics
         /// <summary>
         ///     Create a new render shape with certain layer
         /// </summary>
-        /// <param name="layer"></param>
+        /// <param name="layer">Layer index of the shape</param>
         public QuadRenderShape(int layer)
         {
             Layer = layer;

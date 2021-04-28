@@ -16,5 +16,9 @@ namespace GameProject.CoreEngine
         public virtual void Update(GameState state)
         {
         }
+
+        public virtual void Destroy(GameState state)
+        {
+        }
     }
 }

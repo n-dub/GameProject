@@ -24,5 +24,11 @@ namespace GameProject.Ecs
         /// </summary>
         /// <param name="state">Current game state</param>
         void Update(GameState state);
+
+        /// <summary>
+        ///     Destroy method, called if the entity this component is connected to
+        ///     has been destroyed last frame
+        /// </summary>
+        void Destroy(GameState state);
     }
 }

@@ -45,6 +45,9 @@ namespace GameProject.GameLogic.Scripts
             GameState = state;
             ControlRotationZoom();
             ControlPosition();
+
+            if (state.Keyboard[Keys.Q] == KeyState.Down)
+                Entity.Destroy();
         }
     }
 }

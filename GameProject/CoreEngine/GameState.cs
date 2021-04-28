@@ -1,4 +1,6 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using System.Collections.Generic;
+using FarseerPhysics.Dynamics;
+using GameProject.Ecs;
 using GameProject.GameGraphics;
 using GameProject.GameInput;
 
@@ -30,27 +32,48 @@ namespace GameProject.CoreEngine
         /// </summary>
         public World PhysicsWorld { get; }
 
-        /// <summary>
-        ///     Create a copy of another instance of <see cref="GameState" />
-        /// </summary>
-        /// <param name="other">Instance to copy</param>
-        public GameState(GameState other)
-        {
-            Renderer = other.Renderer;
-            Keyboard = other.Keyboard;
-            Time = other.Time;
-            PhysicsWorld = other.PhysicsWorld;
-        }
+        public IEnumerable<GameEntity> Entities => entities;
+
+        private readonly List<GameEntity> entities;
+        private int lastEntityCount;
 
         /// <summary>
         ///     Create a new instance of <see cref="GameState" />
         /// </summary>
-        public GameState(Renderer renderer, Keyboard keyboard, Time time, World physicsWorld)
+        public GameState(Renderer renderer, Keyboard keyboard, Time time, World physicsWorld, List<GameEntity> entities)
         {
             Renderer = renderer;
             Keyboard = keyboard;
             Time = time;
             PhysicsWorld = physicsWorld;
+            this.entities = entities;
+        }
+
+        /// <summary>
+        ///     Add a new game entity
+        /// </summary>
+        public void AddEntity(GameEntity entity)
+        {
+            entities.Add(entity);
+        }
+
+        /// <summary>
+        ///     Call <see cref="GameEntity.Initialize" /> for new entities,
+        ///     must be called before <see cref="RemoveDestroyed" />
+        /// </summary>
+        public void InitializeAdded()
+        {
+            for (var i = lastEntityCount; i < entities.Count; ++i)
+                entities[i].Initialize(this);
+            lastEntityCount = entities.Count;
+        }
+
+        /// <summary>
+        ///     Remove all destroyed entities
+        /// </summary>
+        public void RemoveDestroyed()
+        {
+            entities.RemoveAll(e => e.Destroyed);
         }
     }
 }

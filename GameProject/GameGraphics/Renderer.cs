@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GameProject.CoreEngine;
+using GameProject.GameGraphics.RenderShapes;
 
 namespace GameProject.GameGraphics
 {
@@ -60,7 +61,7 @@ namespace GameProject.GameGraphics
         public void RenderAll()
         {
             var viewMatrix = Camera.GetViewMatrix();
-            
+
             foreach (var layerGrouping in renderShapes
                 .GroupBy(x => x.Layer)
                 .OrderBy(g => g.Key))

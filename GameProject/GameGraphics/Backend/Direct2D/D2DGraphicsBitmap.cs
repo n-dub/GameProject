@@ -1,7 +1,7 @@
 ﻿using GameProject.GameMath;
 using unvell.D2DLib;
 
-namespace GameProject.GameGraphics.Direct2D
+namespace GameProject.GameGraphics.Backend.Direct2D
 {
     /// <summary>
     ///     An implementation of <see cref="IBitmap" /> for Direct2D render device
