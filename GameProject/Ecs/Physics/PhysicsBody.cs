@@ -21,7 +21,15 @@ namespace GameProject.Ecs.Physics
         public bool IsStatic { get; set; }
 
         public GameEntity Entity { get; set; }
+        
+        /// <summary>
+        ///     The instance of Farseer physics native <see cref="Body"/> class
+        /// </summary>
         public Body FarseerBody { get; private set; }
+        
+        /// <summary>
+        ///     A list of all colliders attached to this body
+        /// </summary>
         public IList<Collider> Colliders => colliders;
 
         private bool shapesDirty = true;

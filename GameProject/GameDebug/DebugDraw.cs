@@ -16,11 +16,21 @@ namespace GameProject.GameDebug
         /// </summary>
         public Renderer Renderer { get; }
 
+        /// <summary>
+        ///     Create a new <see cref="DebugDraw"/> using a certain <see cref="GameProject.GameGraphics.Renderer"/>
+        /// </summary>
+        /// <param name="renderer">An instance of <see cref="GameProject.GameGraphics.Renderer"/> to use</param>
         public DebugDraw(Renderer renderer)
         {
             Renderer = renderer;
         }
 
+        /// <summary>
+        ///     Draw a vector on the screen
+        /// </summary>
+        /// <param name="origin">Location of the vector to draw</param>
+        /// <param name="vector">Vector to draw itself</param>
+        /// <param name="color">Color of the vector to draw</param>
         public void DrawVector(Vector2F origin, Vector2F vector, Color color)
         {
             if (vector.IsZero)
@@ -36,11 +46,25 @@ namespace GameProject.GameDebug
             });
         }
 
+        /// <summary>
+        ///     Draw a straight line of the screen
+        /// </summary>
+        /// <param name="start">First point of the line to draw</param>
+        /// <param name="end">Second point of the line to draw</param>
+        /// <param name="color">Color of the line to draw</param>
+        /// <param name="weight">Width of the line to draw</param>
         public void DrawLine(Vector2F start, Vector2F end, Color color, float weight = 0.01f)
         {
             DrawImpl(device => device.DrawLine(start, end, color, weight));
         }
 
+        /// <summary>
+        ///     Draw an ellipse of the screen
+        /// </summary>
+        /// <param name="location">Location of the ellipse to draw</param>
+        /// <param name="size">Size of the ellipse to draw</param>
+        /// <param name="color">Color of the ellipse to draw</param>
+        /// <param name="weight">Stroke width of the ellipse to draw</param>
         public void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f)
         {
             DrawImpl(device => device.DrawEllipse(location, size, color, weight));
