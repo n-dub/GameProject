@@ -1,4 +1,5 @@
-﻿using GameProject.Ecs;
+﻿using System.Runtime.CompilerServices;
+using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
 using GameProject.Ecs.Physics;
 using GameProject.GameGraphics.RenderShapes;
@@ -8,6 +9,7 @@ namespace GameProject.GameLogic
 {
     internal static class LevelUtility
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static GameEntity CreateCircle(Vector2F position, float radius, bool isStatic = false)
         {
             var entity = new GameEntity();
@@ -20,6 +22,7 @@ namespace GameProject.GameLogic
             return entity;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static GameEntity CreateRectangle(Vector2F position, Vector2F size, bool isStatic = false)
         {
             var entity = new GameEntity();
@@ -32,6 +35,7 @@ namespace GameProject.GameLogic
             return entity;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static GameEntity CreatePolygon(Vector2F position, bool isStatic, params Vector2F[] vertices)
         {
             var entity = new GameEntity();

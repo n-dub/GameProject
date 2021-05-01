@@ -1,4 +1,5 @@
-﻿using GameProject.CoreEngine;
+﻿using System.Runtime.CompilerServices;
+using GameProject.CoreEngine;
 using GameProject.GameGraphics.RenderShapes;
 
 namespace GameProject.Ecs.Graphics
@@ -42,6 +43,7 @@ namespace GameProject.Ecs.Graphics
             state.Renderer.RemoveShape(Shape);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Initialize(GameState state)
         {
             state.Renderer.AddShape(Shape);

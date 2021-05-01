@@ -5,6 +5,10 @@
     /// </summary>
     internal interface ISceneFactory
     {
+        /// <summary>
+        ///     Get scene data
+        /// </summary>
+        /// <returns>Scene data</returns>
         SceneData CreateScene();
     }
 }

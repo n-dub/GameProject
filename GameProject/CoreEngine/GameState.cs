@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using FarseerPhysics.Dynamics;
 using GameProject.Ecs;
 using GameProject.GameGraphics;
@@ -52,6 +53,7 @@ namespace GameProject.CoreEngine
         /// <summary>
         ///     Add a new game entity
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddEntity(GameEntity entity)
         {
             newEntities.Add(entity);
