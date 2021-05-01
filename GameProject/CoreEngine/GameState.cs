@@ -34,9 +34,9 @@ namespace GameProject.CoreEngine
 
         public IEnumerable<GameEntity> Entities => entities;
 
-        private readonly List<GameEntity> entities;
-        private int lastEntityCount;
-
+        private readonly List<GameEntity> entities = new List<GameEntity>();
+        private readonly List<GameEntity> newEntities;
+        
         /// <summary>
         ///     Create a new instance of <see cref="GameState" />
         /// </summary>
@@ -46,7 +46,7 @@ namespace GameProject.CoreEngine
             Keyboard = keyboard;
             Time = time;
             PhysicsWorld = physicsWorld;
-            this.entities = entities;
+            newEntities = entities;
         }
 
         /// <summary>
@@ -54,18 +54,16 @@ namespace GameProject.CoreEngine
         /// </summary>
         public void AddEntity(GameEntity entity)
         {
-            entities.Add(entity);
+            newEntities.Add(entity);
         }
 
         /// <summary>
-        ///     Call <see cref="GameEntity.Initialize" /> for new entities,
-        ///     must be called before <see cref="RemoveDestroyed" />
+        ///     Execute deferred entity adding commands
         /// </summary>
-        public void InitializeAdded()
+        public void AddNewEntities()
         {
-            for (var i = lastEntityCount; i < entities.Count; ++i)
-                entities[i].Initialize(this);
-            lastEntityCount = entities.Count;
+            entities.AddRange(newEntities);
+            newEntities.Clear();
         }
 
         /// <summary>

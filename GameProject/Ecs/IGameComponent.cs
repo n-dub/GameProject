@@ -13,13 +13,6 @@ namespace GameProject.Ecs
         GameEntity Entity { get; set; }
 
         /// <summary>
-        ///     Initialization method, called recursively for all components
-        ///     once when they're created
-        /// </summary>
-        /// <param name="state">Current game state</param>
-        void Initialize(GameState state);
-
-        /// <summary>
         ///     Update method, called recursively for all components once per frame
         /// </summary>
         /// <param name="state">Current game state</param>

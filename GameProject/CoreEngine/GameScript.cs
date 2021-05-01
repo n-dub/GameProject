@@ -9,10 +9,6 @@ namespace GameProject.CoreEngine
     {
         public GameEntity Entity { get; set; }
 
-        public virtual void Initialize(GameState state)
-        {
-        }
-
         public virtual void Update(GameState state)
         {
         }

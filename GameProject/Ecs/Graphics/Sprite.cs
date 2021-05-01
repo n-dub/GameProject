@@ -16,6 +16,8 @@ namespace GameProject.Ecs.Graphics
 
         public GameEntity Entity { get; set; }
 
+        private bool initialized;
+
         /// <summary>
         ///     Create a new <see cref="Sprite" /> component
         /// </summary>
@@ -25,21 +27,26 @@ namespace GameProject.Ecs.Graphics
             Shape = shape;
         }
 
-        public void Initialize(GameState state)
-        {
-            state.Renderer.AddShape(Shape);
-            Shape.Transform = Entity.GlobalTransform;
-            Shape.Initialize(state.Renderer.Device);
-        }
-
         public void Update(GameState state)
         {
+            if (!initialized)
+            {
+                Initialize(state);
+                initialized = true;
+            }
             Shape.Transform = Entity.GlobalTransform;
         }
 
         public void Destroy(GameState state)
         {
             state.Renderer.RemoveShape(Shape);
+        }
+        
+        private void Initialize(GameState state)
+        {
+            state.Renderer.AddShape(Shape);
+            Shape.Transform = Entity.GlobalTransform;
+            Shape.Initialize(state.Renderer.Device);
         }
     }
 }

@@ -20,39 +20,45 @@ namespace GameProject.Ecs.Physics
         public bool IsStatic { get; set; }
 
         public GameEntity Entity { get; set; }
-
-        private Body body;
+        public Body FarseerBody { get; private set; }
 
         private Shape shape;
 
-        public void Initialize(GameState state)
-        {
-            body = new Body(state.PhysicsWorld, Entity.Position, Entity.Rotation);
-            shape = Entity
-                .GetComponentsOfType<Collider>()
-                .Single()
-                .GetFarseerShape();
-            body.CreateFixture(shape);
-            body.IsStatic = IsStatic;
-        }
-
         public void Update(GameState state)
         {
-            body.IsStatic = IsStatic;
-            Entity.Position = new Vector2F(body.Position);
-            Entity.Rotation = body.Rotation;
+            if (FarseerBody is null)
+                Initialize(state);
+            FarseerBody.IsStatic = IsStatic;
+            Entity.Position = new Vector2F(FarseerBody.Position);
+            Entity.Rotation = FarseerBody.Rotation;
         }
 
         public void Destroy(GameState state)
         {
-            state.PhysicsWorld.RemoveBody(body);
+            state.PhysicsWorld.RemoveBody(FarseerBody);
         }
 
         public void DrawDebugOverlay(DebugDraw debugDraw)
         {
-            if (body is null)
+            if (FarseerBody is null)
                 return;
-            debugDraw.DrawVector(Entity.Position, new Vector2F(body.LinearVelocity), Color.Blue);
+            debugDraw.DrawVector(Entity.Position, new Vector2F(FarseerBody.LinearVelocity), Color.Blue);
+        }
+        
+        private void Initialize(GameState state)
+        {
+            FarseerBody = new Body(state.PhysicsWorld, Entity.Position, Entity.Rotation);
+            shape = Entity
+                .GetComponentsOfType<Collider>()
+                .Single()
+                .GetFarseerShape();
+            FarseerBody.CreateFixture(shape);
+            FarseerBody.IsStatic = IsStatic;
+        }
+
+        public void ApplyForce(Vector2F force)
+        {
+            FarseerBody?.ApplyForce(force);
         }
     }
 }

@@ -11,14 +11,6 @@ namespace GameProject.Ecs.Physics
         public GameEntity Entity { get; set; }
 
         /// <summary>
-        ///     Colliders are initialized by <see cref="PhysicsBody" />
-        /// </summary>
-        /// <param name="state"></param>
-        public void Initialize(GameState state)
-        {
-        }
-
-        /// <summary>
         ///     Colliders are updated by <see cref="PhysicsBody" />
         /// </summary>
         /// <param name="state"></param>
@@ -26,6 +18,10 @@ namespace GameProject.Ecs.Physics
         {
         }
 
+        /// <summary>
+        ///     Colliders are destroyed by <see cref="PhysicsBody" />
+        /// </summary>
+        /// <param name="state"></param>
         public void Destroy(GameState state)
         {
         }

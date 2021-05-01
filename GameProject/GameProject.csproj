@@ -102,6 +102,7 @@
     <Compile Include="GameLogic\Levels\TestSceneFactory.cs" />
     <Compile Include="GameLogic\LevelUtility.cs" />
     <Compile Include="GameLogic\Scripts\TestCamera.cs" />
+    <Compile Include="GameLogic\Scripts\TestCannon.cs" />
     <Compile Include="GameMath\MathF.cs" />
     <Compile Include="GameMath\Matrix3F.cs" />
     <Compile Include="GameMath\MatrixTests.cs" />
