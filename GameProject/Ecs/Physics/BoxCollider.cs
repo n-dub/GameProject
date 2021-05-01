@@ -5,6 +5,7 @@ using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
 using GameProject.CoreEngine;
 using GameProject.GameDebug;
+using GameProject.GameMath;
 using Microsoft.Xna.Framework;
 
 namespace GameProject.Ecs.Physics
@@ -37,14 +38,10 @@ namespace GameProject.Ecs.Physics
 
         private IEnumerable<Vector2> GetVerticesUnscaled()
         {
-            yield return new Vector2(SizeX / 2, SizeY / 2);
-            yield return new Vector2(SizeX / -2, SizeY / 2);
-            yield return new Vector2(SizeX / -2, SizeY / -2);
-            yield return new Vector2(SizeX / 2, SizeY / -2);
-            // var size = new Vector2F(SizeX, SizeY);
-            // return GeometryUtility
-            //     .GenerateRegularPolygon(Vector2F.Zero, size, MathF.PI / 4, 4)
-            //     .Select(v => (Vector2) v);
+            var size = new Vector2F(SizeX, SizeY) * MathF.Sqrt(2);
+            return GeometryUtility
+                .GenerateRegularPolygon(Vector2F.Zero, size, MathF.PI / 4, 4)
+                .Select(v => (Vector2) v);
         }
 
         public override Shape GetFarseerShape()

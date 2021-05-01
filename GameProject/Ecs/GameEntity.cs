@@ -196,6 +196,8 @@ namespace GameProject.Ecs
         /// <returns>The created and added component</returns>
         public T AddComponent<T>() where T : class, IGameComponent, new()
         {
+            if (HasComponent<T>())
+                throw new ArgumentException($"component of type {typeof(T).Name} already existed");
             var component = new T();
             SetComponent(typeof(T), component);
             return component;
@@ -212,6 +214,8 @@ namespace GameProject.Ecs
         /// </exception>
         public void AddComponent<T>(T component) where T : class, IGameComponent
         {
+            if (HasComponent(component.GetType()))
+                throw new ArgumentException($"component of type {component.GetType().Name} already existed");
             if (component is null)
                 throw new ArgumentNullException(nameof(component));
             if (component.Entity != null)
@@ -265,15 +269,6 @@ namespace GameProject.Ecs
         }
 
         /// <summary>
-        ///     Call `Initialize()` recursively for all children and components
-        /// </summary>
-        /// <param name="state">Current game state</param>
-        public void Initialize(GameState state)
-        {
-            DoForAllChildren(c => c.Initialize(state), c => c.Initialize(state), false);
-        }
-
-        /// <summary>
         ///     Call `Update()` recursively for all children and components
         /// </summary>
         /// <param name="state">Current game state</param>
@@ -310,6 +305,16 @@ namespace GameProject.Ecs
         {
             debugDraw.DrawVector(Position, Right, Color.Red);
             debugDraw.DrawVector(Position, Up, Color.Red);
+        }
+
+        public bool HasComponent<T>() where T : class, IGameComponent
+        {
+            return HasComponent(typeof(T));
+        }
+        
+        private bool HasComponent(Type componentType)
+        {
+            return components.TryGetValue(componentType, out _);
         }
     }
 }

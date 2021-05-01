@@ -47,11 +47,6 @@ namespace GameProject
 
             GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld, CollectEntities(levels));
 
-            {
-                // TODO: TEST CODE - TO BE REMOVED
-                GameState.Entities.First().AddComponent<TestCamera>();
-            }
-
             Stopwatch = Stopwatch.StartNew();
         }
 
@@ -87,7 +82,17 @@ namespace GameProject
 
         private void UpdateGame()
         {
-            GameState.InitializeAdded();
+            GameState.AddNewEntities();
+            
+            {
+                // TODO: TEST CODE - TO BE REMOVED
+                var first = GameState.Entities.FirstOrDefault();
+                if (!(first?.HasComponent<TestCamera>() ?? false))
+                    first?.AddComponent<TestCamera>();
+                if (!(first?.HasComponent<TestCannon>() ?? false))
+                    first?.AddComponent<TestCannon>();
+            }
+
             GameState.RemoveDestroyed();
             GameState.Time.UpdateForNextFrame(GameState.Time.FrameIndex < 5 ? 1 : Stopwatch.ElapsedMilliseconds);
             Stopwatch.Restart();
@@ -110,8 +115,8 @@ namespace GameProject
         {
             if (!GameState.Renderer.Initialized)
                 return;
-            if (GameState.Renderer.Device is WinFormsGraphicsDevice winFormsGraphicsDevice)
-                winFormsGraphicsDevice.Graphics = e.Graphics;
+            if (GameState.Renderer.Device is WinFormsGraphicsDevice device)
+                device.Graphics = e.Graphics;
 
             GameState.Renderer.Device.BeginRender();
 
