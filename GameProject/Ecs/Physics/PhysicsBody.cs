@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
@@ -63,11 +64,13 @@ namespace GameProject.Ecs.Physics
                     d.DrawDebugOverlay(debugDraw);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ApplyForce(Vector2F force)
         {
             FarseerBody?.ApplyForce(force);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddCollider(Collider collider)
         {
             colliders.Add(collider);
@@ -75,6 +78,7 @@ namespace GameProject.Ecs.Physics
             shapesDirty = true;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void InitializeShapes()
         {
             shapesDirty = false;

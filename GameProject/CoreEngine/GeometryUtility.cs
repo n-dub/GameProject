@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using GameProject.GameMath;
 using Microsoft.Xna.Framework;
 
@@ -7,6 +8,7 @@ namespace GameProject.CoreEngine
 {
     internal static class GeometryUtility
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Vector2F> GenerateRegularPolygon(Vector2F location, Vector2F radial,
             float initialRotation, int vertexCount)
         {
@@ -21,11 +23,13 @@ namespace GameProject.CoreEngine
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<(Vector2F v1, Vector2F v2)> PolygonVerticesToEdges(IEnumerable<Vector2F> vertices)
         {
             return PolygonVerticesToEdges(vertices.Select(v => (Vector2) v).ToArray());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<(Vector2F v1, Vector2F v2)> PolygonVerticesToEdges(Vector2[] vertices)
         {
             return vertices

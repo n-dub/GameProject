@@ -1,4 +1,6 @@
-﻿namespace GameProject.CoreEngine
+﻿using System.Runtime.CompilerServices;
+
+namespace GameProject.CoreEngine
 {
     /// <summary>
     ///     Class that holds everything connected to game time
@@ -25,6 +27,7 @@
         ///     Must be used in <see cref="MainWindow" /> only
         /// </summary>
         /// <param name="dt">New value of <see cref="DeltaTime" /> in milliseconds</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void UpdateForNextFrame(float dt)
         {
             DeltaTime = dt / 1000;

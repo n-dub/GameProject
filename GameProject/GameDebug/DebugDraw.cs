@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using GameProject.GameGraphics;
 using GameProject.GameMath;
 
@@ -31,6 +32,7 @@ namespace GameProject.GameDebug
         /// <param name="origin">Location of the vector to draw</param>
         /// <param name="vector">Vector to draw itself</param>
         /// <param name="color">Color of the vector to draw</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawVector(Vector2F origin, Vector2F vector, Color color)
         {
             if (vector.IsZero)
@@ -53,6 +55,7 @@ namespace GameProject.GameDebug
         /// <param name="end">Second point of the line to draw</param>
         /// <param name="color">Color of the line to draw</param>
         /// <param name="weight">Width of the line to draw</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(Vector2F start, Vector2F end, Color color, float weight = 0.01f)
         {
             DrawImpl(device => device.DrawLine(start, end, color, weight));
@@ -65,11 +68,13 @@ namespace GameProject.GameDebug
         /// <param name="size">Size of the ellipse to draw</param>
         /// <param name="color">Color of the ellipse to draw</param>
         /// <param name="weight">Stroke width of the ellipse to draw</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f)
         {
             DrawImpl(device => device.DrawEllipse(location, size, color, weight));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DrawImpl(Action<IGraphicsDevice> drawAction)
         {
             var device = Renderer.Device;

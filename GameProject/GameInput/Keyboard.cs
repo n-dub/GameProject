@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace GameProject.GameInput
@@ -14,10 +15,13 @@ namespace GameProject.GameInput
         ///     Get state of a certain key
         /// </summary>
         /// <param name="key">Key to get state of</param>
-        public KeyState this[Keys key] =>
-            States.TryGetValue(key, out var state)
-                ? state
-                : KeyState.None;
+        public KeyState this[Keys key]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => States.TryGetValue(key, out var state)
+                    ? state
+                    : KeyState.None;
+        }
 
         private ConcurrentDictionary<Keys, KeyState> States { get; }
 

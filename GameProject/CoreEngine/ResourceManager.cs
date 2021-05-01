@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace GameProject.CoreEngine
 {
@@ -19,6 +20,7 @@ namespace GameProject.CoreEngine
         /// <param name="fileName">File path to use for call to the loader</param>
         /// <typeparam name="T">Type of resource</typeparam>
         /// <returns>Strong reference to the loaded resource</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T LoadResource<T>(Func<string, T> loader, string fileName) where T : class
         {
             if (loadedResources.TryGetValue(fileName, out var reference) && reference.IsAlive)
