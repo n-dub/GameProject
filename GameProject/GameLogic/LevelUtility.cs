@@ -12,8 +12,9 @@ namespace GameProject.GameLogic
         {
             var entity = new GameEntity();
             entity.AddComponent(new Sprite(new CircleRenderShape(1)));
-            entity.AddComponent<PhysicsBody>().IsStatic = isStatic;
-            entity.AddComponent<CircleCollider>().Radius = radius;
+            var body = entity.AddComponent<PhysicsBody>();
+            body.IsStatic = isStatic;
+            body.AddCollider(new CircleCollider{Radius = radius});
             entity.Position = position;
             entity.Scale = new Vector2F(radius) * 2;
             return entity;
@@ -23,8 +24,9 @@ namespace GameProject.GameLogic
         {
             var entity = new GameEntity();
             entity.AddComponent(new Sprite(new QuadRenderShape(1)));
-            entity.AddComponent<PhysicsBody>().IsStatic = isStatic;
-            entity.AddComponent<BoxCollider>();
+            var body = entity.AddComponent<PhysicsBody>();
+            body.IsStatic = isStatic;
+            body.AddCollider(new BoxCollider());
             entity.Position = position;
             entity.Scale = size;
             return entity;
@@ -34,8 +36,9 @@ namespace GameProject.GameLogic
         {
             var entity = new GameEntity();
             entity.AddComponent(new Sprite(new PolygonRenderShape(1) {Points = vertices}));
-            entity.AddComponent<PhysicsBody>().IsStatic = isStatic;
-            entity.AddComponent<PolygonCollider>().Vertices = vertices;
+            var body = entity.AddComponent<PhysicsBody>();
+            body.IsStatic = isStatic;
+            body.AddCollider(new PolygonCollider{Vertices = vertices});
             entity.Position = position;
             return entity;
         }

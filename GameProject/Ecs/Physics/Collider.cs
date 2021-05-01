@@ -1,30 +1,13 @@
 ﻿using FarseerPhysics.Collision.Shapes;
-using GameProject.CoreEngine;
 
 namespace GameProject.Ecs.Physics
 {
     /// <summary>
     ///     Represents an abstract collision model for an entity
     /// </summary>
-    internal abstract class Collider : IGameComponent
+    internal abstract class Collider
     {
         public GameEntity Entity { get; set; }
-
-        /// <summary>
-        ///     Colliders are updated by <see cref="PhysicsBody" />
-        /// </summary>
-        /// <param name="state"></param>
-        public void Update(GameState state)
-        {
-        }
-
-        /// <summary>
-        ///     Colliders are destroyed by <see cref="PhysicsBody" />
-        /// </summary>
-        /// <param name="state"></param>
-        public void Destroy(GameState state)
-        {
-        }
 
         /// <summary>
         ///     Convert this collision model to FarseerPhysics' <see cref="Shape" />
