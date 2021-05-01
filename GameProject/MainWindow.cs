@@ -89,7 +89,7 @@ namespace GameProject
         {
             GameState.InitializeAdded();
             GameState.RemoveDestroyed();
-            GameState.Time.UpdateForNextFrame(Stopwatch.ElapsedMilliseconds);
+            GameState.Time.UpdateForNextFrame(GameState.Time.FrameIndex < 5 ? 1 : Stopwatch.ElapsedMilliseconds);
             Stopwatch.Restart();
 
             if (GameState.Keyboard[Keys.F3] == KeyState.Down)
