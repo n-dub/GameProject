@@ -29,21 +29,41 @@ namespace GameProject.GameMath
         public readonly float Y;
 
         /// <inheritdoc cref="Vector3F.LengthSquared" />
-        public float LengthSquared => this * this;
+        public float LengthSquared
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this * this;
+        }
 
         /// <inheritdoc cref="Vector3F.Length" />
-        public float Length => MathF.Sqrt(LengthSquared);
+        public float Length
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => MathF.Sqrt(LengthSquared);
+        }
 
         /// <summary>
         ///     Angle between this vector and positive X axis
         /// </summary>
-        public float Angle => Y > 0 ? MathF.Acos(X / Length) : -MathF.Acos(X / Length);
+        public float Angle
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Y > 0 ? MathF.Acos(X / Length) : -MathF.Acos(X / Length);
+        }
 
         /// <inheritdoc cref="Vector3F.Normalized" />
-        public Vector2F Normalized => LengthSquared == 0 ? this : this / Length;
+        public Vector2F Normalized
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => LengthSquared == 0 ? this : this / Length;
+        }
 
         /// <inheritdoc cref="Vector3F.IsZero" />
-        public bool IsZero => LengthSquared < 0.01f;
+        public bool IsZero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => LengthSquared < 0.01f;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2F(float value) : this(value, value)

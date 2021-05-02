@@ -25,42 +25,74 @@ namespace GameProject.GameMath
         /// </summary>
         /// <param name="row"></param>
         /// <param name="column"></param>
-        public float this[int row, int column] => matrix[row, column];
+        public float this[int row, int column]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => matrix[row, column];
+        }
 
         /// <summary>
         ///     Get a row of the matrix as a vector
         /// </summary>
-        public Vector3F Row1 => new Vector3F(matrix[0, 0], matrix[0, 1], matrix[0, 2]);
+        public Vector3F Row1
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector3F(matrix[0, 0], matrix[0, 1], matrix[0, 2]);
+        }
 
         /// <summary>
         ///     Get a row of the matrix as a vector
         /// </summary>
-        public Vector3F Row2 => new Vector3F(matrix[1, 0], matrix[1, 1], matrix[1, 2]);
+        public Vector3F Row2
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector3F(matrix[1, 0], matrix[1, 1], matrix[1, 2]);
+        }
 
         /// <summary>
         ///     Get a row of the matrix as a vector
         /// </summary>
-        public Vector3F Row3 => new Vector3F(matrix[2, 0], matrix[2, 1], matrix[2, 2]);
+        public Vector3F Row3
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector3F(matrix[2, 0], matrix[2, 1], matrix[2, 2]);
+        }
 
         /// <summary>
         ///     Get a column of the matrix as a vector
         /// </summary>
-        public Vector3F Column1 => new Vector3F(matrix[0, 0], matrix[1, 0], matrix[2, 0]);
+        public Vector3F Column1
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector3F(matrix[0, 0], matrix[1, 0], matrix[2, 0]);
+        }
 
         /// <summary>
         ///     Get a column of the matrix as a vector
         /// </summary>
-        public Vector3F Column2 => new Vector3F(matrix[0, 1], matrix[1, 1], matrix[2, 1]);
+        public Vector3F Column2
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector3F(matrix[0, 1], matrix[1, 1], matrix[2, 1]);
+        }
 
         /// <summary>
         ///     Get a column of the matrix as a vector
         /// </summary>
-        public Vector3F Column3 => new Vector3F(matrix[0, 2], matrix[1, 2], matrix[2, 2]);
+        public Vector3F Column3
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector3F(matrix[0, 2], matrix[1, 2], matrix[2, 2]);
+        }
 
         /// <summary>
         ///     Get transposed matrix
         /// </summary>
-        public Matrix3F Transposed => new Matrix3F(Column1, Column2, Column3);
+        public Matrix3F Transposed
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Matrix3F(Column1, Column2, Column3);
+        }
 
         private readonly float[,] matrix;
 

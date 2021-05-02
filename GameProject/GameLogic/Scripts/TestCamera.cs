@@ -7,44 +7,41 @@ namespace GameProject.GameLogic.Scripts
 {
     internal class TestCamera : GameScript
     {
-        private GameState GameState;
-        private float SpeedFactor => GameState.Renderer.Camera.ViewWidth;
-
-        private void ControlPosition()
+        private void ControlPosition(GameState gameState, float speedFactor)
         {
-            var p = GameState.Renderer.Camera.Position;
+            var p = gameState.Renderer.Camera.Position;
             var (x, y) = (p.X, p.Y);
             const float speed = .3f;
-            if (GameState.Keyboard[Keys.Left] == KeyState.Pushing)
-                x -= speed * GameState.Time.DeltaTime * SpeedFactor;
-            if (GameState.Keyboard[Keys.Right] == KeyState.Pushing)
-                x += speed * GameState.Time.DeltaTime * SpeedFactor;
-            if (GameState.Keyboard[Keys.Up] == KeyState.Pushing)
-                y -= speed * GameState.Time.DeltaTime * SpeedFactor;
-            if (GameState.Keyboard[Keys.Down] == KeyState.Pushing)
-                y += speed * GameState.Time.DeltaTime * SpeedFactor;
+            if (gameState.Keyboard[Keys.Left] == KeyState.Pushing)
+                x -= speed * gameState.Time.DeltaTime * speedFactor;
+            if (gameState.Keyboard[Keys.Right] == KeyState.Pushing)
+                x += speed * gameState.Time.DeltaTime * speedFactor;
+            if (gameState.Keyboard[Keys.Up] == KeyState.Pushing)
+                y -= speed * gameState.Time.DeltaTime * speedFactor;
+            if (gameState.Keyboard[Keys.Down] == KeyState.Pushing)
+                y += speed * gameState.Time.DeltaTime * speedFactor;
 
-            GameState.Renderer.Camera.Position = new Vector2F(x, y);
+            gameState.Renderer.Camera.Position = new Vector2F(x, y);
         }
 
-        private void ControlRotationZoom()
+        private void ControlRotationZoom(GameState gameState, float speedFactor)
         {
             const float rotSpeed = MathF.PI / 4;
-            if (GameState.Keyboard[Keys.W] == KeyState.Pushing)
-                GameState.Renderer.Camera.ViewWidth -= GameState.Time.DeltaTime * SpeedFactor;
-            if (GameState.Keyboard[Keys.S] == KeyState.Pushing)
-                GameState.Renderer.Camera.ViewWidth += GameState.Time.DeltaTime * SpeedFactor;
-            if (GameState.Keyboard[Keys.A] == KeyState.Pushing)
-                GameState.Renderer.Camera.Rotation -= rotSpeed * GameState.Time.DeltaTime;
-            if (GameState.Keyboard[Keys.D] == KeyState.Pushing)
-                GameState.Renderer.Camera.Rotation += rotSpeed * GameState.Time.DeltaTime;
+            if (gameState.Keyboard[Keys.W] == KeyState.Pushing)
+                gameState.Renderer.Camera.ViewWidth -= gameState.Time.DeltaTime * speedFactor;
+            if (gameState.Keyboard[Keys.S] == KeyState.Pushing)
+                gameState.Renderer.Camera.ViewWidth += gameState.Time.DeltaTime * speedFactor;
+            if (gameState.Keyboard[Keys.A] == KeyState.Pushing)
+                gameState.Renderer.Camera.Rotation -= rotSpeed * gameState.Time.DeltaTime;
+            if (gameState.Keyboard[Keys.D] == KeyState.Pushing)
+                gameState.Renderer.Camera.Rotation += rotSpeed * gameState.Time.DeltaTime;
         }
 
         public override void Update(GameState state)
         {
-            GameState = state;
-            ControlRotationZoom();
-            ControlPosition();
+            var speedFactor = state.Renderer.Camera.ViewWidth;
+            ControlRotationZoom(state, speedFactor);
+            ControlPosition(state, speedFactor);
 
             if (state.Keyboard[Keys.Q] == KeyState.Down)
                 Entity.Destroy();

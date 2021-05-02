@@ -37,15 +37,6 @@ namespace GameProject.GameGraphics
         }
 
         /// <summary>
-        ///     Create a renderer that holds certain shaped
-        /// </summary>
-        /// <param name="shapes">A collection of shapes</param>
-        public Renderer(IEnumerable<IRenderShape> shapes)
-        {
-            renderShapes = shapes.ToHashSet();
-        }
-
-        /// <summary>
         ///     Initialize the renderer
         /// </summary>
         /// <param name="graphicsDevice">Graphics device to use</param>
