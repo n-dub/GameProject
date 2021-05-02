@@ -47,22 +47,38 @@ namespace GameProject.GameMath
         /// <summary>
         ///     Length of the vector in the power of two
         /// </summary>
-        public float LengthSquared => this * this;
+        public float LengthSquared
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this * this;
+        }
 
         /// <summary>
         ///     Length of the vector
         /// </summary>
-        public float Length => MathF.Sqrt(LengthSquared);
+        public float Length
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => MathF.Sqrt(LengthSquared);
+        }
 
         /// <summary>
         ///     Get normalized vector
         /// </summary>
-        public Vector3F Normalized => LengthSquared == 0 ? this : this / Length;
+        public Vector3F Normalized
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => LengthSquared == 0 ? this : this / Length;
+        }
 
         /// <summary>
         ///     True if vector is equal to zero
         /// </summary>
-        public bool IsZero => LengthSquared < 0.01f;
+        public bool IsZero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => LengthSquared < 0.01f;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3F(Vector2F vector, float z)
