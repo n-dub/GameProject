@@ -1,4 +1,6 @@
-﻿using GameProject.Ecs;
+﻿using System;
+using System.Collections.Generic;
+using GameProject.Ecs;
 
 namespace GameProject.CoreEngine
 {
@@ -9,7 +11,53 @@ namespace GameProject.CoreEngine
     {
         public GameEntity Entity { get; set; }
 
-        public virtual void Update(GameState state)
+        protected GameState GameState { get; private set; }
+
+        private bool initialized;
+
+        private readonly List<IEnumerator<Awaiter>> coroutines = new List<IEnumerator<Awaiter>>();
+
+        public void Update(GameState state)
+        {
+            GameState = state;
+            if (!initialized)
+            {
+                Initialize();
+                initialized = true;
+                return;
+            }
+            Update();
+            UpdateCoroutines(state);
+        }
+
+        private void UpdateCoroutines(GameState state)
+        {
+            foreach (var coroutine in coroutines)
+            {
+                var current = coroutine.Current;
+                if (current is null)
+                {
+                    coroutine.MoveNext();
+                    continue;
+                }
+                current.Update(state.Time.DeltaTime);
+                if (current.Completed && !coroutine.MoveNext())
+                    current.IsLast = true;
+            }
+
+            coroutines.RemoveAll(c => c.Current?.IsLast ?? false);
+        }
+
+        protected void StartCoroutine(Func<IEnumerable<Awaiter>> coroutine)
+        {
+            coroutines.Add(coroutine().GetEnumerator());
+        }
+        
+        protected virtual void Update()
+        {
+        }
+
+        protected virtual void Initialize()
         {
         }
 

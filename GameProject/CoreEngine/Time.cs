@@ -10,12 +10,22 @@ namespace GameProject.CoreEngine
         /// <summary>
         ///     Current framerate
         /// </summary>
-        public float Fps => 1f / DeltaTime;
+        public float Fps => 1f / DeltaTimeUnscaled;
 
         /// <summary>
         ///     Duration of last frame in seconds
         /// </summary>
-        public float DeltaTime { get; private set; }
+        public float DeltaTimeUnscaled { get; private set; }
+
+        /// <summary>
+        ///     Scale of time, may be used for slow-motion effects
+        /// </summary>
+        public float TimeScale { get; set; } = 1f;
+
+        /// <summary>
+        ///     Duration of last frame in seconds effected by <see cref="TimeScale"/>
+        /// </summary>
+        public float DeltaTime => DeltaTimeUnscaled * TimeScale;
 
         /// <summary>
         ///     Index of the current frame
@@ -30,7 +40,7 @@ namespace GameProject.CoreEngine
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void UpdateForNextFrame(float dt)
         {
-            DeltaTime = dt / 1000;
+            DeltaTimeUnscaled = dt / 1000;
             ++FrameIndex;
         }
     }

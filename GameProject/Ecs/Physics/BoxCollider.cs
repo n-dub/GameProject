@@ -26,13 +26,19 @@ namespace GameProject.Ecs.Physics
         public float SizeY { get; set; } = 1f;
 
         /// <summary>
+        ///     If true the collider size will depend on entity's scale
+        /// </summary>
+        public bool Scaled { get; set; } = true;
+
+        /// <summary>
         ///     Calculates position of rectangle vertices according to collider width,
         ///     height and entity scale
         /// </summary>
         /// <returns></returns>
         private IEnumerable<Vector2> GetVertices()
         {
-            var (sx, sy) = (Entity.Scale.X, Entity.Scale.Y);
+            var scale = Scaled ? Entity.Scale : Vector2F.One;
+            var (sx, sy) = (scale.X - 0.015f, scale.Y - 0.015f);
             return GetVerticesUnscaled().Select(v => new Vector2(v.X * sx, v.Y * sy));
         }
 
@@ -52,6 +58,8 @@ namespace GameProject.Ecs.Physics
         public void DrawDebugOverlay(DebugDraw debugDraw)
         {
             var mat = Entity.GlobalTransform;
+            if (!Scaled)
+                mat *= Matrix3F.CreateScale(new Vector2F(1f / Entity.Scale.X, 1f / Entity.Scale.Y));
 
             foreach (var (a, b) in GeometryUtility.PolygonVerticesToEdges(GetVerticesUnscaled().ToArray()))
                 debugDraw.DrawLine(a.TransformBy(mat), b.TransformBy(mat), Color.Green, 0.07f);

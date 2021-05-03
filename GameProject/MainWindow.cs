@@ -29,7 +29,7 @@ namespace GameProject
 #if DEBUG
         private bool DebugEnabled { get; set; } = true;
 #else
-        private bool DebugEnabled { get; set; } = false;
+        private bool DebugEnabled { get; set; }
 #endif
 
         private float cachedFps;
@@ -43,9 +43,11 @@ namespace GameProject
 
             var renderer = new Renderer();
             renderer.Camera.ScreenSize = new Vector2F(Width, Height);
+            renderer.Camera.Position += Vector2F.UnitY * -1.5f;
             var physicsWorld = new World(new Vector2(0, MathF.Gravity));
 
             GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld, CollectEntities(levels));
+            GameState.Time.TimeScale = 1f;
 
             Stopwatch = Stopwatch.StartNew();
         }
@@ -130,7 +132,7 @@ namespace GameProject
         private void DrawDebug(Graphics g)
         {
             var debugger = new DebugDraw(GameState.Renderer);
-            //debugger.BeginRender();
+            
             foreach (var gameEntity in GameState.Entities)
                 gameEntity.DoForAllChildren(
                     c => c.DrawDebugOverlay(debugger),
@@ -144,7 +146,7 @@ namespace GameProject
 
         private void ShowFps(Graphics graphics)
         {
-            fpsShowTimer += GameState.Time.DeltaTime * 1;
+            fpsShowTimer += GameState.Time.DeltaTimeUnscaled;
             if (fpsShowTimer > 1 || cachedFps == 0 || float.IsInfinity(cachedFps))
             {
                 fpsShowTimer = 0;
@@ -164,6 +166,15 @@ namespace GameProject
                     FormatFlags = StringFormatFlags.FitBlackBox
                 }
             );
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (GameState?.Renderer?.Camera is null)
+                return;
+            
+            GameState.Renderer.Camera.ScreenSize = new Vector2F(Width, Height);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)

@@ -72,19 +72,13 @@ namespace GameProject.GameGraphics.Backend.Direct2D
             interpolationMode = mode;
         }
 
-        public void DrawBitmap(IBitmap bitmap)
+        public void DrawBitmap(IBitmap bitmap, Vector2F location, Vector2F scale)
         {
             if (!(bitmap is D2DGraphicsBitmap bm))
                 return;
 
-            var imageCenter = new Vector2F(bm.NativeBitmap.Width / 2, bm.NativeBitmap.Height / 2);
-            var imageOrigin = bm.Origin - imageCenter;
-            var rect = new D2DRect(imageOrigin.X, imageOrigin.Y, bm.NativeBitmap.Width, bm.NativeBitmap.Height);
-
-            Graphics.TranslateTransform(imageCenter.X, imageCenter.Y);
-            Graphics.ScaleTransform(1 / bm.NativeBitmap.Width, 1 / bm.NativeBitmap.Height);
-            Graphics.DrawBitmap(bm.NativeBitmap, rect, 1f, D2DInterpolationMode);
-            Graphics.TranslateTransform(-imageCenter.X, -imageCenter.Y);
+            var rect = new D2DRect(location, scale);
+            Graphics.DrawBitmap(bm.NativeBitmap, rect, 1, D2DInterpolationMode);
         }
 
         public void DrawRectangle(Vector2F location, Vector2F size, Color color)

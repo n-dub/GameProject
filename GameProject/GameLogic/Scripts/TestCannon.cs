@@ -11,17 +11,17 @@ namespace GameProject.GameLogic.Scripts
     {
         private GameEntity bullet;
         
-        public override void Update(GameState state)
+        protected override void Update()
         {
-            if (bullet != null && bullet.GetComponent<PhysicsBody>().FarseerBody != null)
+            if (bullet?.GetComponent<PhysicsBody>().FarseerBody != null)
             {
-                bullet.GetComponent<PhysicsBody>().ApplyForce(new Vector2F(1000, 0));
+                bullet.GetComponent<PhysicsBody>().ApplyLinearImpulse(new Vector2F(1, 0));
                 bullet = null;
             }
-            if (state.Keyboard[Keys.H] == KeyState.Down)
+            if (GameState.Keyboard[Keys.H] == KeyState.Down)
             {
-                bullet = LevelUtility.CreateCircle(new Vector2F(-10, -3), 0.5f);
-                state.AddEntity(bullet);
+                bullet = LevelUtility.CreateCircle(new Vector2F(-10, -1f), 0.1f);
+                GameState.AddEntity(bullet);
             }
         }
     }

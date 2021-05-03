@@ -79,6 +79,33 @@ namespace GameProject.GameMath
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LengthSquared < 0.01f;
         }
+        
+        /// <summary>
+        ///     Create a 2-dimensional vector of X and Y components of this vector
+        /// </summary>
+        public Vector2F Xy
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector2F(X, Y);
+        }
+
+        /// <summary>
+        ///     Create a 2-dimensional vector of X and Z components of this vector
+        /// </summary>
+        public Vector2F Xz
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector2F(X, Z);
+        }
+
+        /// <summary>
+        ///     Create a 2-dimensional vector of Y and Z components of this vector
+        /// </summary>
+        public Vector2F Yz
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Vector2F(Y, Z);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3F(Vector2F vector, float z)

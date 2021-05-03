@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using GameProject.GameMath;
 
 namespace GameProject.GameGraphics.RenderShapes
@@ -7,7 +8,11 @@ namespace GameProject.GameGraphics.RenderShapes
     internal class PolygonRenderShape : IRenderShape
     {
         public int Layer { get; }
+        
         public Matrix3F Transform { get; set; }
+        
+        public Vector2F Offset { get; set; }
+        
         public bool IsActive { get; set; }
         
         public IEnumerable<Vector2F> Points { get; set; }
@@ -30,7 +35,7 @@ namespace GameProject.GameGraphics.RenderShapes
         {
             device.SetInterpolationMode(InterpolationMode.Linear);
             device.SetTransform(viewMatrix * Transform);
-            device.FillPolygon(Points, Color);
+            device.FillPolygon(Points.Select(x => x + Offset), Color);
         }
     }
 }

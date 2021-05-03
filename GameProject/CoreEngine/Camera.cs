@@ -30,7 +30,7 @@ namespace GameProject.CoreEngine
         /// <summary>
         ///     How wide is camera's field of view in meters
         /// </summary>
-        public float ViewWidth { get; set; } = 20f;
+        public float ViewWidth { get; set; } = 7f;
 
         /// <summary>
         ///     Get matrix to apply to all sprite vertices to correctly project them on the screen

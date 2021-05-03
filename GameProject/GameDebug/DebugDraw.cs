@@ -17,6 +17,12 @@ namespace GameProject.GameDebug
         /// </summary>
         public Renderer Renderer { get; }
 
+        private float LineWeightFactor
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Renderer.Camera.ViewWidth / 30;
+        }
+
         /// <summary>
         ///     Create a new <see cref="DebugDraw"/> using a certain <see cref="GameProject.GameGraphics.Renderer"/>
         /// </summary>
@@ -39,12 +45,12 @@ namespace GameProject.GameDebug
                 return;
             DrawImpl(device =>
             {
-                device.DrawLine(origin, origin + vector, color);
+                device.DrawLine(origin, origin + vector, color, 0.01f * LineWeightFactor);
                 var angle = vector.Angle;
                 var arrow1 = new Vector2F(-0.15f, -0.1f).Rotate(angle);
                 var arrow2 = new Vector2F(-0.15f, +0.1f).Rotate(angle);
-                device.DrawLine(origin + vector, origin + vector + arrow1, color);
-                device.DrawLine(origin + vector, origin + vector + arrow2, color);
+                device.DrawLine(origin + vector, origin + vector + arrow1, color, 0.01f * LineWeightFactor);
+                device.DrawLine(origin + vector, origin + vector + arrow2, color, 0.01f * LineWeightFactor);
             });
         }
 
@@ -58,7 +64,7 @@ namespace GameProject.GameDebug
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawLine(Vector2F start, Vector2F end, Color color, float weight = 0.01f)
         {
-            DrawImpl(device => device.DrawLine(start, end, color, weight));
+            DrawImpl(device => device.DrawLine(start, end, color, weight * LineWeightFactor));
         }
 
         /// <summary>
@@ -71,7 +77,7 @@ namespace GameProject.GameDebug
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DrawEllipse(Vector2F location, Vector2F size, Color color, float weight = 0.01f)
         {
-            DrawImpl(device => device.DrawEllipse(location, size, color, weight));
+            DrawImpl(device => device.DrawEllipse(location, size, color, weight * LineWeightFactor));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -97,6 +97,8 @@ namespace GameProject.Ecs
 
         private readonly Dictionary<Type, IGameComponent> components;
 
+        private readonly List<Action<GameEntity>> componentCommands;
+
         private Matrix3F localTransform;
 
         private Vector2F position;
@@ -108,8 +110,9 @@ namespace GameProject.Ecs
         /// </summary>
         public GameEntity()
         {
-            components = new Dictionary<Type, IGameComponent>();
-            children = new List<GameEntity>();
+            components = new Dictionary<Type, IGameComponent>(8);
+            componentCommands = new List<Action<GameEntity>>(4);
+            children = new List<GameEntity>(4);
         }
 
         /// <summary>
@@ -148,7 +151,7 @@ namespace GameProject.Ecs
             if (components.TryGetValue(type, out var previous))
             {
                 previous.Entity = null;
-                components.Remove(type);
+                componentCommands.Add(e => components.Remove(type));
             }
 
             if (component is null)
@@ -156,7 +159,7 @@ namespace GameProject.Ecs
 
             component.Entity?.components.Remove(type);
             component.Entity = this;
-            components[type] = component;
+            componentCommands.Add(e => components[type] = component);
         }
 
         /// <summary>
@@ -274,7 +277,17 @@ namespace GameProject.Ecs
         /// <param name="state">Current game state</param>
         public void Update(GameState state)
         {
+            FlushComponents();
             DoForAllChildren(c => c.Update(state), c => c.Update(state), false);
+        }
+
+        /// <summary>
+        ///     Execute all add/remove component commands
+        /// </summary>
+        public void FlushComponents()
+        {
+            foreach (var command in componentCommands)
+                command(this);
         }
 
         /// <summary>

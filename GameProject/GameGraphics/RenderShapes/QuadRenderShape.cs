@@ -22,9 +22,15 @@ namespace GameProject.GameGraphics.RenderShapes
         /// </summary>
         public Color Color { get; set; } = Color.Black;
 
+        public Vector2F Offset { get; set; }
+        
+        public Vector2F Scale { get; set; } = Vector2F.One;
+        
         public bool IsActive { get; set; }
 
         public Matrix3F Transform { get; set; }
+        
+        public string ImagePath { get; set; }
 
         /// <summary>
         ///     Create a new render shape with certain layer
@@ -37,8 +43,11 @@ namespace GameProject.GameGraphics.RenderShapes
 
         public void Initialize(IGraphicsDevice device)
         {
-            var img = ResourceManager.LoadResource(File.ReadAllBytes, "Resources/test.png");
-            //Image = device.CreateBitmap(img);
+            if (ImagePath is null)
+                return;
+            
+            var img = ResourceManager.LoadResource(File.ReadAllBytes, ImagePath);
+            Image = device.CreateBitmap(img.Resource);
         }
 
         public void Draw(IGraphicsDevice device, Matrix3F viewMatrix)
@@ -48,7 +57,7 @@ namespace GameProject.GameGraphics.RenderShapes
             if (Image is null)
                 device.DrawRectangle(Vector2F.Zero, Vector2F.One, Color);
             else
-                device.DrawBitmap(Image);
+                device.DrawBitmap(Image, Offset, Scale);
         }
     }
 }

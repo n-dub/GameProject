@@ -16,6 +16,11 @@ namespace GameProject.GameGraphics.RenderShapes
         ///     Global transformation matrix of entity being drawn
         /// </summary>
         Matrix3F Transform { get; set; }
+        
+        /// <summary>
+        ///     Global offset of the shape
+        /// </summary>
+        Vector2F Offset { get; set; }
 
         /// <summary>
         ///     The shape will only be drawn if it's active

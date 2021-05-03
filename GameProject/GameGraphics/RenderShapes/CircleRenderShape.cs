@@ -6,7 +6,10 @@ namespace GameProject.GameGraphics.RenderShapes
     internal class CircleRenderShape : IRenderShape
     {
         public int Layer { get; }
+        
         public Matrix3F Transform { get; set; }
+        
+        public Vector2F Offset { get; set; }
 
         /// <summary>
         ///     Color to use if <see cref="Image" /> is null
@@ -32,7 +35,7 @@ namespace GameProject.GameGraphics.RenderShapes
         {
             device.SetInterpolationMode(InterpolationMode.Linear);
             device.SetTransform(viewMatrix * Transform);
-            device.FillEllipse(Vector2F.Zero - new Vector2F(0.5f), Vector2F.One, Color);
+            device.FillEllipse(Offset - new Vector2F(0.5f), Vector2F.One, Color);
         }
     }
 }
