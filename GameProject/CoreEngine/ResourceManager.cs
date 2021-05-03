@@ -10,8 +10,8 @@ namespace GameProject.CoreEngine
     /// </summary>
     internal static class ResourceManager
     {
-        private static readonly Dictionary<string, WeakReference> loadedResources =
-            new Dictionary<string, WeakReference>();
+        private static readonly Dictionary<string, WeakReference<ResourceHandle>> loadedResources =
+            new Dictionary<string, WeakReference<ResourceHandle>>();
 
         /// <summary>
         ///     Load a resource
@@ -21,14 +21,15 @@ namespace GameProject.CoreEngine
         /// <typeparam name="T">Type of resource</typeparam>
         /// <returns>Strong reference to the loaded resource</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T LoadResource<T>(Func<string, T> loader, string fileName) where T : class
+        public static ResourceHandle<T> LoadResource<T>(Func<string, T> loader, string fileName) where T : class
         {
-            if (loadedResources.TryGetValue(fileName, out var reference) && reference.IsAlive)
-                return reference.Target as T;
+            if (loadedResources.TryGetValue(fileName, out var reference)
+                && reference.TryGetTarget(out var target))
+                return new ResourceHandle<T>(target);
 
-            var resource = loader(fileName);
-            loadedResources[fileName] = new WeakReference(resource, false);
-            return resource;
+            var resource = new ResourceHandle(loader(fileName), fileName);
+            loadedResources[fileName] = new WeakReference<ResourceHandle>(resource, false);
+            return new ResourceHandle<T>(resource);
         }
     }
 }

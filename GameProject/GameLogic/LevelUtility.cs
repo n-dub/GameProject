@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
 using GameProject.Ecs.Physics;
@@ -9,6 +10,8 @@ namespace GameProject.GameLogic
 {
     internal static class LevelUtility
     {
+        public static readonly Vector3F BrickSize = new Vector3F(0.25f, 0.12f, 0.065f);
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static GameEntity CreateCircle(Vector2F position, float radius, bool isStatic = false)
         {
@@ -19,7 +22,19 @@ namespace GameProject.GameLogic
             body.AddCollider(new CircleCollider{Radius = radius});
             entity.Position = position;
             entity.Scale = new Vector2F(radius) * 2;
+            entity.FlushComponents();
             return entity;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GameEntity CreateBrick(Vector2F position, bool width120)
+        {
+            var brickSize = new Vector2F(width120 ? BrickSize.Y : BrickSize.X, BrickSize.Z);
+            var rect = CreateRectangle(position, brickSize);
+            if (rect.GetComponent<Sprite>().Shapes.First() is QuadRenderShape shape)
+                shape.ImagePath = "Resources/bricks/detached_brick.png";
+            rect.FlushComponents();
+            return rect;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32,6 +47,7 @@ namespace GameProject.GameLogic
             body.AddCollider(new BoxCollider());
             entity.Position = position;
             entity.Scale = size;
+            entity.FlushComponents();
             return entity;
         }
 
@@ -44,6 +60,7 @@ namespace GameProject.GameLogic
             body.IsStatic = isStatic;
             body.AddCollider(new PolygonCollider{Vertices = vertices});
             entity.Position = position;
+            entity.FlushComponents();
             return entity;
         }
     }

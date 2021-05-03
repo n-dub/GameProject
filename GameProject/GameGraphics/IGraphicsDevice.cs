@@ -42,7 +42,9 @@ namespace GameProject.GameGraphics
         ///     Draw a bitmap using internal transformation matrix
         /// </summary>
         /// <param name="bitmap">An instance of <see cref="IBitmap" /> to draw</param>
-        void DrawBitmap(IBitmap bitmap);
+        /// <param name="location">Location of a bitmap to draw</param>
+        /// <param name="scale"></param>
+        void DrawBitmap(IBitmap bitmap, Vector2F location, Vector2F scale);
 
         /// <summary>
         ///     Draw a rectangle of certain color

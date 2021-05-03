@@ -53,10 +53,10 @@ namespace GameProject.GameGraphics.Backend.WinForms
             }
         }
 
-        public void DrawBitmap(IBitmap bitmap)
+        public void DrawBitmap(IBitmap bitmap, Vector2F location, Vector2F scale)
         {
             if (bitmap is WinFormsBitmap bm)
-                Graphics.DrawImage(bm.NativeImage, bm.Origin);
+                Graphics.DrawImage(bm.NativeImage, bm.Origin + location);
         }
 
         public void DrawRectangle(Vector2F location, Vector2F size, Color color)

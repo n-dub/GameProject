@@ -2,12 +2,10 @@
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.GameDebug;
 using GameProject.GameMath;
-using Microsoft.Xna.Framework;
 
 namespace GameProject.Ecs.Physics
 {
@@ -65,9 +63,9 @@ namespace GameProject.Ecs.Physics
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ApplyForce(Vector2F force)
+        public void ApplyLinearImpulse(Vector2F impulse)
         {
-            FarseerBody?.ApplyForce(force);
+            FarseerBody?.ApplyLinearImpulse(impulse);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
