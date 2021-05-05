@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
 using GameProject.CoreEngine;
 using GameProject.GameDebug;
 using GameProject.GameMath;
@@ -31,13 +32,23 @@ namespace GameProject.Ecs.Physics
         /// </summary>
         public IList<Collider> Colliders => colliders;
 
+        public event CollisionEventHandler OnCollision;
+        public event CollisionEventHandler OnSeparation;
+
         private bool shapesDirty = true;
         private readonly List<Collider> colliders = new List<Collider>(1);
 
         public void Update(GameState state)
         {
             if (FarseerBody is null)
+            {
                 FarseerBody = new Body(state.PhysicsWorld, Entity.Position, Entity.Rotation);
+                FarseerBody.OnCollision += (a, b, contact) =>
+                    OnCollision != null && OnCollision(a.UserData as Collider, b.UserData as Collider, contact);
+                FarseerBody.OnSeparation += (a, b) =>
+                    OnSeparation?.Invoke(a.UserData as Collider, b.UserData as Collider, null);
+            }
+
             if (shapesDirty)
                 InitializeShapes();
 
@@ -84,9 +95,12 @@ namespace GameProject.Ecs.Physics
             foreach (var fixture in FarseerBody.FixtureList)
                 FarseerBody.DestroyFixture(fixture);
             
-            foreach (var shape in colliders.Select(c => c.GetFarseerShape()))
-                FarseerBody.CreateFixture(shape);
-            
+            foreach (var collider in colliders)
+            {
+                var fixture = FarseerBody.CreateFixture(collider.GetFarseerShape());
+                fixture.UserData = collider;
+            }
+
             FarseerBody.IsStatic = IsStatic;
         }
     }
