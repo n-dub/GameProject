@@ -15,7 +15,7 @@ namespace GameProject.GameDebug
         /// <summary>
         ///     Currently used instance of <see cref="IGraphicsDevice" />
         /// </summary>
-        public Renderer Renderer { get; }
+        private Renderer Renderer { get; }
 
         private float LineWeightFactor
         {

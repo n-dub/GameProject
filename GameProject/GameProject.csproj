@@ -83,6 +83,7 @@
     <Compile Include="Ecs\Physics\BoxCollider.cs" />
     <Compile Include="Ecs\Physics\CircleCollider.cs" />
     <Compile Include="Ecs\Physics\Collider.cs" />
+    <Compile Include="Ecs\Physics\CollisionEventHandler.cs" />
     <Compile Include="Ecs\Physics\PhysicsBody.cs" />
     <Compile Include="Ecs\Physics\PolygonCollider.cs" />
     <Compile Include="GameDebug\DebugDraw.cs" />

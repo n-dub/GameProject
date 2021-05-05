@@ -13,10 +13,12 @@ namespace GameProject.GameGraphics.Backend.Direct2D
     /// </summary>
     internal class D2DGraphicsDevice : IGraphicsDevice
     {
+        public D2DGraphics Graphics { get; }
+        
         private InterpolationMode interpolationMode;
 
-        private D2DDevice Device { get; }
-        private D2DGraphics Graphics { get; }
+        private D2DDevice D2DDevice { get; }
+        
         private Form Form { get; }
 
         private D2DBitmapInterpolationMode D2DInterpolationMode
@@ -39,17 +41,17 @@ namespace GameProject.GameGraphics.Backend.Direct2D
         public D2DGraphicsDevice(Form form)
         {
             Form = form;
-            Device = D2DDevice.FromHwnd(Form.Handle);
-            Device.Resize();
-            Form.Resize += (sender, args) => Device.Resize();
-            Form.HandleDestroyed += (sender, args) => Device.Dispose();
-            Graphics = new D2DGraphics(Device);
+            D2DDevice = D2DDevice.FromHwnd(Form.Handle);
+            D2DDevice.Resize();
+            Form.Resize += (sender, args) => D2DDevice.Resize();
+            Form.HandleDestroyed += (sender, args) => D2DDevice.Dispose();
+            Graphics = new D2DGraphics(D2DDevice);
             Graphics.SetDPI(96, 96);
         }
 
         public IBitmap CreateBitmap(byte[] imageData)
         {
-            return new D2DGraphicsBitmap(Device.LoadBitmap(imageData));
+            return new D2DGraphicsBitmap(D2DDevice.LoadBitmap(imageData));
         }
 
         public void SetTransform(Matrix3F transformMatrix)

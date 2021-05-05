@@ -79,6 +79,10 @@ namespace GameProject
         {
             GameState.Renderer.Initialize(new D2DGraphicsDevice(this));
             DoubleBuffered = GameState.Renderer.Device is WinFormsGraphicsDevice;
+
+            if (GameState.Renderer.Device is D2DGraphicsDevice device)
+                device.Graphics.Antialias = true;
+
             base.OnLoad(e);
         }
 

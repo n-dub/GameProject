@@ -51,15 +51,21 @@ namespace GameProject.GameLogic.Scripts
             var height = 0.5f * LevelUtility.BrickSize.Z * (RowCount - 1);
             for (var i = 0; i < RowCount; i++)
             {
+                var part = PartialBrickRow.None;
+                if (i == 0)
+                    part = BottomPartialBrickRow;
+                else if (i == RowCount - 1)
+                    part = TopPartialBrickRow;
+                
                 if (StartWithTwoBricks == (i % 2 == 0))
-                    CreateTwoBrickRow(height);
+                    CreateTwoBrickRow(height, part);
                 else
-                    CreateThreeBrickRow(height);
+                    CreateThreeBrickRow(height, part);
                 height -= LevelUtility.BrickSize.Z;
             }
         }
         
-        private void CreateThreeBrickRow(float height, PartialBrickRow partialBrickRow = PartialBrickRow.None)
+        private void CreateThreeBrickRow(float height, PartialBrickRow partialBrickRow)
         {
             var sprite = Entity.GetComponent<Sprite>();
             if (partialBrickRow == PartialBrickRow.None)
@@ -71,7 +77,7 @@ namespace GameProject.GameLogic.Scripts
                 sprite.Shapes.Add(GenerateNarrowBrick(new Vector2F(offset / +2, height)));
         }
 
-        private void CreateTwoBrickRow(float height, PartialBrickRow partialBrickRow = PartialBrickRow.None)
+        private void CreateTwoBrickRow(float height, PartialBrickRow partialBrickRow)
         {
             var sprite = Entity.GetComponent<Sprite>();
             if (partialBrickRow != PartialBrickRow.Right)

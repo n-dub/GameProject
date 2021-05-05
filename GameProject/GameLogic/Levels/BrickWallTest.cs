@@ -19,7 +19,7 @@ namespace GameProject.GameLogic.Levels
 
             var wall = new GameEntity();
             wall.AddComponent(new BrickWall(25));
-            wall.Position = -Vector2F.UnitY * (3 * LevelUtility.BrickSize.Z + 0.5f);
+            wall.Position = -Vector2F.UnitY * (12.5f * LevelUtility.BrickSize.Z + 0.5f);
             
             entities.Add(wall);
             
