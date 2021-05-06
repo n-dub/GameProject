@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using FarseerPhysics.Dynamics;
 using GameProject.Ecs;
 using GameProject.GameGraphics;
@@ -19,9 +20,14 @@ namespace GameProject.CoreEngine
         public Renderer Renderer { get; }
 
         /// <summary>
-        ///     An instance of <see cref="Keyboard" /> being updated by main form
+        ///     An instance of Keyboard being updated by main form
         /// </summary>
-        public Keyboard Keyboard { get; }
+        public Keyboard<Keys> Keyboard { get; }
+        
+        /// <summary>
+        ///     An instance of <see cref="Mouse" /> being updated by main form
+        /// </summary>
+        public Mouse Mouse { get; }
 
         /// <summary>
         ///     An instance of <see cref="Time" /> being updated by main form
@@ -41,11 +47,12 @@ namespace GameProject.CoreEngine
         /// <summary>
         ///     Create a new instance of <see cref="GameState" />
         /// </summary>
-        public GameState(Renderer renderer, Keyboard keyboard, Time time, World physicsWorld, List<GameEntity> entities)
+        public GameState(Renderer renderer, World physicsWorld, List<GameEntity> entities)
         {
             Renderer = renderer;
-            Keyboard = keyboard;
-            Time = time;
+            Keyboard = new Keyboard<Keys>();
+            Mouse = new Mouse();
+            Time = new Time();
             PhysicsWorld = physicsWorld;
             newEntities = entities;
         }

@@ -27,10 +27,11 @@ namespace GameProject.GameLogic
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GameEntity CreateBrick(Vector2F position, bool width120)
+        public static GameEntity CreateBrick(Vector2F position, bool width120, float rotation = 0)
         {
             var brickSize = new Vector2F(width120 ? BrickSize.Y : BrickSize.X, BrickSize.Z);
             var rect = CreateRectangle(position, brickSize);
+            rect.Rotation = rotation;
             if (rect.GetComponent<Sprite>().Shapes.First() is QuadRenderShape shape)
                 shape.ImagePath = "Resources/bricks/detached_brick.png";
             rect.FlushComponents();
@@ -47,6 +48,18 @@ namespace GameProject.GameLogic
             body.AddCollider(new BoxCollider());
             entity.Position = position;
             entity.Scale = size;
+            entity.FlushComponents();
+            return entity;
+        }
+
+        public static GameEntity CreateWheel(Vector2F position, float radius, string imagePath)
+        {
+            var entity = new GameEntity();
+            entity.AddComponent(new Sprite(new QuadRenderShape(1){ImagePath = imagePath}));
+            var body = entity.AddComponent<PhysicsBody>();
+            body.AddCollider(new CircleCollider{Radius = radius});
+            entity.Position = position;
+            entity.Scale = new Vector2F(radius) * 2;
             entity.FlushComponents();
             return entity;
         }

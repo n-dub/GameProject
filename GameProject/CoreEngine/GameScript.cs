@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameProject.Ecs;
+using GameProject.GameDebug;
 
 namespace GameProject.CoreEngine
 {

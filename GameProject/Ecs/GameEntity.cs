@@ -92,6 +92,7 @@ namespace GameProject.Ecs
         }
 
         internal bool Destroyed { get; private set; }
+        private float timeLeft = float.PositiveInfinity;
 
         private readonly List<GameEntity> children;
 
@@ -278,6 +279,8 @@ namespace GameProject.Ecs
         public void Update(GameState state)
         {
             FlushComponents();
+            timeLeft -= state.Time.DeltaTime;
+            Destroyed = timeLeft <= 0;
             DoForAllChildren(c => c.Update(state), c => c.Update(state), false);
         }
 
@@ -309,9 +312,10 @@ namespace GameProject.Ecs
         /// <summary>
         ///     Defer destruction of this entity, it will be actually deleted when all update logic is finished
         /// </summary>
-        public void Destroy()
+        /// <param name="time">Time in seconds to wait before destroying</param>
+        public void Destroy(float time = 0)
         {
-            Destroyed = true;
+            timeLeft = time;
         }
 
         public void DrawDebugOverlay(DebugDraw debugDraw)

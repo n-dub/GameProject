@@ -35,6 +35,8 @@ namespace GameProject
         private float cachedFps;
         private float fpsShowTimer;
 
+        private const int PhysicsSubsteps = 2;
+        
         public MainWindow(IEnumerable<ISceneFactory> levels)
         {
             InitializeComponent();
@@ -46,7 +48,7 @@ namespace GameProject
             renderer.Camera.Position += Vector2F.UnitY * -1.5f;
             var physicsWorld = new World(new Vector2(0, MathF.Gravity));
 
-            GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld, CollectEntities(levels));
+            GameState = new GameState(renderer, physicsWorld, CollectEntities(levels));
 
             Stopwatch = Stopwatch.StartNew();
         }
@@ -112,8 +114,11 @@ namespace GameProject
             foreach (var entity in GameState.Entities.Where(entity => entity.Destroyed))
                 entity.DoForAllChildren(c => c.Destroy(), c => c.Destroy(GameState));
 
-            GameState.PhysicsWorld.Step(GameState.Time.DeltaTime);
+            for (var i = 0; i < PhysicsSubsteps; i++)
+                GameState.PhysicsWorld.Step(GameState.Time.DeltaTime / PhysicsSubsteps);
+            
             GameState.Keyboard.UpdateKeyStates();
+            GameState.Mouse.UpdateKeyStates();
             Invalidate();
         }
 
@@ -187,10 +192,31 @@ namespace GameProject
             GameState.Keyboard.PushKey(e.KeyCode);
         }
 
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            GameState.Mouse.PushKey(e.Button);
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.Renderer.Camera.GetViewMatrix());
+        }
+
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
             GameState.Keyboard.ReleaseKey(e.KeyCode);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            GameState.Mouse.ReleaseKey(e.Button);
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.Renderer.Camera.GetViewMatrix());
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+            GameState.Mouse.SetWheel(e.Delta);
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.Renderer.Camera.GetViewMatrix());
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)

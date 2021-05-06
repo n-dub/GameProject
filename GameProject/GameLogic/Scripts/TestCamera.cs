@@ -31,10 +31,10 @@ namespace GameProject.GameLogic.Scripts
                 gameState.Renderer.Camera.ViewWidth -= gameState.Time.DeltaTimeUnscaled * speedFactor;
             if (gameState.Keyboard[Keys.S] == KeyState.Pushing)
                 gameState.Renderer.Camera.ViewWidth += gameState.Time.DeltaTimeUnscaled * speedFactor;
-            if (gameState.Keyboard[Keys.A] == KeyState.Pushing)
-                gameState.Renderer.Camera.Rotation -= rotSpeed * gameState.Time.DeltaTimeUnscaled;
-            if (gameState.Keyboard[Keys.D] == KeyState.Pushing)
-                gameState.Renderer.Camera.Rotation += rotSpeed * gameState.Time.DeltaTimeUnscaled;
+            // if (gameState.Keyboard[Keys.A] == KeyState.Pushing)
+            //     gameState.Renderer.Camera.Rotation -= rotSpeed * gameState.Time.DeltaTimeUnscaled;
+            // if (gameState.Keyboard[Keys.D] == KeyState.Pushing)
+            //     gameState.Renderer.Camera.Rotation += rotSpeed * gameState.Time.DeltaTimeUnscaled;
         }
 
         protected override void Update()

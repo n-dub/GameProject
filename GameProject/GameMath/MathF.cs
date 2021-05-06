@@ -51,5 +51,18 @@ namespace GameProject.GameMath
         {
             return Math.Abs(value);
         }
+
+        /// <inheritdoc cref="Math.Round(double)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Round(float value)
+        {
+            return (float) Math.Round(value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Clamp(float value, float min, float max)
+        {
+            return Math.Max(min, Math.Min(max, value));
+        }
     }
 }

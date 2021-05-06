@@ -6,12 +6,13 @@ using GameProject.GameMath;
 
 namespace GameProject.GameLogic.Levels
 {
-    internal class BrickWallTest : ISceneFactory
+    internal class WheelTest : ISceneFactory
     {
         public SceneData CreateScene()
         {
             const float width = 15f;
             const float height = 10f;
+            const string path = "Resources/machine_parts/small_wheel.png";
 
             var entities = new List<GameEntity>
             {
@@ -20,9 +21,12 @@ namespace GameProject.GameLogic.Levels
                     Vector2F.One.WithY(height), true)
             };
 
-            CreateWall(entities, 0);
+            var wheel = LevelUtility.CreateWheel(new Vector2F(0, -1), 0.2f, path);
+            wheel.AddComponent<WheelControl>().Torque = 0.01f;
+
+            entities.Add(wheel);
+            
             CreateWall(entities, 2);
-            CreateWall(entities, -2);
             
             return new SceneData
             {

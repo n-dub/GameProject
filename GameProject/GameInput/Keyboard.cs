@@ -9,13 +9,13 @@ namespace GameProject.GameInput
     /// <summary>
     ///     Represents current state of keyboard input
     /// </summary>
-    public class Keyboard
+    public class Keyboard<TKey> where TKey : Enum
     {
         /// <summary>
         ///     Get state of a certain key
         /// </summary>
         /// <param name="key">Key to get state of</param>
-        public KeyState this[Keys key]
+        public KeyState this[TKey key]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => States.TryGetValue(key, out var state)
@@ -23,21 +23,21 @@ namespace GameProject.GameInput
                     : KeyState.None;
         }
 
-        private ConcurrentDictionary<Keys, KeyState> States { get; }
+        private ConcurrentDictionary<TKey, KeyState> States { get; }
 
         /// <summary>
         ///     Create a new keyboard
         /// </summary>
         public Keyboard()
         {
-            States = new ConcurrentDictionary<Keys, KeyState>(Environment.ProcessorCount, 256);
+            States = new ConcurrentDictionary<TKey, KeyState>(Environment.ProcessorCount, 256);
         }
 
         /// <summary>
         ///     Update state of key being pushed at this frame
         /// </summary>
         /// <param name="key">The key that have been pushed</param>
-        public void PushKey(Keys key)
+        public void PushKey(TKey key)
         {
             States[key] = this[key] == KeyState.Pushing
                 ? KeyState.Pushing
@@ -48,7 +48,7 @@ namespace GameProject.GameInput
         ///     Update state of key being released at this frame
         /// </summary>
         /// <param name="key">The key that have been released</param>
-        public void ReleaseKey(Keys key)
+        public void ReleaseKey(TKey key)
         {
             States[key] = this[key] == KeyState.None
                 ? KeyState.None
@@ -61,7 +61,7 @@ namespace GameProject.GameInput
         /// <exception cref="ArgumentOutOfRangeException">
         ///     Thrown if some keys have invalid values
         /// </exception>
-        public void UpdateKeyStates()
+        public virtual void UpdateKeyStates()
         {
             foreach (var (key, state) in States.Select(p => (p.Key, p.Value)))
                 switch (state)
