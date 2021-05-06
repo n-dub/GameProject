@@ -50,6 +50,8 @@ namespace GameProject.Ecs.Physics
             if (FarseerBody is null)
                 FarseerBody = new Body(state.PhysicsWorld, Entity.Position, Entity.Rotation);
 
+            FarseerBody.Friction = 1;
+
             if (shapesDirty)
                 InitializeShapes();
 

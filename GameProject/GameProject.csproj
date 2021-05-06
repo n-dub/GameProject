@@ -102,14 +102,17 @@
     <Compile Include="GameGraphics\RenderShapes\QuadRenderShape.cs" />
     <Compile Include="GameInput\Keyboard.cs" />
     <Compile Include="GameInput\KeyState.cs" />
+    <Compile Include="GameInput\Mouse.cs" />
     <Compile Include="GameLogic\Levels\BrickWallTest.cs" />
     <Compile Include="GameLogic\Levels\GameLevel1.cs" />
     <Compile Include="GameLogic\Levels\SeparateBricksTest.cs" />
+    <Compile Include="GameLogic\Levels\WheelTest.cs" />
     <Compile Include="GameLogic\LevelUtility.cs" />
     <Compile Include="GameLogic\Scripts\BrickWall.cs" />
     <Compile Include="GameLogic\Scripts\PartialBrickRow.cs" />
     <Compile Include="GameLogic\Scripts\TestCamera.cs" />
     <Compile Include="GameLogic\Scripts\TestCannon.cs" />
+    <Compile Include="GameLogic\Scripts\WheelControl.cs" />
     <Compile Include="GameMath\MathF.cs" />
     <Compile Include="GameMath\Matrix3F.cs" />
     <Compile Include="GameMath\MatrixTests.cs" />
@@ -155,14 +158,28 @@
     <Content Include="d2dlib64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\bricks\bottom_brick_connection.png" />
+    <Content Include="Resources\bricks\bottom_brick_connection.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\bricks\brick.pdn" />
     <Content Include="Resources\bricks\detached_brick.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\bricks\left_brick_connection.png" />
-    <Content Include="Resources\bricks\right_brick_connection.png" />
-    <Content Include="Resources\bricks\top_brick_connection.png" />
+    <Content Include="Resources\bricks\left_brick_connection.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\bricks\right_brick_connection.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\bricks\top_brick_connection.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\machine_parts\small_wheel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\machine_parts\wheel_holder.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\test.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -80,6 +80,18 @@ namespace GameProject.GameDebug
             DrawImpl(device => device.DrawEllipse(location, size, color, weight * LineWeightFactor));
         }
 
+        /// <summary>
+        ///     Draw an ellipse of the screen
+        /// </summary>
+        /// <param name="location">Location of the ellipse to draw</param>
+        /// <param name="size">Size of the ellipse to draw</param>
+        /// <param name="color">Color of the ellipse to draw</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void FillEllipse(Vector2F location, Vector2F size, Color color)
+        {
+            DrawImpl(device => device.FillEllipse(location, size, color));
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DrawImpl(Action<IGraphicsDevice> drawAction)
         {

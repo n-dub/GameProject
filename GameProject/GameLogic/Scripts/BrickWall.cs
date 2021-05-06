@@ -14,7 +14,7 @@ namespace GameProject.GameLogic.Scripts
     internal class BrickWall : GameScript
     {
         private float Strength { get; }
-        
+
         private readonly Random random = new Random();
 
         private int RowCount { get; }
@@ -26,9 +26,9 @@ namespace GameProject.GameLogic.Scripts
         private bool StartWithTwoBricks { get; }
 
         private const string DetachedBrickPath = "Resources/bricks/detached_brick.png";
+        private const int MaxBrokenRows = 3;
 
-        private GameEntity partA;
-        private GameEntity partB;
+        private readonly List<GameEntity> parts = new List<GameEntity>(8);
 
         public BrickWall(int rowCount,
             float strength = 1f,
@@ -46,7 +46,7 @@ namespace GameProject.GameLogic.Scripts
         protected override void Initialize()
         {
             var body = Entity.AddComponent<PhysicsBody>();
-            
+
             var rows = RowCount;
             var offset = 0f;
 
@@ -79,15 +79,36 @@ namespace GameProject.GameLogic.Scripts
             if (!body.ReadyToUse)
                 return;
 
-            var collision = body.Collisions
-                .OrderByDescending(c => c.NormalImpulse)
-                .Select(c => new CollisionInfo?(c))
-                .FirstOrDefault();
-            
-            if (collision is null || collision.Value.NormalImpulse < Strength)
+            var collision = FindContact(body);
+
+            if (collision.NormalImpulse < Strength)
                 return;
-            
-            Split(RowCount / 2, GameState);
+
+            var localPoint = collision.Point.TransformBy(Entity.GlobalTransform.Inversed);
+            var count = MathF.Clamp(RowCount - 0.5f * (localPoint.Y + 1) * RowCount, 0, RowCount);
+
+            Split((int) MathF.Round(count), GameState);
+        }
+
+        private static CollisionInfo FindContact(PhysicsBody body)
+        {
+            return body.Collisions.Aggregate((0f, null as CollisionInfo?),
+                (t, x) => t.Item1 < x.NormalImpulse
+                    ? (x.NormalImpulse, x)
+                    : t).Item2.GetValueOrDefault();
+            // var result = null as CollisionInfo?;
+            // var impulse = 0f;
+            // 
+            // foreach (var collision in body.Collisions)
+            // {
+            //     if (collision.NormalImpulse > impulse)
+            //     {
+            //         impulse = collision.NormalImpulse;
+            //         result = collision;
+            //     }
+            // }
+            // 
+            // return result;
         }
 
         private IEnumerable<Awaiter> CreateSprites()
@@ -118,45 +139,88 @@ namespace GameProject.GameLogic.Scripts
 
             var (part1, part2, detachedCount) = GenerateRandomPartialRows();
 
-            var detachedPosition = Entity.Position
-                                   + Entity.Up * LevelUtility.BrickSize.Z * (rowIndex - 0.5f * RowCount + 0.5f);
+            var detachedPosition =
+                Entity.Position + Entity.Up * LevelUtility.BrickSize.Z * (rowIndex - 0.5f * RowCount + 0.5f);
 
-            for (var i = 0; i < detachedCount * 2; i++)
-                state.AddEntity(LevelUtility.CreateBrick(detachedPosition, true));
+            DetachBricks(detachedCount, detachedPosition);
 
             if (rowIndex != 0)
             {
-                partA = new GameEntity();
-                state.AddEntity(partA);
-                partA.AddComponent(new BrickWall(rowIndex, Strength, StartWithTwoBricks,
-                    BottomPartialBrickRow, part1));
-                partA.Rotation = Entity.Rotation;
-                partA.Position = Entity.Position + 0.5f * LevelUtility.BrickSize.Z * (rowIndex - RowCount) * Entity.Up;
+                var partPosition =
+                    Entity.Position + 0.5f * LevelUtility.BrickSize.Z * (rowIndex - RowCount) * Entity.Up;
+                if (rowIndex <= MaxBrokenRows)
+                {
+                    DetachBricks(rowIndex, partPosition);
+                }
+                else
+                {
+                    var part = new GameEntity();
+                    state.AddEntity(part);
+                    part.AddComponent(new BrickWall(rowIndex, Strength, StartWithTwoBricks,
+                        BottomPartialBrickRow, part1));
+                    part.Rotation = Entity.Rotation;
+                    part.Position = partPosition;
+                    parts.Add(part);
+                }
             }
 
             if (rowIndex != RowCount - 1)
             {
-                partB = new GameEntity();
-                state.AddEntity(partB);
-                partB.AddComponent(new BrickWall(RowCount - rowIndex - 1, Strength, StartWithTwoBricks,
-                    part2, TopPartialBrickRow));
-                partB.Rotation = Entity.Rotation;
-                partB.Position = Entity.Position + 0.5f * LevelUtility.BrickSize.Z * rowIndex * Entity.Up;
+                var partPosition = Entity.Position + 0.5f * LevelUtility.BrickSize.Z * rowIndex * Entity.Up;
+                if (RowCount - rowIndex - 1 <= MaxBrokenRows)
+                {
+                    DetachBricks(RowCount - rowIndex - 1, partPosition);
+                }
+                else
+                {
+                    var part = new GameEntity();
+                    state.AddEntity(part);
+                    part.AddComponent(new BrickWall(RowCount - rowIndex - 1, Strength, StartWithTwoBricks,
+                        part2, TopPartialBrickRow));
+                    part.Rotation = Entity.Rotation;
+                    part.Position = partPosition;
+                    parts.Add(part);
+                }
             }
 
             Entity.GetComponent<PhysicsBody>().FarseerBody.Enabled = false;
             StartCoroutine(FinishSplit);
         }
 
+        private void DetachBricks(int detachedCount, Vector2F position)
+        {
+            var offset = Entity.Right * LevelUtility.BrickSize.Y;
+            for (var i = 0; i < detachedCount; i++)
+                GameState.AddEntity(CreateDisposableBrick(position + offset));
+            for (var i = 0; i < detachedCount; i++)
+                GameState.AddEntity(CreateDisposableBrick(position - offset));
+            
+            for (var i = 0; i < detachedCount; i++)
+                GameState.AddEntity(CreateDisposableBrick(position + offset * 2));
+            for (var i = 0; i < detachedCount; i++)
+                GameState.AddEntity(CreateDisposableBrick(position - offset * 2));
+        }
+
+        private GameEntity CreateDisposableBrick(Vector2F position)
+        {
+            var entity = LevelUtility.CreateBrick(position, true, Entity.Rotation);
+            parts.Add(entity);
+            
+            if (random.Next(2) == 0)
+                entity.Destroy(float.PositiveInfinity);
+            else
+                entity.Destroy(random.Next(5, 30));
+
+            return entity;
+        }
+
         private IEnumerable<Awaiter> FinishSplit()
         {
             yield return Awaiter.WaitForFrames(3);
             var farseerBody = Entity.GetComponent<PhysicsBody>().FarseerBody;
-            CopyVelocity(farseerBody, partA?.GetComponent<PhysicsBody>().FarseerBody);
-            CopyVelocity(farseerBody, partB?.GetComponent<PhysicsBody>().FarseerBody);
+            foreach (var part in parts)
+                CopyVelocity(farseerBody, part.GetComponent<PhysicsBody>().FarseerBody);
             yield return Awaiter.WaitForNextFrame();
-            //partA?.GetComponent<PhysicsBody>().ApplyLinearImpulse(Entity.Up * -farseerBody.Mass);
-            //partB?.GetComponent<PhysicsBody>().ApplyLinearImpulse(Entity.Up * +farseerBody.Mass);
             Entity.Destroy();
         }
 
@@ -164,21 +228,21 @@ namespace GameProject.GameLogic.Scripts
         {
             if (destination is null || source is null)
                 return;
-            
+
             destination.AngularDamping = source.AngularDamping;
             destination.AngularVelocity = source.AngularVelocity;
-            destination.LinearVelocity = source.LinearVelocity;
+            destination.LinearVelocity = source.LinearVelocity * 1.5f;
         }
 
         private (PartialBrickRow, PartialBrickRow, int) GenerateRandomPartialRows()
         {
             var totalDetached = 0;
 
-            var left = PartialBrickRow.None + random.Next(3);
+            var left = PartialBrickRow.Left + random.Next(2);
             if (left != PartialBrickRow.None)
                 totalDetached++;
 
-            var right = PartialBrickRow.None + random.Next(3);
+            var right = PartialBrickRow.Left + random.Next(2);
             if (right != PartialBrickRow.None)
                 totalDetached++;
 

@@ -92,6 +92,12 @@ namespace GameProject.GameMath
             (X, Y) = (vector.X, vector.Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector2F(Point point)
+        {
+            (X, Y) = (point.X, point.Y);
+        }
+
         /// <inheritdoc cref="Vector3F.WithX" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2F WithX(float x)
