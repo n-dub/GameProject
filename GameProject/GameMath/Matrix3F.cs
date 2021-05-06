@@ -16,6 +16,11 @@ namespace GameProject.GameMath
         public static readonly Matrix3F Identity;
 
         /// <summary>
+        ///     A zero matrix
+        /// </summary>
+        public static readonly Matrix3F Zero;
+
+        /// <summary>
         ///     Size of matrix
         /// </summary>
         public const int Size = 3;
@@ -94,6 +99,47 @@ namespace GameProject.GameMath
             get => new Matrix3F(Column1, Column2, Column3);
         }
 
+        public Matrix3F Inversed
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                var transposed = Transposed;
+                var cofactors = new[,]
+                {
+                    {
+                        transposed[1, 1] * transposed[2, 2] - transposed[2, 1] * transposed[1, 2],
+                        transposed[2, 0] * transposed[1, 2] - transposed[1, 0] * transposed[2, 2],
+                        transposed[1, 0] * transposed[2, 1] - transposed[2, 0] * transposed[1, 1]
+                    },
+                    {
+                        transposed[2, 1] * transposed[0, 2] - transposed[0, 1] * transposed[2, 2],
+                        transposed[0, 0] * transposed[2, 2] - transposed[2, 0] * transposed[0, 2],
+                        transposed[0, 1] * transposed[2, 0] - transposed[0, 0] * transposed[2, 1]
+                    },
+                    {
+                        transposed[0, 1] * transposed[1, 2] - transposed[0, 2] * transposed[1, 1],
+                        transposed[0, 2] * transposed[1, 0] - transposed[0, 0] * transposed[1, 2],
+                        transposed[0, 0] * transposed[1, 1] - transposed[0, 1] * transposed[1, 0]
+                    }
+                };
+
+                return new Matrix3F(cofactors).MultiplyByScalar(1f / Determinant);
+            }
+        }
+
+        /// <summary>
+        ///     Get determinant of the matrix
+        /// </summary>
+        public float Determinant
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get =>
+                matrix[0, 0] * (matrix[1, 1] * matrix[2, 2] - matrix[2, 1] * matrix[1, 2]) -
+                matrix[0, 1] * (matrix[1, 0] * matrix[2, 2] - matrix[1, 2] * matrix[2, 0]) +
+                matrix[0, 2] * (matrix[1, 0] * matrix[2, 1] - matrix[1, 1] * matrix[2, 0]);
+        }
+
         private readonly float[,] matrix;
 
         /// <summary>
@@ -131,6 +177,7 @@ namespace GameProject.GameMath
                 identityArray[i, j] = i == j ? 1 : 0;
 
             Identity = new Matrix3F(identityArray);
+            Zero = new Matrix3F(new float[Size, Size]);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -200,7 +247,7 @@ namespace GameProject.GameMath
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator *(Matrix3F m, float a)
         {
-            return new Matrix3F(m.Row1 * a, m.Row2 * a, m.Row3 * a);
+            return CreateFromArray(m.matrix).MultiplyByScalar(a);
         }
 
         /// <summary>
@@ -331,6 +378,16 @@ namespace GameProject.GameMath
         public override string ToString()
         {
             return $"{Row1}\n{Row2}\n{Row3}";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private Matrix3F MultiplyByScalar(float scalar)
+        {
+            for (var i = 0; i < Size; i++)
+            for (var j = 0; j < Size; j++)
+                matrix[i, j] *= scalar;
+
+            return this;
         }
     }
 }

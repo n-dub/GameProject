@@ -152,5 +152,20 @@ namespace GameProject.GameMath
 
             Assert.IsTrue(Vector2F.AreAlmostEqual(expect, v));
         }
+
+        [Test]
+        public void TestDeterminant()
+        {
+            Assert.AreEqual(1d, Matrix3F.Identity.Determinant, 1e-3);
+            Assert.AreEqual(0d, Matrix3F.Zero.Determinant, 1e-3);
+        }
+
+        [Test]
+        [Repeat(256)]
+        public void TestInverse()
+        {
+            var matrix = GenerateRandomMatrix();
+            Assert.IsTrue(Matrix3F.AreAlmostEqual(matrix * matrix.Inversed, Matrix3F.Identity, 1e-3f));
+        }
     }
 }
