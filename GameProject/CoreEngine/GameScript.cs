@@ -32,14 +32,16 @@ namespace GameProject.CoreEngine
 
         private void UpdateCoroutines(GameState state)
         {
-            foreach (var coroutine in coroutines)
+            for (var i = 0; i < coroutines.Count; i++)
             {
+                var coroutine = coroutines[i];
                 var current = coroutine.Current;
                 if (current is null)
                 {
                     coroutine.MoveNext();
                     continue;
                 }
+
                 current.Update(state.Time.DeltaTime);
                 if (current.Completed && !coroutine.MoveNext())
                     current.IsLast = true;
