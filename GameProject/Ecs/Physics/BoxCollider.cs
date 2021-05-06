@@ -16,14 +16,14 @@ namespace GameProject.Ecs.Physics
     internal class BoxCollider : Collider, IDebuggable
     {
         /// <summary>
-        ///     Width of the collider rectangle
+        ///     Width and height of the collider rectangle
         /// </summary>
-        public float SizeX { get; set; } = 1f;
-
+        public Vector2F Size { get; set; } = Vector2F.One;
+        
         /// <summary>
-        ///     Height of the collider rectangle
+        ///     Offset of the collider rectangle
         /// </summary>
-        public float SizeY { get; set; } = 1f;
+        public Vector2F Offset { get; set; } = Vector2F.Zero;
 
         /// <summary>
         ///     If true the collider size will depend on entity's scale
@@ -44,10 +44,10 @@ namespace GameProject.Ecs.Physics
 
         private IEnumerable<Vector2> GetVerticesUnscaled()
         {
-            var size = new Vector2F(SizeX, SizeY) * MathF.Sqrt(2);
+            var size = Size * MathF.Sqrt(2);
             return GeometryUtility
                 .GenerateRegularPolygon(Vector2F.Zero, size, MathF.PI / 4, 4)
-                .Select(v => (Vector2) v);
+                .Select(v => (Vector2) (Offset + v));
         }
 
         public override Shape GetFarseerShape()

@@ -10,14 +10,29 @@
         
         public bool IsLast { get; set; }
         
-        public Awaiter(int frames)
+        private Awaiter(int frames)
         {
             Frames = frames;
         }
         
-        public Awaiter(float seconds)
+        private Awaiter(float seconds)
         {
             Seconds = seconds;
+        }
+
+        public static Awaiter WaitForNextFrame()
+        {
+            return new Awaiter(1);
+        }
+
+        public static Awaiter WaitForFrames(int count)
+        {
+            return new Awaiter(count);
+        }
+
+        public static Awaiter WaitForSeconds(float seconds)
+        {
+            return new Awaiter(seconds);
         }
 
         public void Update(float deltaTime)

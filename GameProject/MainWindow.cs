@@ -47,7 +47,6 @@ namespace GameProject
             var physicsWorld = new World(new Vector2(0, MathF.Gravity));
 
             GameState = new GameState(renderer, new Keyboard(), new Time(), physicsWorld, CollectEntities(levels));
-            GameState.Time.TimeScale = 1f;
 
             Stopwatch = Stopwatch.StartNew();
         }
@@ -97,6 +96,7 @@ namespace GameProject
                     first?.AddComponent<TestCamera>();
                 if (!(first?.HasComponent<TestCannon>() ?? false))
                     first?.AddComponent<TestCannon>();
+                GameState.Time.TimeScale = GameState.Keyboard[Keys.Space] == KeyState.Pushing ? 0f : 1f;
             }
 
             GameState.RemoveDestroyed();

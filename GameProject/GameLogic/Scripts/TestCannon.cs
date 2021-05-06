@@ -15,12 +15,12 @@ namespace GameProject.GameLogic.Scripts
         {
             if (bullet?.GetComponent<PhysicsBody>().FarseerBody != null)
             {
-                bullet.GetComponent<PhysicsBody>().ApplyLinearImpulse(new Vector2F(1.5f, 0));
+                bullet.GetComponent<PhysicsBody>().ApplyLinearImpulse(new Vector2F(2f, 0));
                 bullet = null;
             }
             if (GameState.Keyboard[Keys.H] == KeyState.Down)
             {
-                bullet = LevelUtility.CreateCircle(new Vector2F(-8, -1f), 0.15f);
+                bullet = LevelUtility.CreateCircle(new Vector2F(-8, -2.5f), 0.15f);
                 GameState.AddEntity(bullet);
             }
         }

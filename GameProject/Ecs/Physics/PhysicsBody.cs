@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
@@ -26,31 +25,35 @@ namespace GameProject.Ecs.Physics
         ///     The instance of Farseer physics native <see cref="Body"/> class
         /// </summary>
         public Body FarseerBody { get; private set; }
+
+        /// <summary>
+        ///     Indicates that the body is initialized and ready to use
+        /// </summary>
+        public bool ReadyToUse => FarseerBody != null;
         
         /// <summary>
         ///     A list of all colliders attached to this body
         /// </summary>
-        public IList<Collider> Colliders => colliders;
+        public IReadOnlyList<Collider> Colliders => colliders;
 
-        public event CollisionEventHandler OnCollision;
-        public event CollisionEventHandler OnSeparation;
+        /// <summary>
+        ///     List of all body collisions during the current frame
+        /// </summary>
+        public IReadOnlyList<CollisionInfo> Collisions => collisions;
 
         private bool shapesDirty = true;
         private readonly List<Collider> colliders = new List<Collider>(1);
+        private readonly List<CollisionInfo> collisions = new List<CollisionInfo>(8);
 
         public void Update(GameState state)
         {
             if (FarseerBody is null)
-            {
                 FarseerBody = new Body(state.PhysicsWorld, Entity.Position, Entity.Rotation);
-                FarseerBody.OnCollision += (a, b, contact) =>
-                    OnCollision != null && OnCollision(a.UserData as Collider, b.UserData as Collider, contact);
-                FarseerBody.OnSeparation += (a, b) =>
-                    OnSeparation?.Invoke(a.UserData as Collider, b.UserData as Collider, null);
-            }
 
             if (shapesDirty)
                 InitializeShapes();
+
+            ResolveCollisions(FarseerBody.ContactList);
 
             FarseerBody.IsStatic = IsStatic;
             Entity.Position = new Vector2F(FarseerBody.Position);
@@ -66,6 +69,7 @@ namespace GameProject.Ecs.Physics
         {
             if (FarseerBody is null)
                 return;
+            
             debugDraw.DrawVector(Entity.Position, new Vector2F(FarseerBody.LinearVelocity), Color.Blue);
 
             foreach (var collider in colliders)
@@ -87,6 +91,27 @@ namespace GameProject.Ecs.Physics
             shapesDirty = true;
         }
         
+        private void ResolveCollisions(ContactEdge contactList)
+        {
+            collisions.Clear();
+            
+            while (contactList != null)
+            {
+                var contact = contactList.Contact;
+                if (contact.IsTouching() && contact.Enabled)
+                {
+                    contact.GetWorldManifold(out var normal, out var worldPoints);
+                    for (var i = 0; i < contact.Manifold.PointCount; i++)
+                    {
+                        collisions.Add(new CollisionInfo(new Vector2F(worldPoints[i]),
+                            new Vector2F(normal), contact.Manifold.Points[i].NormalImpulse));
+                    }
+                }
+
+                contactList = contactList.Next;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void InitializeShapes()
         {
