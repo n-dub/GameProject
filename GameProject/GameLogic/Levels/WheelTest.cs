@@ -8,12 +8,13 @@ namespace GameProject.GameLogic.Levels
 {
     internal class WheelTest : ISceneFactory
     {
+        private const string Path = "Resources/machine_parts/small_wheel.png";
+
         public SceneData CreateScene()
         {
             const float width = 15f;
             const float height = 10f;
-            const string path = "Resources/machine_parts/small_wheel.png";
-
+            
             var entities = new List<GameEntity>
             {
                 LevelUtility.CreateRectangle(Vector2F.Zero, Vector2F.One.WithX(width), true),
@@ -21,10 +22,11 @@ namespace GameProject.GameLogic.Levels
                     Vector2F.One.WithY(height), true)
             };
 
-            var wheel = LevelUtility.CreateWheel(new Vector2F(0, -1), 0.2f, path);
-            wheel.AddComponent<WheelControl>().Torque = 0.01f;
+            var machine = LevelUtility.CreateRectangle(Vector2F.UnitY * -1.2f, new Vector2F(2.5f, 0.3f));
+            entities.Add(machine);
 
-            entities.Add(wheel);
+            CreateWheel(entities, machine, -0.8f);
+            CreateWheel(entities, machine, +0.8f);
             
             CreateWall(entities, 2);
             
@@ -34,6 +36,13 @@ namespace GameProject.GameLogic.Levels
                 Width = width,
                 Offset = width / -2
             };
+        }
+
+        private static void CreateWheel(ICollection<GameEntity> entities, GameEntity machine, float positionX)
+        {
+            var wheel = LevelUtility.CreateWheel(new Vector2F(positionX, -1), 0.2f, Path);
+            wheel.AddComponent(new WheelControl {Torque = 0.005f, Machine=machine});
+            entities.Add(wheel);
         }
 
         private static void CreateWall(ICollection<GameEntity> entities, float positionX)
