@@ -11,6 +11,8 @@ namespace GameProject.GameGraphics.RenderShapes
     internal class QuadRenderShape : IRenderShape
     {
         public int Layer { get; }
+        
+        public int Id { get; }
 
         /// <summary>
         ///     Image to use for drawing
@@ -25,8 +27,8 @@ namespace GameProject.GameGraphics.RenderShapes
         public Vector2F Offset { get; set; }
         
         public Vector2F Scale { get; set; } = Vector2F.One;
-        
-        public bool IsActive { get; set; }
+
+        public bool IsActive { get; set; } = true;
 
         public Matrix3F Transform { get; set; }
         
@@ -39,11 +41,12 @@ namespace GameProject.GameGraphics.RenderShapes
         public QuadRenderShape(int layer)
         {
             Layer = layer;
+            Id = RenderShapeIdGenerator.GetId();
         }
 
         public void Initialize(IGraphicsDevice device)
         {
-            if (ImagePath is null)
+            if (ImagePath is null || Image != null)
                 return;
             
             var img = ResourceManager.LoadResource(File.ReadAllBytes, ImagePath);
@@ -58,6 +61,36 @@ namespace GameProject.GameGraphics.RenderShapes
                 device.DrawRectangle(Vector2F.Zero, Vector2F.One, Color);
             else
                 device.DrawBitmap(Image, Offset, Scale);
+        }
+
+        public void CopyDataFrom(IRenderShape other)
+        {
+            if (!(other is QuadRenderShape s))
+                return;
+            Color = s.Color;
+            Image = s.Image;
+            ImagePath = s.ImagePath;
+            IsActive = s.IsActive;
+            Offset = s.Offset;
+            Scale = s.Scale;
+            Transform = s.Transform;
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((IRenderShape) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id;
+        }
+
+        private bool Equals(IRenderShape other)
+        {
+            return Id == other.Id;
         }
     }
 }

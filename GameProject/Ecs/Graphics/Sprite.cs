@@ -59,7 +59,7 @@ namespace GameProject.Ecs.Graphics
         public void Destroy(GameState state)
         {
             foreach (var shape in Shapes)
-                state.Renderer.RemoveShape(shape);
+                state.RendererWrite.RemoveShape(shape);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -67,8 +67,8 @@ namespace GameProject.Ecs.Graphics
         {
             foreach (var shape in Shapes)
             {
-                state.Renderer.AddShape(shape);
-                shape.Initialize(state.Renderer.Device);
+                state.RendererWrite.AddShape(shape);
+                //shape.Initialize(state.RendererWrite.Device);
                 initialized = true;
             }
         }

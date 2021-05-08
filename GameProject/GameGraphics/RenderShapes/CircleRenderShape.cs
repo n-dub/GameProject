@@ -6,7 +6,8 @@ namespace GameProject.GameGraphics.RenderShapes
     internal class CircleRenderShape : IRenderShape
     {
         public int Layer { get; }
-        
+        public int Id { get; }
+
         public Matrix3F Transform { get; set; }
         
         public Vector2F Offset { get; set; }
@@ -16,7 +17,7 @@ namespace GameProject.GameGraphics.RenderShapes
         /// </summary>
         public Color Color { get; set; } = Color.Black;
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
         /// <summary>
         ///     Create a new render shape with certain layer
@@ -25,6 +26,7 @@ namespace GameProject.GameGraphics.RenderShapes
         public CircleRenderShape(int layer)
         {
             Layer = layer;
+            Id = RenderShapeIdGenerator.GetId();
         }
 
         public void Initialize(IGraphicsDevice device)
@@ -36,6 +38,33 @@ namespace GameProject.GameGraphics.RenderShapes
             device.SetInterpolationMode(InterpolationMode.Linear);
             device.SetTransform(viewMatrix * Transform);
             device.FillEllipse(Offset - new Vector2F(0.5f), Vector2F.One, Color);
+        }
+
+        public void CopyDataFrom(IRenderShape other)
+        {
+            if (!(other is CircleRenderShape s))
+                return;
+            Color = s.Color;
+            IsActive = s.IsActive;
+            Offset = s.Offset;
+            Transform = s.Transform;
+        }
+        
+        public override int GetHashCode()
+        {
+            return Id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((IRenderShape) obj);
+        }
+        
+        private bool Equals(IRenderShape other)
+        {
+            return Id == other.Id;
         }
     }
 }

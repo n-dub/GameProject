@@ -168,6 +168,11 @@ namespace GameProject.GameMath
         {
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Matrix3F(Matrix3F other) : this(other.Row1, other.Row2, other.Row3)
+        {
+        }
+
         static Matrix3F()
         {
             var identityArray = new float[Size, Size];

@@ -32,6 +32,14 @@ namespace GameProject.CoreEngine
         /// </summary>
         public float ViewWidth { get; set; } = 7f;
 
+        public void CopyDataFrom(Camera camera)
+        {
+            Position = camera.Position;
+            Rotation = camera.Rotation;
+            ScreenSize = camera.ScreenSize;
+            ViewWidth = camera.ViewWidth;
+        }
+
         /// <summary>
         ///     Get matrix to apply to all sprite vertices to correctly project them on the screen
         /// </summary>
