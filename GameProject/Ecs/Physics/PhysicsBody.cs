@@ -19,6 +19,21 @@ namespace GameProject.Ecs.Physics
         /// </summary>
         public bool IsStatic { get; set; }
 
+        /// <summary>
+        ///     Body's friction coefficient
+        /// </summary>
+        public float Friction { get; set; } = 1;
+
+        /// <summary>
+        ///     Body's angular damping
+        /// </summary>
+        public float AngularDamping { get; set; } = 1;
+
+        /// <summary>
+        ///     Body's linear damping
+        /// </summary>
+        public float LinearDamping { get; set; } = 1;
+
         public GameEntity Entity { get; set; }
         
         /// <summary>
@@ -50,7 +65,9 @@ namespace GameProject.Ecs.Physics
             if (FarseerBody is null)
                 FarseerBody = new Body(state.PhysicsWorld, Entity.Position, Entity.Rotation);
 
-            FarseerBody.Friction = 1;
+            FarseerBody.Friction = Friction;
+            FarseerBody.AngularDamping = AngularDamping;
+            FarseerBody.LinearDamping = LinearDamping;
 
             if (shapesDirty)
                 InitializeShapes();
