@@ -100,11 +100,13 @@
     <Compile Include="GameGraphics\RenderShapes\IRenderShape.cs" />
     <Compile Include="GameGraphics\RenderShapes\PolygonRenderShape.cs" />
     <Compile Include="GameGraphics\RenderShapes\QuadRenderShape.cs" />
+    <Compile Include="GameGraphics\RenderShapes\RenderShapeIdGenerator.cs" />
     <Compile Include="GameInput\Keyboard.cs" />
     <Compile Include="GameInput\KeyState.cs" />
     <Compile Include="GameInput\Mouse.cs" />
     <Compile Include="GameLogic\Levels\BrickWallTest.cs" />
     <Compile Include="GameLogic\Levels\GameLevel1.cs" />
+    <Compile Include="GameLogic\Levels\PerfTest.cs" />
     <Compile Include="GameLogic\Levels\SeparateBricksTest.cs" />
     <Compile Include="GameLogic\Levels\WheelTest.cs" />
     <Compile Include="GameLogic\LevelUtility.cs" />

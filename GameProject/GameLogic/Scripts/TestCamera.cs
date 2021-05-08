@@ -9,7 +9,7 @@ namespace GameProject.GameLogic.Scripts
     {
         private static void ControlPosition(GameState gameState, float speedFactor)
         {
-            var p = gameState.Renderer.Camera.Position;
+            var p = gameState.RendererWrite.Camera.Position;
             var (x, y) = (p.X, p.Y);
             const float speed = .3f;
             if (gameState.Keyboard[Keys.Left] == KeyState.Pushing)
@@ -21,16 +21,16 @@ namespace GameProject.GameLogic.Scripts
             if (gameState.Keyboard[Keys.Down] == KeyState.Pushing)
                 y += speed * gameState.Time.DeltaTimeUnscaled * speedFactor;
 
-            gameState.Renderer.Camera.Position = new Vector2F(x, y);
+            gameState.RendererWrite.Camera.Position = new Vector2F(x, y);
         }
 
         private static void ControlRotationZoom(GameState gameState, float speedFactor)
         {
-            const float rotSpeed = MathF.PI / 4;
+            // const float rotSpeed = MathF.PI / 4;
             if (gameState.Keyboard[Keys.W] == KeyState.Pushing)
-                gameState.Renderer.Camera.ViewWidth -= gameState.Time.DeltaTimeUnscaled * speedFactor;
+                gameState.RendererWrite.Camera.ViewWidth -= gameState.Time.DeltaTimeUnscaled * speedFactor;
             if (gameState.Keyboard[Keys.S] == KeyState.Pushing)
-                gameState.Renderer.Camera.ViewWidth += gameState.Time.DeltaTimeUnscaled * speedFactor;
+                gameState.RendererWrite.Camera.ViewWidth += gameState.Time.DeltaTimeUnscaled * speedFactor;
             // if (gameState.Keyboard[Keys.A] == KeyState.Pushing)
             //     gameState.Renderer.Camera.Rotation -= rotSpeed * gameState.Time.DeltaTimeUnscaled;
             // if (gameState.Keyboard[Keys.D] == KeyState.Pushing)
@@ -39,7 +39,7 @@ namespace GameProject.GameLogic.Scripts
 
         protected override void Update()
         {
-            var speedFactor = GameState.Renderer.Camera.ViewWidth;
+            var speedFactor = GameState.RendererWrite.Camera.ViewWidth;
             ControlRotationZoom(GameState, speedFactor);
             ControlPosition(GameState, speedFactor);
 

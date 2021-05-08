@@ -15,10 +15,15 @@ namespace GameProject.CoreEngine
     internal class GameState
     {
         /// <summary>
-        ///     Currently used instance of <see cref="Renderer" />
+        ///     <see cref="Renderer" /> currently used for reading
         /// </summary>
-        public Renderer Renderer { get; }
+        public Renderer RendererRead { get; }
 
+        /// <summary>
+        ///     <see cref="Renderer" /> currently used for writing
+        /// </summary>
+        public Renderer RendererWrite { get; }
+        
         /// <summary>
         ///     An instance of Keyboard being updated by main form
         /// </summary>
@@ -49,7 +54,11 @@ namespace GameProject.CoreEngine
         /// </summary>
         public GameState(Renderer renderer, World physicsWorld, List<GameEntity> entities)
         {
-            Renderer = renderer;
+            RendererRead = new Renderer();
+            RendererWrite = new Renderer();
+            RendererRead.CopyDataFrom(renderer);
+            RendererWrite.CopyDataFrom(renderer);
+            
             Keyboard = new Keyboard<Keys>();
             Mouse = new Mouse();
             Time = new Time();
@@ -57,6 +66,12 @@ namespace GameProject.CoreEngine
             newEntities = entities;
         }
 
+        public void SwapRenderers()
+        {
+            RendererWrite.Camera.ScreenSize = RendererRead.Camera.ScreenSize;
+            RendererRead.CopyDataFrom(RendererWrite);
+        }
+        
         /// <summary>
         ///     Add a new game entity
         /// </summary>

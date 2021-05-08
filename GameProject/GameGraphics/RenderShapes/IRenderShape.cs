@@ -11,6 +11,8 @@ namespace GameProject.GameGraphics.RenderShapes
         ///     An index of layer
         /// </summary>
         int Layer { get; }
+        
+        int Id { get; }
 
         /// <summary>
         ///     Global transformation matrix of entity being drawn
@@ -39,5 +41,12 @@ namespace GameProject.GameGraphics.RenderShapes
         /// <param name="device">An instance of graphics device to use</param>
         /// <param name="viewMatrix">Camera's view matrix</param>
         void Draw(IGraphicsDevice device, Matrix3F viewMatrix);
+
+        /// <summary>
+        ///     Make a full deep copy of a shape
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns>The copied shape</returns>
+        void CopyDataFrom(IRenderShape other);
     }
 }

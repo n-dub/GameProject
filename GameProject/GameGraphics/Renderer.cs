@@ -26,14 +26,21 @@ namespace GameProject.GameGraphics
         /// </summary>
         public IGraphicsDevice Device { get; private set; }
 
-        private readonly HashSet<IRenderShape> renderShapes;
+        private readonly HashSet<IRenderShape> renderShapes = new HashSet<IRenderShape>();
+        private readonly List<IRenderShape> shapesToAdd = new List<IRenderShape>();
 
-        /// <summary>
-        ///     Create a renderer
-        /// </summary>
-        public Renderer()
+        public void CopyDataFrom(Renderer renderer)
         {
-            renderShapes = new HashSet<IRenderShape>();
+            Camera.CopyDataFrom(renderer.Camera);
+            renderer.AddInitialize(Device);
+            
+            foreach (var renderShape in renderer.renderShapes)
+            {
+                if (renderShapes.TryGetValue(renderShape, out var shape))
+                    shape.CopyDataFrom(renderShape);
+                else
+                    renderShapes.Add(renderShape);
+            }
         }
 
         /// <summary>
@@ -55,7 +62,7 @@ namespace GameProject.GameGraphics
 
             foreach (var layerGrouping in renderShapes
                 .GroupBy(x => x.Layer)
-                .OrderBy(g => g.Key))
+                /*.OrderBy(g => g.Key)*/)
             foreach (var shape in layerGrouping.Where(s => s.IsActive))
                 shape.Draw(Device, viewMatrix);
         }
@@ -66,9 +73,7 @@ namespace GameProject.GameGraphics
         /// <param name="shape">A shape to add</param>
         public void AddShape(IRenderShape shape)
         {
-            shape.IsActive = true;
-            if (!renderShapes.Contains(shape))
-                renderShapes.Add(shape);
+            shapesToAdd.Add(shape);
         }
 
         /// <summary>
@@ -82,6 +87,18 @@ namespace GameProject.GameGraphics
                 shape.IsActive = false;
             else
                 throw new ArgumentException();
+        }
+
+        private void AddInitialize(IGraphicsDevice device)
+        {
+            foreach (var shape in shapesToAdd)
+            {
+                shape.IsActive = true;
+                shape.Initialize(device);
+                if (!renderShapes.Contains(shape))
+                    renderShapes.Add(shape);
+            }
+            shapesToAdd.Clear();
         }
     }
 }

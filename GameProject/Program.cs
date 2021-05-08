@@ -9,7 +9,7 @@ namespace GameProject
     {
         private static readonly ISceneFactory[] levels =
         {
-            new WheelTest()
+            new PerfTest()
         };
 
         /// <summary>

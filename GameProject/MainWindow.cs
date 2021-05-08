@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
@@ -15,6 +16,7 @@ using GameProject.GameInput;
 using GameProject.GameLogic.Scripts;
 using GameProject.GameMath;
 using Microsoft.Xna.Framework;
+using unvell.D2DLib;
 
 namespace GameProject
 {
@@ -41,11 +43,12 @@ namespace GameProject
         {
             InitializeComponent();
             (Width, Height) = (800, 600);
-            Application.Idle += (s, e) => UpdateGame();
+            Application.Idle += (s, e) => MakeFrame();
 
-            var renderer = new Renderer();
-            renderer.Camera.ScreenSize = new Vector2F(Width, Height);
-            renderer.Camera.Position += Vector2F.UnitY * -1.5f;
+            var renderer = new Renderer
+            {
+                Camera = {ScreenSize = new Vector2F(Width, Height), Position = Vector2F.UnitY * -1.5f}
+            };
             var physicsWorld = new World(new Vector2(0, MathF.Gravity));
 
             GameState = new GameState(renderer, physicsWorld, CollectEntities(levels));
@@ -78,19 +81,36 @@ namespace GameProject
 
         protected override void OnLoad(EventArgs e)
         {
-            GameState.Renderer.Initialize(new D2DGraphicsDevice(this));
-            DoubleBuffered = GameState.Renderer.Device is WinFormsGraphicsDevice;
-
-            if (GameState.Renderer.Device is D2DGraphicsDevice device)
-                device.Graphics.Antialias = true;
+            GameState.RendererRead.Initialize(new D2DGraphicsDevice(this));
+            if (GameState.RendererRead.Device is D2DGraphicsDevice d)
+                d.Graphics.Antialias = true;
+            
+            DoubleBuffered = GameState.RendererWrite.Device is WinFormsGraphicsDevice;
 
             base.OnLoad(e);
+        }
+
+        private void MakeFrame(bool singleThread = false)
+        {
+            if (singleThread)
+            {
+                Render();
+                UpdateGame();
+            }
+            else
+            {
+                var task = Task.Run(Render);
+                UpdateGame();
+                task.Wait();
+            }
+            GameState.SwapRenderers();
+            Invalidate();
         }
 
         private void UpdateGame()
         {
             GameState.AddNewEntities();
-            
+
             {
                 // TODO: TEST CODE - TO BE REMOVED
                 var first = GameState.Entities.FirstOrDefault();
@@ -116,31 +136,31 @@ namespace GameProject
 
             for (var i = 0; i < PhysicsSubsteps; i++)
                 GameState.PhysicsWorld.Step(GameState.Time.DeltaTime / PhysicsSubsteps);
-            
+
             GameState.Keyboard.UpdateKeyStates();
             GameState.Mouse.UpdateKeyStates();
-            Invalidate();
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        private void Render()
         {
-            if (!GameState.Renderer.Initialized)
+            if (!GameState.RendererRead.Initialized)
                 return;
-            if (GameState.Renderer.Device is WinFormsGraphicsDevice device)
-                device.Graphics = e.Graphics;
+            if (GameState.RendererRead.Device is WinFormsGraphicsDevice device)
+                device.Graphics = CreateGraphics();
 
-            GameState.Renderer.Device.BeginRender();
+            GameState.RendererRead.Device.BeginRender();
 
-            GameState.Renderer.RenderAll();
+            GameState.RendererRead.RenderAll();
             if (DebugEnabled)
-                DrawDebug(e.Graphics);
+                DrawDebug();
+            ShowFps(GameState.RendererRead);
 
-            GameState.Renderer.Device.EndRender();
+            GameState.RendererRead.Device.EndRender();
         }
 
-        private void DrawDebug(Graphics g)
+        private void DrawDebug()
         {
-            var debugger = new DebugDraw(GameState.Renderer);
+            var debugger = new DebugDraw(GameState.RendererRead);
             
             foreach (var gameEntity in GameState.Entities)
                 gameEntity.DoForAllChildren(
@@ -150,10 +170,9 @@ namespace GameProject
                         if (c is IDebuggable d)
                             d.DrawDebugOverlay(debugger);
                     });
-            ShowFps(g);
         }
 
-        private void ShowFps(Graphics graphics)
+        private void ShowFps(Renderer renderer)
         {
             fpsShowTimer += GameState.Time.DeltaTimeUnscaled;
             if (fpsShowTimer > 1 || cachedFps == 0 || float.IsInfinity(cachedFps))
@@ -162,28 +181,41 @@ namespace GameProject
                 cachedFps = GameState.Time.Fps;
             }
 
-            graphics.ResetTransform();
-            graphics.DrawString(
-                $"{Math.Round(cachedFps)} FPS",
-                new Font("Arial", 10),
-                Brushes.Black,
-                new Rectangle(5, 5, 250, 100),
-                new StringFormat
-                {
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Near,
-                    FormatFlags = StringFormatFlags.FitBlackBox
-                }
-            );
+            switch (renderer.Device)
+            {
+                case D2DGraphicsDevice device:
+                    device.Graphics.ResetTransform();
+                    device.Graphics.DrawText($"{Math.Round(cachedFps)} FPS",
+                        D2DColor.Black,
+                        "Arial",
+                        10,
+                        new D2DRect(5, 5, 250, 100));
+                    break;
+                case WinFormsGraphicsDevice device:
+                    device.Graphics.ResetTransform();
+                    device.Graphics.DrawString(
+                        $"{Math.Round(cachedFps)} FPS",
+                        new Font("Arial", 10),
+                        Brushes.Black,
+                        new Rectangle(5, 5, 250, 100),
+                        new StringFormat
+                        {
+                            Alignment = StringAlignment.Near,
+                            LineAlignment = StringAlignment.Near,
+                            FormatFlags = StringFormatFlags.FitBlackBox
+                        }
+                    );
+                    break;
+            }
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (GameState?.Renderer?.Camera is null)
+            if (GameState?.RendererRead?.Camera is null)
                 return;
             
-            GameState.Renderer.Camera.ScreenSize = new Vector2F(Width, Height);
+            GameState.RendererRead.Camera.ScreenSize = new Vector2F(Width, Height);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -196,7 +228,7 @@ namespace GameProject
         {
             base.OnMouseDown(e);
             GameState.Mouse.PushKey(e.Button);
-            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.Renderer.Camera.GetViewMatrix());
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.RendererRead.Camera.GetViewMatrix());
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -209,19 +241,19 @@ namespace GameProject
         {
             base.OnMouseUp(e);
             GameState.Mouse.ReleaseKey(e.Button);
-            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.Renderer.Camera.GetViewMatrix());
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.RendererRead.Camera.GetViewMatrix());
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
             GameState.Mouse.SetWheel(e.Delta);
-            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.Renderer.Camera.GetViewMatrix());
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.RendererRead.Camera.GetViewMatrix());
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            if (GameState.Renderer.Device is WinFormsGraphicsDevice)
+            if (GameState.RendererRead.Device is WinFormsGraphicsDevice)
                 base.OnPaintBackground(e);
         }
     }

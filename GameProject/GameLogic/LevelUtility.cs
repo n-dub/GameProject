@@ -55,7 +55,10 @@ namespace GameProject.GameLogic
         public static GameEntity CreateWheel(Vector2F position, float radius, string imagePath)
         {
             var entity = new GameEntity();
-            entity.AddComponent(new Sprite(new QuadRenderShape(1){ImagePath = imagePath}));
+            entity.AddComponent(new Sprite(new QuadRenderShape(1)
+            {
+                ImagePath = imagePath
+            }));
             var body = entity.AddComponent<PhysicsBody>();
             body.AddCollider(new CircleCollider{Radius = radius});
             entity.Position = position;
@@ -68,7 +71,10 @@ namespace GameProject.GameLogic
         public static GameEntity CreatePolygon(Vector2F position, bool isStatic, params Vector2F[] vertices)
         {
             var entity = new GameEntity();
-            entity.AddComponent(new Sprite(new PolygonRenderShape(1) {Points = vertices}));
+            entity.AddComponent(new Sprite(new PolygonRenderShape(1)
+            {
+                Points = vertices
+            }));
             var body = entity.AddComponent<PhysicsBody>();
             body.IsStatic = isStatic;
             body.AddCollider(new PolygonCollider{Vertices = vertices});
