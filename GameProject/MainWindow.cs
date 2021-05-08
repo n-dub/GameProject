@@ -118,7 +118,7 @@ namespace GameProject
                     first?.AddComponent<TestCamera>();
                 if (!(first?.HasComponent<TestCannon>() ?? false))
                     first?.AddComponent<TestCannon>();
-                GameState.Time.TimeScale = GameState.Keyboard[Keys.Space] == KeyState.Pushing ? 0f : 1f;
+                GameState.Time.TimeScale = GameState.Keyboard[Keys.Space] == KeyState.Pushing ? .1f : .01f;
             }
 
             GameState.RemoveDestroyed();
