@@ -16,6 +16,11 @@ namespace GameProject.Ecs.Graphics
         ///     An instance of <see cref="IRenderShape" /> used by the entity
         /// </summary>
         public List<IRenderShape> Shapes { get; }
+        
+        /// <summary>
+        ///     True if sprite is background
+        /// </summary>
+        public bool IsBackground { get; }
 
         public GameEntity Entity { get; set; }
 
@@ -25,8 +30,10 @@ namespace GameProject.Ecs.Graphics
         ///     Create a new <see cref="Sprite" /> component
         /// </summary>
         /// <param name="shapes">Instances of <see cref="IRenderShape" /> to connect to game object</param>
-        public Sprite(IEnumerable<IRenderShape> shapes)
+        /// <param name="isBackground">True if sprite is background</param>
+        public Sprite(IEnumerable<IRenderShape> shapes, bool isBackground = false)
         {
+            IsBackground = isBackground;
             Shapes = shapes.ToList();
         }
 
@@ -34,17 +41,21 @@ namespace GameProject.Ecs.Graphics
         ///     Create a new <see cref="Sprite" /> component
         /// </summary>
         /// <param name="shape">An instances of <see cref="IRenderShape" /> to connect to game object</param>
-        public Sprite(IRenderShape shape)
+        /// <param name="isBackground">True if sprite is background</param>
+        public Sprite(IRenderShape shape, bool isBackground = false)
         {
             Shapes = new List<IRenderShape>(4) {shape};
+            IsBackground = isBackground;
         }
 
-        /// <summary>
-        ///     Create a new <see cref="Sprite" /> component
-        /// </summary>
-        public Sprite()
+        public Sprite() : this(false)
+        {
+        }
+
+        public Sprite(bool isBackground)
         {
             Shapes = new List<IRenderShape>(4);
+            IsBackground = isBackground;
         }
 
         public void Update(GameState state)
@@ -68,6 +79,7 @@ namespace GameProject.Ecs.Graphics
             foreach (var shape in Shapes)
             {
                 state.RendererWrite.AddShape(shape);
+                shape.IsBackground = IsBackground;
                 //shape.Initialize(state.RendererWrite.Device);
                 initialized = true;
             }

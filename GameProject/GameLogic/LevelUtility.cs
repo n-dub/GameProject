@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Runtime.CompilerServices;
+using GameProject.CoreEngine;
 using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
 using GameProject.Ecs.Physics;
@@ -30,7 +31,7 @@ namespace GameProject.GameLogic
         public static GameEntity CreateBrick(Vector2F position, bool width120, float rotation = 0)
         {
             var brickSize = new Vector2F(width120 ? BrickSize.Y : BrickSize.X, BrickSize.Z);
-            var rect = CreateRectangle(position, brickSize);
+            var rect = CreatePhysicalRectangle(position, brickSize);
             rect.Rotation = rotation;
             if (rect.GetComponent<Sprite>().Shapes.First() is QuadRenderShape shape)
                 shape.ImagePath = "Resources/bricks/detached_brick.png";
@@ -39,13 +40,25 @@ namespace GameProject.GameLogic
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GameEntity CreateRectangle(Vector2F position, Vector2F size, bool isStatic = false)
+        public static GameEntity CreatePhysicalRectangle(Vector2F position, Vector2F size, bool isStatic = false)
         {
             var entity = new GameEntity();
             entity.AddComponent(new Sprite(new QuadRenderShape(1)));
             var body = entity.AddComponent<PhysicsBody>();
             body.IsStatic = isStatic;
             body.AddCollider(new BoxCollider());
+            entity.Position = position;
+            entity.Scale = size;
+            entity.FlushComponents();
+            return entity;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GameEntity CreateBackground(Vector2F size, Vector2F position, string imagePath)
+        {
+            var entity = new GameEntity();
+            var sprite = new Sprite(new QuadRenderShape(-1){ImagePath = imagePath}, true);
+            entity.AddComponent(sprite);
             entity.Position = position;
             entity.Scale = size;
             entity.FlushComponents();

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using GameProject.CoreEngine;
 using GameProject.GameMath;
 
 namespace GameProject.GameGraphics.RenderShapes
@@ -6,7 +7,10 @@ namespace GameProject.GameGraphics.RenderShapes
     internal class CircleRenderShape : IRenderShape
     {
         public int Layer { get; }
+        
         public int Id { get; }
+        
+        public bool IsBackground { get; set; }
 
         public Matrix3F Transform { get; set; }
         
@@ -42,12 +46,8 @@ namespace GameProject.GameGraphics.RenderShapes
 
         public void CopyDataFrom(IRenderShape other)
         {
-            if (!(other is CircleRenderShape s))
-                return;
-            Color = s.Color;
-            IsActive = s.IsActive;
-            Offset = s.Offset;
-            Transform = s.Transform;
+            if (other is CircleRenderShape s)
+                this.CopyPropertiesFrom(s);
         }
         
         public override int GetHashCode()

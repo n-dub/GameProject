@@ -46,6 +46,7 @@ namespace GameProject.GameLogic.Scripts
             bullet = null;
             yield return Awaiter.WaitForFrames(2);
             b.GetComponent<PhysicsBody>().ApplyLinearImpulse(new Vector2F(impulse, 0));
+            b.GetComponent<PhysicsBody>().FarseerBody.Position = position;
             b.Destroy(5);
         }
 

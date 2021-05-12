@@ -26,7 +26,6 @@ namespace GameProject.GameLogic.Scripts
         private bool StartWithTwoBricks { get; }
 
         private const string DetachedBrickPath = "Resources/bricks/detached_brick.png";
-        private const int MaxBrokenRows = 3;
 
         private readonly List<GameEntity> parts = new List<GameEntity>(8);
 
@@ -87,7 +86,12 @@ namespace GameProject.GameLogic.Scripts
             var localPoint = collision.Point.TransformBy(Entity.GlobalTransform.Inversed);
             var count = MathF.Clamp(RowCount - 0.5f * (localPoint.Y + 1) * RowCount, 0, RowCount);
 
-            Split((int) MathF.Round(count), GameState);
+            Split((int) MathF.Round(count), GameState, GetMaxBrokenRows(collision.NormalImpulse));
+        }
+
+        private static int GetMaxBrokenRows(float normalImpulse)
+        {
+            return (int) MathF.Clamp(MathF.Round(normalImpulse * 2.5f), 2, 10);
         }
 
         private static CollisionInfo FindContact(PhysicsBody body)
@@ -96,19 +100,6 @@ namespace GameProject.GameLogic.Scripts
                 (t, x) => t.Item1 < x.NormalImpulse
                     ? (x.NormalImpulse, x)
                     : t).Item2.GetValueOrDefault();
-            // var result = null as CollisionInfo?;
-            // var impulse = 0f;
-            // 
-            // foreach (var collision in body.Collisions)
-            // {
-            //     if (collision.NormalImpulse > impulse)
-            //     {
-            //         impulse = collision.NormalImpulse;
-            //         result = collision;
-            //     }
-            // }
-            // 
-            // return result;
         }
 
         private IEnumerable<Awaiter> CreateSprites()
@@ -132,23 +123,23 @@ namespace GameProject.GameLogic.Scripts
             }
         }
 
-        private void Split(int rowIndex, GameState state)
+        private void Split(int rowIndex, GameState state, int maxBrokenRows)
         {
             if (rowIndex < 0 || rowIndex >= RowCount)
                 return;
 
-            var (part1, part2, detachedCount) = GenerateRandomPartialRows();
+            var (part1, part2) = GenerateRandomPartialRows();
 
             var detachedPosition =
                 Entity.Position + Entity.Up * LevelUtility.BrickSize.Z * (rowIndex - 0.5f * RowCount + 0.5f);
 
-            DetachBricks(detachedCount, detachedPosition);
+            DetachBricks(2, detachedPosition);
 
             if (rowIndex != 0)
             {
                 var partPosition =
                     Entity.Position + 0.5f * LevelUtility.BrickSize.Z * (rowIndex - RowCount) * Entity.Up;
-                if (rowIndex <= MaxBrokenRows)
+                if (rowIndex <= maxBrokenRows)
                 {
                     DetachBricks(rowIndex, partPosition);
                 }
@@ -167,7 +158,7 @@ namespace GameProject.GameLogic.Scripts
             if (rowIndex != RowCount - 1)
             {
                 var partPosition = Entity.Position + 0.5f * LevelUtility.BrickSize.Z * rowIndex * Entity.Up;
-                if (RowCount - rowIndex - 1 <= MaxBrokenRows)
+                if (RowCount - rowIndex - 1 <= maxBrokenRows)
                 {
                     DetachBricks(RowCount - rowIndex - 1, partPosition);
                 }
@@ -234,19 +225,11 @@ namespace GameProject.GameLogic.Scripts
             destination.LinearVelocity = source.LinearVelocity * 1.5f;
         }
 
-        private (PartialBrickRow, PartialBrickRow, int) GenerateRandomPartialRows()
+        private (PartialBrickRow, PartialBrickRow) GenerateRandomPartialRows()
         {
-            var totalDetached = 0;
-
             var left = PartialBrickRow.Left + random.Next(2);
-            if (left != PartialBrickRow.None)
-                totalDetached++;
-
             var right = PartialBrickRow.Left + random.Next(2);
-            if (right != PartialBrickRow.None)
-                totalDetached++;
-
-            return (left, right, totalDetached);
+            return (left, right);
         }
 
         private void CreateThreeBrickRow(float height, PartialBrickRow partialBrickRow)

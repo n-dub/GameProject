@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,32 +52,13 @@ namespace GameProject
             };
             var physicsWorld = new World(new Vector2(0, MathF.Gravity));
 
-            GameState = new GameState(renderer, physicsWorld, CollectEntities(levels));
+            var level = levels.First().CreateScene();
+            var entities = level.Entities;
+            GameState = new GameState(renderer, physicsWorld, entities);
+            if (level.Camera != null)
+                GameState.RendererWrite.Camera.CopyDataFrom(level.Camera);
 
             Stopwatch = Stopwatch.StartNew();
-        }
-
-        private static List<GameEntity> CollectEntities(IEnumerable<ISceneFactory> levels)
-        {
-            var createdScenes = levels
-                .Select(p => p.CreateScene())
-                .ToList();
-
-            var offset = float.NegativeInfinity;
-            foreach (var scene in createdScenes)
-            {
-                if (float.IsInfinity(offset))
-                    offset = scene.Offset;
-                var currentOffset = offset;
-                offset += scene.Width;
-                scene.Entities.ForEach(e => e.DoForAllChildren(
-                    x => x.Position += Vector2F.Zero.WithX(currentOffset - scene.Offset),
-                    component => { }));
-            }
-
-            return createdScenes
-                .SelectMany(p => p.Entities)
-                .ToList();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -94,14 +76,13 @@ namespace GameProject
         {
             if (singleThread)
             {
-                Render();
+                Render(null);
                 UpdateGame();
             }
             else
             {
-                var task = Task.Run(Render);
-                UpdateGame();
-                task.Wait();
+                var task = Task.Run(UpdateGame);
+                Render(task.Wait);
             }
             GameState.SwapRenderers();
             Invalidate();
@@ -118,7 +99,7 @@ namespace GameProject
                     first?.AddComponent<TestCamera>();
                 if (!(first?.HasComponent<TestCannon>() ?? false))
                     first?.AddComponent<TestCannon>();
-                GameState.Time.TimeScale = GameState.Keyboard[Keys.Space] == KeyState.Pushing ? .1f : .01f;
+                GameState.Time.TimeScale = GameState.Keyboard[Keys.Space] == KeyState.Pushing ? .01f : 1f;
             }
 
             GameState.RemoveDestroyed();
@@ -141,7 +122,7 @@ namespace GameProject
             GameState.Mouse.UpdateKeyStates();
         }
 
-        private void Render()
+        private void Render(Action beforeDebug)
         {
             if (!GameState.RendererRead.Initialized)
                 return;
@@ -151,6 +132,8 @@ namespace GameProject
             GameState.RendererRead.Device.BeginRender();
 
             GameState.RendererRead.RenderAll();
+            
+            beforeDebug?.Invoke();
             if (DebugEnabled)
                 DrawDebug();
             ShowFps(GameState.RendererRead);

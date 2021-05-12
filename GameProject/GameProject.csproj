@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="CoreEngine\Awaiter.cs" />
     <Compile Include="CoreEngine\Camera.cs" />
+    <Compile Include="CoreEngine\CoreUtils.cs" />
     <Compile Include="CoreEngine\GameScript.cs" />
     <Compile Include="CoreEngine\GameState.cs" />
     <Compile Include="CoreEngine\GeometryUtility.cs" />
@@ -160,6 +161,11 @@
     <Content Include="d2dlib64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\background\bg0.jpg" />
+    <Content Include="Resources\background\bg0.pdn" />
+    <Content Include="Resources\background\bg0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\bricks\bottom_brick_connection.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -182,6 +188,38 @@
     <Content Include="Resources\machine_parts\wheel_holder.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\noise\noise_0.png" />
+    <Content Include="Resources\noise\noise_1.png" />
+    <Content Include="Resources\noise\noise_10.png" />
+    <Content Include="Resources\noise\noise_11.png" />
+    <Content Include="Resources\noise\noise_12.png" />
+    <Content Include="Resources\noise\noise_13.png" />
+    <Content Include="Resources\noise\noise_14.png" />
+    <Content Include="Resources\noise\noise_15.png" />
+    <Content Include="Resources\noise\noise_16.png" />
+    <Content Include="Resources\noise\noise_17.png" />
+    <Content Include="Resources\noise\noise_18.png" />
+    <Content Include="Resources\noise\noise_19.png" />
+    <Content Include="Resources\noise\noise_2.png" />
+    <Content Include="Resources\noise\noise_20.png" />
+    <Content Include="Resources\noise\noise_21.png" />
+    <Content Include="Resources\noise\noise_22.png" />
+    <Content Include="Resources\noise\noise_23.png" />
+    <Content Include="Resources\noise\noise_24.png" />
+    <Content Include="Resources\noise\noise_25.png" />
+    <Content Include="Resources\noise\noise_26.png" />
+    <Content Include="Resources\noise\noise_27.png" />
+    <Content Include="Resources\noise\noise_28.png" />
+    <Content Include="Resources\noise\noise_29.png" />
+    <Content Include="Resources\noise\noise_3.png" />
+    <Content Include="Resources\noise\noise_30.png" />
+    <Content Include="Resources\noise\noise_31.png" />
+    <Content Include="Resources\noise\noise_4.png" />
+    <Content Include="Resources\noise\noise_5.png" />
+    <Content Include="Resources\noise\noise_6.png" />
+    <Content Include="Resources\noise\noise_7.png" />
+    <Content Include="Resources\noise\noise_8.png" />
+    <Content Include="Resources\noise\noise_9.png" />
     <Content Include="Resources\test.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
