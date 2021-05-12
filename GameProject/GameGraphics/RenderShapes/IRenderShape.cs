@@ -1,4 +1,5 @@
-﻿using GameProject.GameMath;
+﻿using GameProject.Ecs.Graphics;
+using GameProject.GameMath;
 
 namespace GameProject.GameGraphics.RenderShapes
 {
@@ -17,10 +18,7 @@ namespace GameProject.GameGraphics.RenderShapes
         /// </summary>
         int Id { get; }
 
-        /// <summary>
-        ///     True if sprite is background
-        /// </summary>
-        bool IsBackground { get; set; }
+        RenderLayer RenderLayer { get; set; }
         
         /// <summary>
         ///     Global transformation matrix of entity being drawn

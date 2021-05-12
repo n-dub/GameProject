@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GameProject.CoreEngine;
+using GameProject.Ecs.Graphics;
 using GameProject.GameGraphics.RenderShapes;
 
 namespace GameProject.GameGraphics
@@ -58,14 +59,30 @@ namespace GameProject.GameGraphics
         /// </summary>
         public void RenderAll()
         {
-            var viewMatrix = Camera.GetViewMatrix(false);
-            var bgViewMatrix = Camera.GetViewMatrix(true);
+            var viewMatrix = Camera.GetViewMatrix();
+            var bgViewMatrix = Camera.GetViewMatrix(RenderLayer.Background);
+            var uiViewMatrix = Camera.GetViewMatrix(RenderLayer.Interface);
 
             foreach (var layerGrouping in renderShapes
                 .GroupBy(x => x.Layer)
                 .OrderBy(g => g.Key))
             foreach (var shape in layerGrouping.Where(s => s.IsActive))
-                shape.Draw(Device, shape.IsBackground ? bgViewMatrix : viewMatrix);
+            {
+                switch (shape.RenderLayer)
+                {
+                    case RenderLayer.Background:
+                        shape.Draw(Device, bgViewMatrix);
+                        break;
+                    case RenderLayer.Interface:
+                        shape.Draw(Device, uiViewMatrix);
+                        break;
+                    case RenderLayer.Normal:
+                        shape.Draw(Device, viewMatrix);
+                        break;
+                    default:
+                        throw new Exception();
+                }
+            }
         }
 
         /// <summary>

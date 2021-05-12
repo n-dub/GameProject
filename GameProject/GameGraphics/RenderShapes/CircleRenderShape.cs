@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using GameProject.CoreEngine;
+using GameProject.Ecs.Graphics;
 using GameProject.GameMath;
 
 namespace GameProject.GameGraphics.RenderShapes
@@ -9,8 +10,8 @@ namespace GameProject.GameGraphics.RenderShapes
         public int Layer { get; }
         
         public int Id { get; }
-        
-        public bool IsBackground { get; set; }
+
+        public RenderLayer RenderLayer { get; set; }
 
         public Matrix3F Transform { get; set; }
         

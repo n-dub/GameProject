@@ -60,7 +60,7 @@ namespace GameProject.GameLogic
         public static GameEntity CreateBackground(Vector2F size, Vector2F position, string imagePath)
         {
             var entity = new GameEntity();
-            var sprite = new Sprite(new QuadRenderShape(-1){ImagePath = imagePath}, true);
+            var sprite = new Sprite(new QuadRenderShape(-1){ImagePath = imagePath}, RenderLayer.Background);
             entity.AddComponent(sprite);
             entity.Position = position;
             entity.Scale = size;
@@ -83,7 +83,7 @@ namespace GameProject.GameLogic
                 });
             }
             
-            var sprite = new Sprite(shapes, true);
+            var sprite = new Sprite(shapes, RenderLayer.Background);
             entity.AddComponent(sprite);
             entity.AddComponent<NoiseAnimation>();
             entity.Position = Vector2F.Zero;

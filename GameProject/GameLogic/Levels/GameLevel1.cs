@@ -20,11 +20,16 @@ namespace GameProject.GameLogic.Levels
                     Vector2F.UnitY * -0.5f, "Resources/background/bg0.png"),
                 LevelUtility.CreateNoiseBackground()
             };
+
+            var editor = new GameEntity();
+            editor.AddComponent(new MachineEditor(5, 5));
+            editor.Position = new Vector2F(-3, -6.25f);
+            entities.Add(editor);
             
             CreateWall(entities, 0);
             CreateWall(entities, 3);
             
-            return new SceneData {Entities = entities, Camera = new Camera{Position = new Vector2F(0, -6)}};
+            return new SceneData {Entities = entities, Camera = new Camera{Position = new Vector2F(-3, -6)}};
         }
         
         private static void CreateWall(ICollection<GameEntity> entities, float positionX)

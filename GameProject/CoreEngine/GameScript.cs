@@ -35,16 +35,15 @@ namespace GameProject.CoreEngine
         {
             for (var i = 0; i < coroutines.Count; i++)
             {
-                var coroutine = coroutines[i];
-                var current = coroutine.Current;
+                var current = coroutines[i].Current;
                 if (current is null)
                 {
-                    coroutine.MoveNext();
+                    coroutines[i].MoveNext();
                     continue;
                 }
 
-                current.Update(state.Time.DeltaTime);
-                if (current.Completed && !coroutine.MoveNext())
+                current.Update(state.Time.DeltaTime, state.Time.DeltaTimeUnscaled);
+                if (current.Completed && !coroutines[i].MoveNext())
                     current.IsLast = true;
             }
 

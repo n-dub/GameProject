@@ -1,11 +1,12 @@
-﻿using GameProject.GameMath;
+﻿using GameProject.Ecs.Graphics;
+using GameProject.GameMath;
 
 namespace GameProject.CoreEngine
 {
     /// <summary>
     ///     Represents game camera
     /// </summary>
-    internal class Camera
+    internal sealed class Camera
     {
         /// <summary>
         ///     Aspect ratio of screen's resolution
@@ -42,16 +43,18 @@ namespace GameProject.CoreEngine
         /// <summary>
         ///     Get matrix to apply to all sprite vertices to correctly project them on the screen
         /// </summary>
-        /// <param name="background">True if background sprite</param>
+        /// <param name="renderLayer">Render layer of the sprite sprite</param>
         /// <returns>View matrix</returns>
-        public Matrix3F GetViewMatrix(bool background = false)
+        public Matrix3F GetViewMatrix(RenderLayer renderLayer = RenderLayer.Normal)
         {
+            var unscaled = renderLayer == RenderLayer.Background || renderLayer == RenderLayer.Interface;
             var center = Matrix3F.CreateTranslation(ScreenSize / 2);
-            var scale = Matrix3F.CreateScale(new Vector2F(ScreenSize.X / (background ? 1 : ViewWidth)));
+            var scale = Matrix3F.CreateScale(new Vector2F(ScreenSize.X / (unscaled ? 1 : ViewWidth)));
             var rot = Matrix3F.CreateRotation(Rotation);
-            var pos = Matrix3F.CreateTranslation(-Position / (background ? BackgroundMoveFactor * ViewWidth : 1));
+            var moveFactor = renderLayer == RenderLayer.Background ? BackgroundMoveFactor * ViewWidth : 1;
+            var pos = Matrix3F.CreateTranslation(-Position / moveFactor);
 
-            return center * scale * rot * pos;
+            return renderLayer == RenderLayer.Interface ? center * scale : center * scale * rot * pos;
         }
     }
 }

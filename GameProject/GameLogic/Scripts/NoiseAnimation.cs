@@ -20,16 +20,18 @@ namespace GameProject.GameLogic.Scripts
 
         private IEnumerable<Awaiter> AnimCoroutine()
         {
-            var prevIndex = 0;
             yield return Awaiter.WaitForFrames(2);
+            
             foreach (var shape in shapes)
                 shape.IsActive = false;
+            
+            var prevIndex = 0;
             while (true)
             {
                 shapes[prevIndex].IsActive = false;
                 prevIndex = random.Next(0, shapes.Count);
                 shapes[prevIndex].IsActive = true;
-                yield return Awaiter.WaitForSeconds(0.03f);
+                yield return Awaiter.WaitForSeconds(0.03f, false);
             }
         }
     }

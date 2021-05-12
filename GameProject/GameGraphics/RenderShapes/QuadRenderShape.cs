@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using GameProject.CoreEngine;
+using GameProject.Ecs.Graphics;
 using GameProject.GameMath;
 
 namespace GameProject.GameGraphics.RenderShapes
@@ -14,8 +15,8 @@ namespace GameProject.GameGraphics.RenderShapes
         public int Layer { get; }
         
         public int Id { get; }
-        
-        public bool IsBackground { get; set; }
+
+        public RenderLayer RenderLayer { get; set; }
 
         /// <summary>
         ///     Image to use for drawing
