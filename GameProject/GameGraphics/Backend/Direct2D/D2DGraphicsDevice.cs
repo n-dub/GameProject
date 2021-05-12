@@ -74,13 +74,13 @@ namespace GameProject.GameGraphics.Backend.Direct2D
             interpolationMode = mode;
         }
 
-        public void DrawBitmap(IBitmap bitmap, Vector2F location, Vector2F scale)
+        public void DrawBitmap(IBitmap bitmap, Vector2F location, Vector2F scale, float opacity)
         {
             if (!(bitmap is D2DGraphicsBitmap bm))
                 return;
 
             var rect = new D2DRect(location, scale);
-            Graphics.DrawBitmap(bm.NativeBitmap, rect, 1, D2DInterpolationMode);
+            Graphics.DrawBitmap(bm.NativeBitmap, rect, opacity, D2DInterpolationMode);
         }
 
         public void DrawRectangle(Vector2F location, Vector2F size, Color color)
