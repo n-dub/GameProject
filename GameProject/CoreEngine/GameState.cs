@@ -12,7 +12,7 @@ namespace GameProject.CoreEngine
     ///     Represents general game state, is immutable, therefore must be not changed by
     ///     any game classes but the <see cref="MainWindow" />
     /// </summary>
-    internal class GameState
+    internal sealed class GameState
     {
         /// <summary>
         ///     <see cref="Renderer" /> currently used for reading

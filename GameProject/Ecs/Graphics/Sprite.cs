@@ -17,10 +17,7 @@ namespace GameProject.Ecs.Graphics
         /// </summary>
         public List<IRenderShape> Shapes { get; }
         
-        /// <summary>
-        ///     True if sprite is background
-        /// </summary>
-        public bool IsBackground { get; }
+        public RenderLayer RenderLayer { get; }
 
         public GameEntity Entity { get; set; }
 
@@ -30,10 +27,10 @@ namespace GameProject.Ecs.Graphics
         ///     Create a new <see cref="Sprite" /> component
         /// </summary>
         /// <param name="shapes">Instances of <see cref="IRenderShape" /> to connect to game object</param>
-        /// <param name="isBackground">True if sprite is background</param>
-        public Sprite(IEnumerable<IRenderShape> shapes, bool isBackground = false)
+        /// <param name="layer">Render layer of the sprite</param>
+        public Sprite(IEnumerable<IRenderShape> shapes, RenderLayer layer = RenderLayer.Normal)
         {
-            IsBackground = isBackground;
+            RenderLayer = layer;
             Shapes = shapes.ToList();
         }
 
@@ -41,21 +38,21 @@ namespace GameProject.Ecs.Graphics
         ///     Create a new <see cref="Sprite" /> component
         /// </summary>
         /// <param name="shape">An instances of <see cref="IRenderShape" /> to connect to game object</param>
-        /// <param name="isBackground">True if sprite is background</param>
-        public Sprite(IRenderShape shape, bool isBackground = false)
+        /// <param name="layer">Render layer of the sprite</param>
+        public Sprite(IRenderShape shape, RenderLayer layer = RenderLayer.Normal)
         {
             Shapes = new List<IRenderShape>(4) {shape};
-            IsBackground = isBackground;
+            RenderLayer = layer;
         }
 
-        public Sprite() : this(false)
+        public Sprite() : this(RenderLayer.Normal)
         {
         }
 
-        public Sprite(bool isBackground)
+        public Sprite(RenderLayer layer)
         {
             Shapes = new List<IRenderShape>(4);
-            IsBackground = isBackground;
+            RenderLayer = layer;
         }
 
         public void Update(GameState state)
@@ -79,7 +76,7 @@ namespace GameProject.Ecs.Graphics
             foreach (var shape in Shapes)
             {
                 state.RendererWrite.AddShape(shape);
-                shape.IsBackground = IsBackground;
+                shape.RenderLayer = RenderLayer;
                 //shape.Initialize(state.RendererWrite.Device);
                 initialized = true;
             }

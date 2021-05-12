@@ -1,10 +1,12 @@
 ﻿namespace GameProject.CoreEngine
 {
-    internal class Awaiter
+    internal sealed class Awaiter
     {
         public float Seconds { get; private set; }
         
         public int Frames { get; private set; }
+        
+        public bool TimeScaled { get; private set; }
 
         public bool Completed => Seconds <= 0 && Frames <= 0;
         
@@ -15,9 +17,10 @@
             Frames = frames;
         }
         
-        private Awaiter(float seconds)
+        private Awaiter(float seconds, bool timeScaled = true)
         {
             Seconds = seconds;
+            TimeScaled = timeScaled;
         }
 
         public static Awaiter WaitForNextFrame()
@@ -30,14 +33,14 @@
             return new Awaiter(count);
         }
 
-        public static Awaiter WaitForSeconds(float seconds)
+        public static Awaiter WaitForSeconds(float seconds, bool timeScaled = true)
         {
-            return new Awaiter(seconds);
+            return new Awaiter(seconds, timeScaled);
         }
 
-        public void Update(float deltaTime)
+        public void Update(float deltaTime, float deltaTimeUnscaled)
         {
-            Seconds -= deltaTime;
+            Seconds -= TimeScaled ? deltaTime : deltaTimeUnscaled;
             --Frames;
         }
     }

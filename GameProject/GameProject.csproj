@@ -80,6 +80,7 @@
     <Compile Include="CoreEngine\SceneData.cs" />
     <Compile Include="CoreEngine\Time.cs" />
     <Compile Include="Ecs\GameEntity.cs" />
+    <Compile Include="Ecs\Graphics\RenderLayer.cs" />
     <Compile Include="Ecs\Graphics\Sprite.cs" />
     <Compile Include="Ecs\IGameComponent.cs" />
     <Compile Include="Ecs\Physics\BoxCollider.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="GameLogic\Levels\WheelTest.cs" />
     <Compile Include="GameLogic\LevelUtility.cs" />
     <Compile Include="GameLogic\Scripts\BrickWall.cs" />
+    <Compile Include="GameLogic\Scripts\MachineEditor.cs" />
     <Compile Include="GameLogic\Scripts\NoiseAnimation.cs" />
     <Compile Include="GameLogic\Scripts\PartialBrickRow.cs" />
     <Compile Include="GameLogic\Scripts\TestCamera.cs" />
@@ -287,6 +289,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\test.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ui\machine_slot.pdn" />
+    <Content Include="Resources\ui\machine_slot.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

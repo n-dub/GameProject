@@ -1,6 +1,6 @@
 ﻿namespace GameProject.CoreEngine
 {
-    internal class ResourceHandle<T> where T : class
+    internal sealed class ResourceHandle<T> where T : class
     {
         public T Resource => handle.Resource as T;
 
