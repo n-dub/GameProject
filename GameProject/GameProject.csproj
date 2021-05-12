@@ -70,6 +70,7 @@
     <Compile Include="CoreEngine\Awaiter.cs" />
     <Compile Include="CoreEngine\Camera.cs" />
     <Compile Include="CoreEngine\CoreUtils.cs" />
+    <Compile Include="CoreEngine\GameProfiler.cs" />
     <Compile Include="CoreEngine\GameScript.cs" />
     <Compile Include="CoreEngine\GameState.cs" />
     <Compile Include="CoreEngine\GeometryUtility.cs" />

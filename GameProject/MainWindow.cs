@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -72,6 +73,7 @@ namespace GameProject
 
         private void MakeFrame(bool singleThread = false)
         {
+            GameProfiler.StartEvent(nameof(MakeFrame));
             if (singleThread)
             {
                 Render(null);
@@ -83,12 +85,18 @@ namespace GameProject
                 Render(task.Wait);
                 task.Wait();
             }
+            
+            GameProfiler.StartEvent(nameof(GameState.SwapRenderers));
             GameState.SwapRenderers();
             Invalidate();
+            GameProfiler.EndEvent(nameof(GameState.SwapRenderers));
+            
+            GameProfiler.EndEvent(nameof(MakeFrame));
         }
 
         private void UpdateGame()
         {
+            GameProfiler.StartEvent(nameof(UpdateGame));
             GameState.AddNewEntities();
 
             {
@@ -114,15 +122,20 @@ namespace GameProject
             foreach (var entity in GameState.Entities.Where(entity => entity.Destroyed))
                 entity.DoForAllChildren(c => c.Destroy(), c => c.Destroy(GameState));
 
+            GameProfiler.StartEvent(nameof(World.Step));
             for (var i = 0; i < PhysicsSubsteps; i++)
                 GameState.PhysicsWorld.Step(GameState.Time.DeltaTime / PhysicsSubsteps);
+            GameProfiler.EndEvent(nameof(World.Step));
 
             GameState.Keyboard.UpdateKeyStates();
             GameState.Mouse.UpdateKeyStates();
+            
+            GameProfiler.EndEvent(nameof(UpdateGame));
         }
 
         private void Render(Action beforeDebug)
         {
+            GameProfiler.StartEvent(nameof(Render));
             if (!GameState.RendererRead.Initialized)
                 return;
             if (GameState.RendererRead.Device is WinFormsGraphicsDevice device)
@@ -139,6 +152,7 @@ namespace GameProject
 
             ShowFps(GameState.RendererRead);
             GameState.RendererRead.Device.EndRender();
+            GameProfiler.EndEvent(nameof(Render));
         }
 
         private void DrawDebug()
@@ -238,6 +252,11 @@ namespace GameProject
         {
             if (GameState.RendererRead.Device is WinFormsGraphicsDevice)
                 base.OnPaintBackground(e);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            GameProfiler.Save("prof.json");
         }
     }
 }
