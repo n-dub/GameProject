@@ -13,11 +13,11 @@ namespace GameProject.GameLogic.Levels
             
             var entities = new List<GameEntity>
             {
-                LevelUtility.CreateRectangle(Vector2F.Zero, Vector2F.One.WithX(width), true),
+                LevelUtility.CreatePhysicalRectangle(Vector2F.Zero, Vector2F.One.WithX(width), true),
             };
 
             var position = new Vector2F(0, LevelUtility.BrickSize.Z / 2 - 0.5f);
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < 16; i++)
             {
                 position -= Vector2F.UnitY * LevelUtility.BrickSize.Z;
                 entities.Add(LevelUtility.CreateBrick(position.WithX(-LevelUtility.BrickSize.X / 2), false));
@@ -31,9 +31,7 @@ namespace GameProject.GameLogic.Levels
             
             return new SceneData
             {
-                Entities = entities,
-                Width = width,
-                Offset = width / -2
+                Entities = entities
             };
         }
     }

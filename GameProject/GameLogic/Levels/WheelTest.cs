@@ -17,12 +17,12 @@ namespace GameProject.GameLogic.Levels
             
             var entities = new List<GameEntity>
             {
-                LevelUtility.CreateRectangle(Vector2F.Zero, Vector2F.One.WithX(width), true),
-                LevelUtility.CreateRectangle(new Vector2F(width / 2, height / -2),
+                LevelUtility.CreatePhysicalRectangle(Vector2F.Zero, Vector2F.One.WithX(width), true),
+                LevelUtility.CreatePhysicalRectangle(new Vector2F(width / 2, height / -2),
                     Vector2F.One.WithY(height), true)
             };
 
-            var machine = LevelUtility.CreateRectangle(Vector2F.UnitY * -1.2f, new Vector2F(2.5f, 0.3f));
+            var machine = LevelUtility.CreatePhysicalRectangle(Vector2F.UnitY * -1.2f, new Vector2F(2.5f, 0.3f));
             entities.Add(machine);
 
             CreateWheel(entities, machine, -0.8f);
@@ -32,9 +32,7 @@ namespace GameProject.GameLogic.Levels
             
             return new SceneData
             {
-                Entities = entities,
-                Width = width,
-                Offset = width / -2
+                Entities = entities
             };
         }
 

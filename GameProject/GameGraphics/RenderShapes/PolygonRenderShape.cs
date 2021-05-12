@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using GameProject.CoreEngine;
 using GameProject.GameMath;
 
 namespace GameProject.GameGraphics.RenderShapes
@@ -10,6 +11,8 @@ namespace GameProject.GameGraphics.RenderShapes
         public int Layer { get; }
         
         public int Id { get; }
+        
+        public bool IsBackground { get; set; }
 
         public Matrix3F Transform { get; set; }
         
@@ -43,13 +46,8 @@ namespace GameProject.GameGraphics.RenderShapes
 
         public void CopyDataFrom(IRenderShape other)
         {
-            if (!(other is PolygonRenderShape s))
-                return;
-            Color = s.Color;
-            IsActive = s.IsActive;
-            Offset = s.Offset;
-            Points = s.Points.ToArray();
-            Transform = s.Transform;
+            if (other is PolygonRenderShape s)
+                this.CopyPropertiesFrom(s);
         }
         
         public override bool Equals(object obj)

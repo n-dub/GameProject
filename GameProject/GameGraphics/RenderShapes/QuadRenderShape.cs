@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.IO;
+using System.Linq;
 using GameProject.CoreEngine;
 using GameProject.GameMath;
 
@@ -13,6 +14,8 @@ namespace GameProject.GameGraphics.RenderShapes
         public int Layer { get; }
         
         public int Id { get; }
+        
+        public bool IsBackground { get; set; }
 
         /// <summary>
         ///     Image to use for drawing
@@ -65,15 +68,8 @@ namespace GameProject.GameGraphics.RenderShapes
 
         public void CopyDataFrom(IRenderShape other)
         {
-            if (!(other is QuadRenderShape s))
-                return;
-            Color = s.Color;
-            Image = s.Image;
-            ImagePath = s.ImagePath;
-            IsActive = s.IsActive;
-            Offset = s.Offset;
-            Scale = s.Scale;
-            Transform = s.Transform;
+            if (other is QuadRenderShape s)
+                this.CopyPropertiesFrom(s);
         }
         
         public override bool Equals(object obj)

@@ -32,24 +32,24 @@ namespace GameProject.CoreEngine
         /// </summary>
         public float ViewWidth { get; set; } = 7f;
 
+        public float BackgroundMoveFactor { get; set; } = 20f;
+
         public void CopyDataFrom(Camera camera)
         {
-            Position = camera.Position;
-            Rotation = camera.Rotation;
-            ScreenSize = camera.ScreenSize;
-            ViewWidth = camera.ViewWidth;
+            this.CopyPropertiesFrom(camera);
         }
 
         /// <summary>
         ///     Get matrix to apply to all sprite vertices to correctly project them on the screen
         /// </summary>
+        /// <param name="background">True if background sprite</param>
         /// <returns>View matrix</returns>
-        public Matrix3F GetViewMatrix()
+        public Matrix3F GetViewMatrix(bool background = false)
         {
             var center = Matrix3F.CreateTranslation(ScreenSize / 2);
-            var scale = Matrix3F.CreateScale(new Vector2F(ScreenSize.X / ViewWidth));
+            var scale = Matrix3F.CreateScale(new Vector2F(ScreenSize.X / (background ? 1 : ViewWidth)));
             var rot = Matrix3F.CreateRotation(Rotation);
-            var pos = Matrix3F.CreateTranslation(-Position);
+            var pos = Matrix3F.CreateTranslation(-Position / (background ? BackgroundMoveFactor * ViewWidth : 1));
 
             return center * scale * rot * pos;
         }

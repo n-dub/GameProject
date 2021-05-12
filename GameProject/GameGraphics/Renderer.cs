@@ -58,13 +58,14 @@ namespace GameProject.GameGraphics
         /// </summary>
         public void RenderAll()
         {
-            var viewMatrix = Camera.GetViewMatrix();
+            var viewMatrix = Camera.GetViewMatrix(false);
+            var bgViewMatrix = Camera.GetViewMatrix(true);
 
             foreach (var layerGrouping in renderShapes
                 .GroupBy(x => x.Layer)
-                /*.OrderBy(g => g.Key)*/)
+                .OrderBy(g => g.Key))
             foreach (var shape in layerGrouping.Where(s => s.IsActive))
-                shape.Draw(Device, viewMatrix);
+                shape.Draw(Device, shape.IsBackground ? bgViewMatrix : viewMatrix);
         }
 
         /// <summary>

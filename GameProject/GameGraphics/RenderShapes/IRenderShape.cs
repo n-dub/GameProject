@@ -12,8 +12,16 @@ namespace GameProject.GameGraphics.RenderShapes
         /// </summary>
         int Layer { get; }
         
+        /// <summary>
+        ///     Unique ID of the shape
+        /// </summary>
         int Id { get; }
 
+        /// <summary>
+        ///     True if sprite is background
+        /// </summary>
+        bool IsBackground { get; set; }
+        
         /// <summary>
         ///     Global transformation matrix of entity being drawn
         /// </summary>
