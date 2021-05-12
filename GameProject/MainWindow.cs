@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
-using GameProject.Ecs;
 using GameProject.GameDebug;
 using GameProject.GameGraphics;
 using GameProject.GameGraphics.Backend.Direct2D;
@@ -83,6 +81,7 @@ namespace GameProject
             {
                 var task = Task.Run(UpdateGame);
                 Render(task.Wait);
+                task.Wait();
             }
             GameState.SwapRenderers();
             Invalidate();
@@ -130,14 +129,15 @@ namespace GameProject
                 device.Graphics = CreateGraphics();
 
             GameState.RendererRead.Device.BeginRender();
-
             GameState.RendererRead.RenderAll();
             
-            beforeDebug?.Invoke();
             if (DebugEnabled)
+            {
+                beforeDebug?.Invoke();
                 DrawDebug();
-            ShowFps(GameState.RendererRead);
+            }
 
+            ShowFps(GameState.RendererRead);
             GameState.RendererRead.Device.EndRender();
         }
 

@@ -17,7 +17,8 @@ namespace GameProject.GameLogic.Levels
             {
                 ground,
                 LevelUtility.CreateBackground(new Vector2F(4592, 3056) / 1500,
-                    Vector2F.UnitY * -0.5f, "Resources/background/bg0.png")
+                    Vector2F.UnitY * -0.5f, "Resources/background/bg0.png"),
+                LevelUtility.CreateNoiseBackground()
             };
             
             CreateWall(entities, 0);

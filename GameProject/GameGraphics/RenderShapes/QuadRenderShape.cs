@@ -63,7 +63,7 @@ namespace GameProject.GameGraphics.RenderShapes
             if (Image is null)
                 device.DrawRectangle(Vector2F.Zero, Vector2F.One, Color);
             else
-                device.DrawBitmap(Image, Offset, Scale);
+                device.DrawBitmap(Image, Offset, Scale, Color.A / 255f);
         }
 
         public void CopyDataFrom(IRenderShape other)

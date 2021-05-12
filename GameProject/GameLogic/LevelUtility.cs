@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
 using GameProject.Ecs.Physics;
 using GameProject.GameGraphics.RenderShapes;
+using GameProject.GameLogic.Scripts;
 using GameProject.GameMath;
 
 namespace GameProject.GameLogic
@@ -61,6 +64,30 @@ namespace GameProject.GameLogic
             entity.AddComponent(sprite);
             entity.Position = position;
             entity.Scale = size;
+            entity.FlushComponents();
+            return entity;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GameEntity CreateNoiseBackground()
+        {
+            var entity = new GameEntity();
+            var shapes = new List<QuadRenderShape>(32);
+            
+            for (var i = 0; i < 32; i++)
+            {
+                var imagePath = $"Resources/noise/noise_{i}.png";
+                shapes.Add(new QuadRenderShape(-1)
+                {
+                    ImagePath = imagePath, Color = Color.FromArgb(30, 0, 0, 0)
+                });
+            }
+            
+            var sprite = new Sprite(shapes, true);
+            entity.AddComponent(sprite);
+            entity.AddComponent<NoiseAnimation>();
+            entity.Position = Vector2F.Zero;
+            entity.Scale = Vector2F.One;
             entity.FlushComponents();
             return entity;
         }
