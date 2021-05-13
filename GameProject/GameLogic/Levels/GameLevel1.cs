@@ -22,7 +22,7 @@ namespace GameProject.GameLogic.Levels
             };
 
             var editor = new GameEntity();
-            editor.AddComponent(new MachineEditor(5, 5));
+            editor.AddComponent(new MachineEditor(5, 7));
             editor.Position = new Vector2F(-3, -6.25f);
             entities.Add(editor);
             

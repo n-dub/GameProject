@@ -16,6 +16,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -114,7 +115,11 @@
     <Compile Include="GameLogic\Levels\WheelTest.cs" />
     <Compile Include="GameLogic\LevelUtility.cs" />
     <Compile Include="GameLogic\Scripts\BrickWall.cs" />
+    <Compile Include="GameLogic\Scripts\IMachinePartFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineEditor.cs" />
+    <Compile Include="GameLogic\Scripts\MachineMenu.cs" />
+    <Compile Include="GameLogic\Scripts\MachineMenuResponse.cs" />
+    <Compile Include="GameLogic\Scripts\MachineParts\WoodenBoxFactory.cs" />
     <Compile Include="GameLogic\Scripts\NoiseAnimation.cs" />
     <Compile Include="GameLogic\Scripts\PartialBrickRow.cs" />
     <Compile Include="GameLogic\Scripts\TestCamera.cs" />
@@ -190,6 +195,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\machine_parts\wheel_holder.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\machine_parts\wooden_box.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\noise\noise_0.png">

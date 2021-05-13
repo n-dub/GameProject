@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using GameProject.CoreEngine;
@@ -17,6 +18,7 @@ namespace GameProject.GameLogic.Scripts
         private const float CellSize = 0.5f;
 
         private Point selectedCell = new Point(-1, -1);
+        private MachineMenuResponse menuResponse;
 
         public MachineEditor(int rows, int columns)
         {
@@ -40,7 +42,7 @@ namespace GameProject.GameLogic.Scripts
                 {
                     ImagePath = "Resources/ui/machine_slot.png",
                     Scale = Vector2F.One * CellSize,
-                    Offset = new Vector2F(i, j) * CellSize - center
+                    Offset = new Vector2F(j, i) * CellSize - center
                 };
                 shapes.Add(shape);
             }
@@ -54,17 +56,34 @@ namespace GameProject.GameLogic.Scripts
             {
                 var worldClickPos = GameState.Mouse.WorldPosition;
                 selectedCell = GetCellIndex(worldClickPos);
+                if (InBounds(selectedCell))
+                {
+                    menuResponse = new MachineMenuResponse();
+                    Entity.AddComponent(new MachineMenu(menuResponse));
+                }
+            }
+
+            if (menuResponse?.TryGetResult(out var partIndex) ?? false)
+            {
+                // TODO
+                menuResponse.Factory = null;
             }
 
             var shapes = Entity.GetComponent<Sprite>().Shapes;
             for (var i = 0; i < Rows; i++)
             for (var j = 0; j < Columns; j++)
             {
-                if (shapes[i * Rows + j] is QuadRenderShape shape)
-                    shape.Scale = selectedCell == new Point(i, j)
-                        ? Vector2F.One * CellSize * 0.9f
-                        : Vector2F.One * CellSize;
+                if (!(shapes[i * Columns + j] is QuadRenderShape shape))
+                    continue;
+                shape.Scale = selectedCell == new Point(j, i)
+                    ? Vector2F.One * CellSize * 0.9f
+                    : Vector2F.One * CellSize;
             }
+        }
+
+        private bool InBounds(Point index)
+        {
+            return index.X >= 0 && index.Y >= 0 && index.X < Columns && index.Y < Rows;
         }
 
         private Point GetCellIndex(Vector2F worldClickPos)
@@ -72,7 +91,7 @@ namespace GameProject.GameLogic.Scripts
             var center = new Vector2F(Columns, Rows) * CellSize * 0.5f;
             var relative = worldClickPos - Entity.Position + center;
             var index = relative / CellSize;
-            return new Point((int) index.X, (int) index.Y);
+            return new Point((int) MathF.Floor(index.X), (int) MathF.Floor(index.Y));
         }
     }
 }

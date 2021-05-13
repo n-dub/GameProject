@@ -9,7 +9,7 @@ namespace GameProject
     {
         private static readonly ISceneFactory[] levels =
         {
-            new GameLevel1()
+            new BrickWallTest()
         };
 
         /// <summary>

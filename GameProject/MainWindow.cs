@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FarseerPhysics.Dynamics;
@@ -73,85 +74,93 @@ namespace GameProject
 
         private void MakeFrame(bool singleThread = false)
         {
-            GameProfiler.StartEvent(nameof(MakeFrame));
-            if (singleThread)
+            using (new GameProfiler(nameof(MakeFrame)))
             {
-                Render(null);
-                UpdateGame();
+                if (singleThread)
+                {
+                    Render(null);
+                    UpdateGame();
+                }
+                else
+                {
+                    var task = Task.Run(UpdateGame);
+                    Render(task.Wait);
+                    task.Wait();
+                }
+
+                using (new GameProfiler(nameof(GameState.SwapRenderers)))
+                {
+                    GameState.SwapRenderers();
+                    Invalidate();
+                }
             }
-            else
-            {
-                var task = Task.Run(UpdateGame);
-                Render(task.Wait);
-                task.Wait();
-            }
-            
-            GameProfiler.StartEvent(nameof(GameState.SwapRenderers));
-            GameState.SwapRenderers();
-            Invalidate();
-            GameProfiler.EndEvent(nameof(GameState.SwapRenderers));
-            
-            GameProfiler.EndEvent(nameof(MakeFrame));
         }
 
         private void UpdateGame()
         {
-            GameProfiler.StartEvent(nameof(UpdateGame));
-            GameState.AddNewEntities();
-
+            using (new GameProfiler(nameof(UpdateGame)))
             {
-                // TODO: TEST CODE - TO BE REMOVED
-                var first = GameState.Entities.FirstOrDefault();
-                if (!(first?.HasComponent<TestCamera>() ?? false))
-                    first?.AddComponent<TestCamera>();
-                if (!(first?.HasComponent<TestCannon>() ?? false))
-                    first?.AddComponent<TestCannon>();
+                GameState.AddNewEntities();
+
+                {
+                    // TODO: TEST CODE - TO BE REMOVED
+                    var first = GameState.Entities.FirstOrDefault();
+                    if (!(first?.HasComponent<TestCamera>() ?? false))
+                        first?.AddComponent<TestCamera>();
+                    if (!(first?.HasComponent<TestCannon>() ?? false))
+                        first?.AddComponent<TestCannon>();
+                }
+
+                GameState.RemoveDestroyed();
+                GameState.Time.UpdateForNextFrame(GameState.Time.FrameIndex < 5 ? 1 : Stopwatch.ElapsedMilliseconds);
+                Stopwatch.Restart();
+
+                if (GameState.Keyboard[Keys.F3] == KeyState.Down)
+                    DebugEnabled = !DebugEnabled;
+
+                foreach (var entity in GameState.Entities)
+                    entity.Update(GameState);
+
+                foreach (var entity in GameState.Entities.Where(entity => entity.Destroyed))
+                    entity.DoForAllChildren(c => c.Destroy(), c => c.Destroy(GameState));
+
+                using (new GameProfiler(nameof(World.Step)))
+                {
+                    for (var i = 0; i < PhysicsSubsteps; i++)
+                        GameState.PhysicsWorld.Step(GameState.Time.DeltaTime / PhysicsSubsteps);
+                }
+
+                GameState.Keyboard.UpdateKeyStates();
+                GameState.Mouse.UpdateKeyStates();
             }
-
-            GameState.RemoveDestroyed();
-            GameState.Time.UpdateForNextFrame(GameState.Time.FrameIndex < 5 ? 1 : Stopwatch.ElapsedMilliseconds);
-            Stopwatch.Restart();
-
-            if (GameState.Keyboard[Keys.F3] == KeyState.Down)
-                DebugEnabled = !DebugEnabled;
-
-            foreach (var entity in GameState.Entities)
-                entity.Update(GameState);
-
-            foreach (var entity in GameState.Entities.Where(entity => entity.Destroyed))
-                entity.DoForAllChildren(c => c.Destroy(), c => c.Destroy(GameState));
-
-            GameProfiler.StartEvent(nameof(World.Step));
-            for (var i = 0; i < PhysicsSubsteps; i++)
-                GameState.PhysicsWorld.Step(GameState.Time.DeltaTime / PhysicsSubsteps);
-            GameProfiler.EndEvent(nameof(World.Step));
-
-            GameState.Keyboard.UpdateKeyStates();
-            GameState.Mouse.UpdateKeyStates();
-            
-            GameProfiler.EndEvent(nameof(UpdateGame));
         }
 
-        private void Render(Action beforeDebug)
+        private void Render(Action waitForUpdateGame)
         {
-            GameProfiler.StartEvent(nameof(Render));
-            if (!GameState.RendererRead.Initialized)
-                return;
-            if (GameState.RendererRead.Device is WinFormsGraphicsDevice device)
-                device.Graphics = CreateGraphics();
-
-            GameState.RendererRead.Device.BeginRender();
-            GameState.RendererRead.RenderAll();
-            
-            if (DebugEnabled)
+            using (new GameProfiler(nameof(Render)))
             {
-                beforeDebug?.Invoke();
-                DrawDebug();
-            }
+                if (!GameState.RendererRead.Initialized)
+                    return;
+                if (GameState.RendererRead.Device is WinFormsGraphicsDevice device)
+                    device.Graphics = CreateGraphics();
 
-            ShowFps(GameState.RendererRead);
-            GameState.RendererRead.Device.EndRender();
-            GameProfiler.EndEvent(nameof(Render));
+                GameState.RendererRead.Device.BeginRender();
+
+                using (new GameProfiler(nameof(GameState.RendererRead.RenderAll)))
+                    GameState.RendererRead.RenderAll();
+
+                if (DebugEnabled)
+                {
+                    waitForUpdateGame?.Invoke();
+                    DrawDebug();
+                }
+
+                using (new GameProfiler(nameof(ShowFps)))
+                    ShowFps(GameState.RendererRead);
+
+                using (new GameProfiler(nameof(GameState.RendererRead.Device.EndRender)))
+                    GameState.RendererRead.Device.EndRender();
+            }
         }
 
         private void DrawDebug()
@@ -168,6 +177,7 @@ namespace GameProject
                     });
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ShowFps(Renderer renderer)
         {
             fpsShowTimer += GameState.Time.DeltaTimeUnscaled;

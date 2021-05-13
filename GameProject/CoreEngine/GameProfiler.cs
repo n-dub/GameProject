@@ -9,24 +9,19 @@ using System.Threading;
 
 namespace GameProject.CoreEngine
 {
-    internal static class GameProfiler
+    internal sealed class GameProfiler : IDisposable
     {
         private static readonly List<(string name, long time, long tid, bool start)> events
             = new List<(string, long, long, bool)>();
         private static readonly Stopwatch startTime = Stopwatch.StartNew();
 
+        private readonly string name;
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void StartEvent(string name)
+        public GameProfiler(string name)
         {
-            var tid = Thread.CurrentThread.ManagedThreadId;
-            events.Add((name, startTime.ElapsedTicks, tid, true));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void EndEvent(string name)
-        {
-            var tid = Thread.CurrentThread.ManagedThreadId;
-            events.Add((name, startTime.ElapsedTicks, tid, false));
+            this.name = name;
+            StartEvent(name);
         }
 
         public static void Save(string fileName)
@@ -44,6 +39,26 @@ namespace GameProject.CoreEngine
             lines.Add("]");
 
             File.WriteAllLines(fileName, lines.ToArray());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Dispose()
+        {
+            EndEvent(name);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void StartEvent(string name)
+        {
+            var tid = Thread.CurrentThread.ManagedThreadId;
+            events.Add((name, startTime.ElapsedTicks, tid, true));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void EndEvent(string name)
+        {
+            var tid = Thread.CurrentThread.ManagedThreadId;
+            events.Add((name, startTime.ElapsedTicks, tid, false));
         }
 
         private static void WriteEvent(ICollection<string> lines, string name, long time, long tid, string type)
