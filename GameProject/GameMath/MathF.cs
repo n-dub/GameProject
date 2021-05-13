@@ -64,5 +64,19 @@ namespace GameProject.GameMath
         {
             return Math.Max(min, Math.Min(max, value));
         }
+
+        /// <inheritdoc cref="Math.Floor(double)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Floor(float value)
+        {
+            return (float) Math.Floor(value);
+        }
+        
+        /// <inheritdoc cref="Math.Ceiling(double)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Ceiling(float value)
+        {
+            return (float) Math.Ceiling(value);
+        }
     }
 }
