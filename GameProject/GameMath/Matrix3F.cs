@@ -8,8 +8,23 @@ namespace GameProject.GameMath
     /// <summary>
     ///     Represents a 3x3 matrix, read-only
     /// </summary>
-    internal class Matrix3F
+    internal struct Matrix3F
     {
+        private unsafe struct MatrixArray
+        {
+#pragma warning disable 649
+            private fixed float elements[Size * Size];
+#pragma warning restore 649
+
+            public float this[int x, int y]
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => elements[x * Size + y];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => elements[x * Size + y] = value;
+            }
+        }
+        
         /// <summary>
         ///     An identity matrix
         /// </summary>
@@ -105,26 +120,23 @@ namespace GameProject.GameMath
             get
             {
                 var transposed = Transposed;
-                var cofactors = new[,]
+                var cofactors = new Matrix3F
                 {
+                    matrix =
                     {
-                        transposed[1, 1] * transposed[2, 2] - transposed[2, 1] * transposed[1, 2],
-                        transposed[2, 0] * transposed[1, 2] - transposed[1, 0] * transposed[2, 2],
-                        transposed[1, 0] * transposed[2, 1] - transposed[2, 0] * transposed[1, 1]
-                    },
-                    {
-                        transposed[2, 1] * transposed[0, 2] - transposed[0, 1] * transposed[2, 2],
-                        transposed[0, 0] * transposed[2, 2] - transposed[2, 0] * transposed[0, 2],
-                        transposed[0, 1] * transposed[2, 0] - transposed[0, 0] * transposed[2, 1]
-                    },
-                    {
-                        transposed[0, 1] * transposed[1, 2] - transposed[0, 2] * transposed[1, 1],
-                        transposed[0, 2] * transposed[1, 0] - transposed[0, 0] * transposed[1, 2],
-                        transposed[0, 0] * transposed[1, 1] - transposed[0, 1] * transposed[1, 0]
+                        [0, 0] = transposed[1, 1] * transposed[2, 2] - transposed[2, 1] * transposed[1, 2],
+                        [0, 1] = transposed[2, 0] * transposed[1, 2] - transposed[1, 0] * transposed[2, 2],
+                        [0, 2] = transposed[1, 0] * transposed[2, 1] - transposed[2, 0] * transposed[1, 1],
+                        [1, 0] = transposed[2, 1] * transposed[0, 2] - transposed[0, 1] * transposed[2, 2],
+                        [1, 1] = transposed[0, 0] * transposed[2, 2] - transposed[2, 0] * transposed[0, 2],
+                        [1, 2] = transposed[0, 1] * transposed[2, 0] - transposed[0, 0] * transposed[2, 1],
+                        [2, 0] = transposed[0, 1] * transposed[1, 2] - transposed[0, 2] * transposed[1, 1],
+                        [2, 1] = transposed[0, 2] * transposed[1, 0] - transposed[0, 0] * transposed[1, 2],
+                        [2, 2] = transposed[0, 0] * transposed[1, 1] - transposed[0, 1] * transposed[1, 0]
                     }
                 };
 
-                return new Matrix3F(cofactors).MultiplyByScalar(1f / Determinant);
+                return cofactors.MultiplyByScalar(1f / Determinant);
             }
         }
 
@@ -140,7 +152,7 @@ namespace GameProject.GameMath
                 matrix[0, 2] * (matrix[1, 0] * matrix[2, 1] - matrix[1, 1] * matrix[2, 0]);
         }
 
-        private readonly float[,] matrix;
+        private MatrixArray matrix;
 
         /// <summary>
         ///     Create a new matrix with specified elements
@@ -150,7 +162,6 @@ namespace GameProject.GameMath
             float a00, float a01, float a02,
             float a10, float a11, float a12,
             float a20, float a21, float a22)
-            : this(new float[Size, Size])
         {
             (matrix[0, 0], matrix[0, 1], matrix[0, 2]) = (a00, a01, a02);
             (matrix[1, 0], matrix[1, 1], matrix[1, 2]) = (a10, a11, a12);
@@ -168,25 +179,20 @@ namespace GameProject.GameMath
         {
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Matrix3F(Matrix3F other) : this(other.Row1, other.Row2, other.Row3)
-        {
-        }
-
         static Matrix3F()
         {
-            var identityArray = new float[Size, Size];
+            var identity = new Matrix3F();
 
             for (var i = 0; i < Size; ++i)
             for (var j = 0; j < Size; ++j)
-                identityArray[i, j] = i == j ? 1 : 0;
+                identity.matrix[i, j] = i == j ? 1 : 0;
 
-            Identity = new Matrix3F(identityArray);
-            Zero = new Matrix3F(new float[Size, Size]);
+            Identity = identity;
+            Zero = new Matrix3F();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Matrix3F(float[,] matrix)
+        private Matrix3F(MatrixArray matrix)
         {
             this.matrix = matrix;
         }
@@ -197,13 +203,13 @@ namespace GameProject.GameMath
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator +(Matrix3F a, Matrix3F b)
         {
-            var result = new float[Size, Size];
+            var result = new Matrix3F();
 
             for (var i = 0; i < Size; ++i)
             for (var j = 0; j < Size; ++j)
-                result[i, j] = a[i, j] + b[i, j];
+                result.matrix[i, j] = a[i, j] + b[i, j];
 
-            return new Matrix3F(result);
+            return result;
         }
 
         /// <summary>
@@ -212,13 +218,13 @@ namespace GameProject.GameMath
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator -(Matrix3F a, Matrix3F b)
         {
-            var result = new float[Size, Size];
+            var result = new Matrix3F();
 
             for (var i = 0; i < Size; ++i)
             for (var j = 0; j < Size; ++j)
-                result[i, j] = a[i, j] - b[i, j];
+                result.matrix[i, j] = a[i, j] - b[i, j];
 
-            return new Matrix3F(result);
+            return result;
         }
 
         /// <summary>
@@ -227,14 +233,14 @@ namespace GameProject.GameMath
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator *(Matrix3F a, Matrix3F b)
         {
-            var result = new float[Size, Size];
+            var result = new Matrix3F();
 
             for (var i = 0; i < Size; ++i)
             for (var j = 0; j < Size; ++j)
             for (var k = 0; k < Size; ++k)
-                result[i, j] += a[i, k] * b[k, j];
+                result.matrix[i, j] += a[i, k] * b[k, j];
 
-            return new Matrix3F(result);
+            return result;
         }
 
         /// <summary>
@@ -252,7 +258,7 @@ namespace GameProject.GameMath
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix3F operator *(Matrix3F m, float a)
         {
-            return CreateFromArray(m.matrix).MultiplyByScalar(a);
+            return new Matrix3F(m.matrix).MultiplyByScalar(a);
         }
 
         /// <summary>
@@ -267,10 +273,13 @@ namespace GameProject.GameMath
             if (source.GetLength(0) != Size || source.GetLength(1) != Size)
                 throw new ArgumentException($"Array must be [{Size} x {Size}]");
 
-            var destination = new float[Size, Size];
-            Array.Copy(source, destination, destination.Length);
+            var destination = new Matrix3F();
 
-            return new Matrix3F(destination);
+            for (var i = 0; i < Size; i++)
+            for (var j = 0; j < Size; j++)
+                destination.matrix[i, j] = source[i, j];
+
+            return destination;
         }
 
         /// <summary>

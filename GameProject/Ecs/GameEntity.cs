@@ -43,14 +43,11 @@ namespace GameProject.Ecs
         ///     Local transformation of this entity, will be recalculated
         ///     if transformation parameters have been changed after the last time
         /// </summary>
-        public Matrix3F LocalTransform
-        {
-            get => localTransform
-                   ?? Matrix3F.CreateTranslation(Position)
-                   * Matrix3F.CreateRotation(Rotation)
-                   * Matrix3F.CreateScale(Scale);
-            private set => localTransform = value;
-        }
+        public Matrix3F LocalTransform =>
+            localTransform
+            ?? Matrix3F.CreateTranslation(Position)
+            * Matrix3F.CreateRotation(Rotation)
+            * Matrix3F.CreateScale(Scale);
 
         /// <summary>
         ///     Position of this entity (in meters)
@@ -61,7 +58,7 @@ namespace GameProject.Ecs
             set
             {
                 position = value;
-                LocalTransform = null;
+                localTransform = null;
             }
         }
 
@@ -74,7 +71,7 @@ namespace GameProject.Ecs
             set
             {
                 rotation = value;
-                LocalTransform = null;
+                localTransform = null;
             }
         }
 
@@ -87,7 +84,7 @@ namespace GameProject.Ecs
             set
             {
                 scale = value;
-                LocalTransform = null;
+                localTransform = null;
             }
         }
 
@@ -100,7 +97,7 @@ namespace GameProject.Ecs
 
         private readonly List<Action<GameEntity>> componentCommands;
 
-        private Matrix3F localTransform;
+        private Matrix3F? localTransform;
 
         private Vector2F position;
         private float rotation;
@@ -328,7 +325,7 @@ namespace GameProject.Ecs
         {
             return HasComponent(typeof(T));
         }
-        
+
         private bool HasComponent(Type componentType)
         {
             return components.TryGetValue(componentType, out _);
