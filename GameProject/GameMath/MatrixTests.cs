@@ -11,9 +11,9 @@ namespace GameProject.GameMath
 
         private Matrix3F GenerateRandomMatrix()
         {
-            var array = new float[3, 3];
-            for (var i = 0; i < 3; ++i)
-            for (var j = 0; j < 3; ++j)
+            var array = new float[Matrix3F.Size, Matrix3F.Size];
+            for (var i = 0; i < Matrix3F.Size; ++i)
+            for (var j = 0; j < Matrix3F.Size; ++j)
                 array[i, j] = GetRandomFloat();
 
             return Matrix3F.CreateFromArray(array);
@@ -26,10 +26,10 @@ namespace GameProject.GameMath
 
         private static Matrix3F CreateMatrixFromArray(IReadOnlyList<float> array)
         {
-            var m = new float[3, 3];
-            for (var i = 0; i < 3; ++i)
-            for (var j = 0; j < 3; ++j)
-                m[i, j] = array[3 * i + j];
+            var m = new float[Matrix3F.Size, Matrix3F.Size];
+            for (var i = 0; i < Matrix3F.Size; ++i)
+            for (var j = 0; j < Matrix3F.Size; ++j)
+                m[i, j] = array[Matrix3F.Size * i + j];
 
             return Matrix3F.CreateFromArray(m);
         }
