@@ -1,7 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
-using System.Linq;
 using GameProject.CoreEngine;
 using GameProject.Ecs.Graphics;
 using GameProject.GameMath;
@@ -14,13 +12,13 @@ namespace GameProject.GameGraphics.RenderShapes
     internal class QuadRenderShape : IRenderShape
     {
         public int Layer { get; }
-        
+
         public int Id { get; }
 
         public RenderLayer RenderLayer { get; set; }
 
         /// <summary>
-        ///     Image to use for drawing
+        ///     Image to use for drawing, will be loaded from disk using <see cref="ImagePath" /> if null
         /// </summary>
         public IBitmap Image { get; set; }
 
@@ -30,13 +28,13 @@ namespace GameProject.GameGraphics.RenderShapes
         public Color Color { get; set; } = Color.Black;
 
         public Vector2F Offset { get; set; }
-        
+
         public Vector2F Scale { get; set; } = Vector2F.One;
 
         public bool IsActive { get; set; } = true;
 
         public Matrix3F Transform { get; set; }
-        
+
         public string ImagePath { get; set; }
 
         /// <summary>
@@ -53,7 +51,7 @@ namespace GameProject.GameGraphics.RenderShapes
         {
             if (ImagePath is null || Image != null)
                 return;
-            
+
             var img = ResourceManager.LoadResource(File.ReadAllBytes, ImagePath);
             Image = device.CreateBitmap(img.Resource);
         }
@@ -63,7 +61,7 @@ namespace GameProject.GameGraphics.RenderShapes
             device.SetInterpolationMode(InterpolationMode.Linear);
             device.SetTransform(viewMatrix * Transform);
             if (Image is null)
-                device.DrawRectangle(Vector2F.Zero, Vector2F.One, Color);
+                device.DrawRectangle(Offset, Scale, Color);
             else
                 device.DrawBitmap(Image, Offset, Scale, Color.A / 255f);
         }
@@ -73,7 +71,7 @@ namespace GameProject.GameGraphics.RenderShapes
             if (other is QuadRenderShape s)
                 this.CopyPropertiesFrom(s);
         }
-        
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;

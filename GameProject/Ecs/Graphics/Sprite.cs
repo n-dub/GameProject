@@ -16,7 +16,7 @@ namespace GameProject.Ecs.Graphics
         ///     An instance of <see cref="IRenderShape" /> used by the entity
         /// </summary>
         public List<IRenderShape> Shapes { get; }
-        
+
         public RenderLayer RenderLayer { get; }
 
         public GameEntity Entity { get; set; }
@@ -68,6 +68,21 @@ namespace GameProject.Ecs.Graphics
         {
             foreach (var shape in Shapes)
                 state.RendererWrite.RemoveShape(shape);
+        }
+
+        public void ReplaceShape(GameState state, int oldShapeIndex, IRenderShape newShape)
+        {
+            state.RendererWrite.RemoveShape(Shapes[oldShapeIndex]);
+            Shapes[oldShapeIndex] = newShape;
+            state.RendererWrite.AddShape(newShape);
+            newShape.RenderLayer = RenderLayer;
+        }
+
+        public void AddShape(GameState state, IRenderShape shape)
+        {
+            state.RendererWrite.AddShape(shape);
+            Shapes.Add(shape);
+            shape.RenderLayer = RenderLayer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

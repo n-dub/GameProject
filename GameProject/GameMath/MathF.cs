@@ -6,7 +6,7 @@ namespace GameProject.GameMath
     /// <summary>
     ///     An adapter for <see cref="Math" /> that uses <see cref="float" /> instead of <see cref="double" />
     /// </summary>
-    public static class MathF
+    internal static class MathF
     {
         /// <summary>
         ///     Acceleration of gravity (in meters/second^2)
@@ -37,7 +37,7 @@ namespace GameProject.GameMath
         {
             return (float) Math.Cos(value);
         }
-        
+
         /// <inheritdoc cref="Math.Acos" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Acos(float value)
@@ -65,18 +65,42 @@ namespace GameProject.GameMath
             return Math.Max(min, Math.Min(max, value));
         }
 
-        /// <inheritdoc cref="Math.Floor(double)"/>
+        /// <inheritdoc cref="Math.Floor(double)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Floor(float value)
         {
             return (float) Math.Floor(value);
         }
-        
-        /// <inheritdoc cref="Math.Ceiling(double)"/>
+
+        /// <inheritdoc cref="Math.Ceiling(double)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Ceiling(float value)
         {
             return (float) Math.Ceiling(value);
+        }
+
+        /// <summary>
+        ///     Interpolate between two values
+        /// </summary>
+        /// <param name="min">Minimum value</param>
+        /// <param name="max">Maximum value</param>
+        /// <param name="factor">Interpolation factor</param>
+        /// <returns>Interpolation result</returns>
+        public static float Interpolate(float min, float max, float factor)
+        {
+            return min + (max - min) * factor;
+        }
+        
+        /// <inheritdoc cref="Interpolate(float,float,float)"/>
+        public static Vector2F Interpolate(Vector2F min, Vector2F max, float factor)
+        {
+            return min + (max - min) * factor;
+        }
+        
+        /// <inheritdoc cref="Interpolate(float,float,float)"/>
+        public static Vector3F Interpolate(Vector3F min, Vector3F max, float factor)
+        {
+            return min + (max - min) * factor;
         }
     }
 }

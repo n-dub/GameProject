@@ -23,12 +23,12 @@ namespace GameProject.CoreEngine
         ///     <see cref="Renderer" /> currently used for writing
         /// </summary>
         public Renderer RendererWrite { get; }
-        
+
         /// <summary>
         ///     An instance of Keyboard being updated by main form
         /// </summary>
         public Keyboard<Keys> Keyboard { get; }
-        
+
         /// <summary>
         ///     An instance of <see cref="Mouse" /> being updated by main form
         /// </summary>
@@ -48,7 +48,7 @@ namespace GameProject.CoreEngine
 
         private readonly List<GameEntity> entities = new List<GameEntity>();
         private readonly List<GameEntity> newEntities;
-        
+
         /// <summary>
         ///     Create a new instance of <see cref="GameState" />
         /// </summary>
@@ -58,7 +58,7 @@ namespace GameProject.CoreEngine
             RendererWrite = new Renderer();
             RendererRead.CopyDataFrom(renderer);
             RendererWrite.CopyDataFrom(renderer);
-            
+
             Keyboard = new Keyboard<Keys>();
             Mouse = new Mouse();
             Time = new Time();
@@ -71,7 +71,7 @@ namespace GameProject.CoreEngine
             RendererWrite.Camera.ScreenSize = RendererRead.Camera.ScreenSize;
             RendererRead.CopyDataFrom(RendererWrite);
         }
-        
+
         /// <summary>
         ///     Add a new game entity
         /// </summary>

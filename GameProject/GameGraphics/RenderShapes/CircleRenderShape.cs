@@ -8,13 +8,13 @@ namespace GameProject.GameGraphics.RenderShapes
     internal class CircleRenderShape : IRenderShape
     {
         public int Layer { get; }
-        
+
         public int Id { get; }
 
         public RenderLayer RenderLayer { get; set; }
 
         public Matrix3F Transform { get; set; }
-        
+
         public Vector2F Offset { get; set; }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace GameProject.GameGraphics.RenderShapes
             if (other is CircleRenderShape s)
                 this.CopyPropertiesFrom(s);
         }
-        
+
         public override int GetHashCode()
         {
             return Id;
@@ -62,7 +62,7 @@ namespace GameProject.GameGraphics.RenderShapes
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((IRenderShape) obj);
         }
-        
+
         private bool Equals(IRenderShape other)
         {
             return Id == other.Id;

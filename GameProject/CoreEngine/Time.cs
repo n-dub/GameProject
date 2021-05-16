@@ -13,6 +13,11 @@ namespace GameProject.CoreEngine
         public float Fps => 1f / DeltaTimeUnscaled;
 
         /// <summary>
+        ///     Duration of last frame in seconds effected by <see cref="TimeScale" />
+        /// </summary>
+        public float DeltaTime => DeltaTimeUnscaled * TimeScale;
+
+        /// <summary>
         ///     Duration of last frame in seconds
         /// </summary>
         public float DeltaTimeUnscaled { get; private set; }
@@ -21,11 +26,6 @@ namespace GameProject.CoreEngine
         ///     Scale of time, may be used for slow-motion effects
         /// </summary>
         public float TimeScale { get; set; } = 1f;
-
-        /// <summary>
-        ///     Duration of last frame in seconds effected by <see cref="TimeScale"/>
-        /// </summary>
-        public float DeltaTime => DeltaTimeUnscaled * TimeScale;
 
         /// <summary>
         ///     Index of the current frame

@@ -34,14 +34,12 @@ namespace GameProject.GameGraphics
         {
             Camera.CopyDataFrom(renderer.Camera);
             renderer.AddInitialize(Device);
-            
+
             foreach (var renderShape in renderer.renderShapes)
-            {
                 if (renderShapes.TryGetValue(renderShape, out var shape))
                     shape.CopyDataFrom(renderShape);
                 else
                     renderShapes.Add(renderShape);
-            }
         }
 
         /// <summary>
@@ -67,7 +65,6 @@ namespace GameProject.GameGraphics
                 .GroupBy(x => x.Layer)
                 .OrderBy(g => g.Key))
             foreach (var shape in layerGrouping.Where(s => s.IsActive))
-            {
                 switch (shape.RenderLayer)
                 {
                     case RenderLayer.Background:
@@ -82,7 +79,6 @@ namespace GameProject.GameGraphics
                     default:
                         throw new Exception();
                 }
-            }
         }
 
         /// <summary>
@@ -116,6 +112,7 @@ namespace GameProject.GameGraphics
                 if (!renderShapes.Contains(shape))
                     renderShapes.Add(shape);
             }
+
             shapesToAdd.Clear();
         }
     }

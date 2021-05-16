@@ -54,7 +54,9 @@ namespace GameProject.CoreEngine
             var moveFactor = renderLayer == RenderLayer.Background ? BackgroundMoveFactor * ViewWidth : 1;
             var pos = Matrix3F.CreateTranslation(-Position / moveFactor);
 
-            return renderLayer == RenderLayer.Interface ? center * scale : center * scale * rot * pos;
+            return renderLayer == RenderLayer.Interface
+                ? center * scale
+                : center * scale * rot * pos;
         }
     }
 }

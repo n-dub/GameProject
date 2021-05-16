@@ -13,15 +13,25 @@ namespace GameProject.CoreEngine
     {
         private static readonly List<(string name, long time, long tid, bool start)> events
             = new List<(string, long, long, bool)>();
+
         private static readonly Stopwatch startTime = Stopwatch.StartNew();
 
         private readonly string name;
-        
+        private static string previousEvent;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GameProfiler(string name)
         {
             this.name = name;
             StartEvent(name);
+        }
+
+        public static void MakeEvent(string name)
+        {
+            if (previousEvent != null)
+                events.Add((previousEvent, startTime.ElapsedTicks, 10, false));
+            events.Add((name, startTime.ElapsedTicks, 10, true));
+            previousEvent = name;
         }
 
         public static void Save(string fileName)
@@ -32,7 +42,7 @@ namespace GameProject.CoreEngine
                 WriteEvent(lines, name, time, tid, b ? "B" : "E");
                 lines[lines.Count - 1] += ",";
             }
-            
+
             foreach (var (name, time, tid, b) in events.Skip(events.Count - 1))
                 WriteEvent(lines, name, time, tid, b ? "B" : "E");
 
@@ -68,7 +78,7 @@ namespace GameProject.CoreEngine
             lines.Add($"\t\t\"name\": \"{name}\",");
             lines.Add("\t\t\"cat\": \"default\",");
             lines.Add($"\t\t\"ph\": \"{type}\",");
-            lines.Add($"\t\t\"ts\": " +
+            lines.Add("\t\t\"ts\": " +
                       $"{(time / (Stopwatch.Frequency * 0.000_001)).ToString(CultureInfo.InvariantCulture)},");
             lines.Add("\t\t\"pid\": 0,");
             lines.Add($"\t\t\"tid\": {tid}");

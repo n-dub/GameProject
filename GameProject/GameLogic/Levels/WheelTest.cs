@@ -14,7 +14,7 @@ namespace GameProject.GameLogic.Levels
         {
             const float width = 15f;
             const float height = 10f;
-            
+
             var entities = new List<GameEntity>
             {
                 LevelUtility.CreatePhysicalRectangle(Vector2F.Zero, Vector2F.One.WithX(width), true),
@@ -27,9 +27,9 @@ namespace GameProject.GameLogic.Levels
 
             CreateWheel(entities, machine, -0.8f);
             CreateWheel(entities, machine, +0.8f);
-            
+
             CreateWall(entities, 2);
-            
+
             return new SceneData
             {
                 Entities = entities
@@ -39,7 +39,7 @@ namespace GameProject.GameLogic.Levels
         private static void CreateWheel(ICollection<GameEntity> entities, GameEntity machine, float positionX)
         {
             var wheel = LevelUtility.CreateWheel(new Vector2F(positionX, -1), 0.2f, Path);
-            wheel.AddComponent(new WheelControl {Torque = 0.005f, Machine=machine});
+            wheel.AddComponent(new WheelControl {Torque = 0.005f, Machine = machine});
             entities.Add(wheel);
         }
 

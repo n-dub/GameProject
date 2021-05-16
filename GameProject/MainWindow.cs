@@ -39,11 +39,13 @@ namespace GameProject
         private float fpsShowTimer;
 
         private const int PhysicsSubsteps = 2;
-        
+
         public MainWindow(IEnumerable<ISceneFactory> levels)
         {
             InitializeComponent();
-            (Width, Height) = (800, 600);
+            WindowState = FormWindowState.Maximized;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
             Application.Idle += (s, e) => MakeFrame();
 
             var renderer = new Renderer
@@ -66,8 +68,9 @@ namespace GameProject
             GameState.RendererRead.Initialize(new D2DGraphicsDevice(this));
             if (GameState.RendererRead.Device is D2DGraphicsDevice d)
                 d.Graphics.Antialias = true;
-            
+
             DoubleBuffered = GameState.RendererWrite.Device is WinFormsGraphicsDevice;
+            MinimumSize = MaximumSize = Size;
 
             base.OnLoad(e);
         }
@@ -76,6 +79,7 @@ namespace GameProject
         {
             using (new GameProfiler(nameof(MakeFrame)))
             {
+                GameState.RendererRead.Camera.ScreenSize = new Vector2F(Width, Height);
                 if (singleThread)
                 {
                     Render(null);
@@ -101,15 +105,6 @@ namespace GameProject
             using (new GameProfiler(nameof(UpdateGame)))
             {
                 GameState.AddNewEntities();
-
-                {
-                    // TODO: TEST CODE - TO BE REMOVED
-                    var first = GameState.Entities.FirstOrDefault();
-                    if (!(first?.HasComponent<TestCamera>() ?? false))
-                        first?.AddComponent<TestCamera>();
-                    if (!(first?.HasComponent<TestCannon>() ?? false))
-                        first?.AddComponent<TestCannon>();
-                }
 
                 GameState.RemoveDestroyed();
                 GameState.Time.UpdateForNextFrame(GameState.Time.FrameIndex < 5 ? 1 : Stopwatch.ElapsedMilliseconds);
@@ -147,7 +142,9 @@ namespace GameProject
                 GameState.RendererRead.Device.BeginRender();
 
                 using (new GameProfiler(nameof(GameState.RendererRead.RenderAll)))
+                {
                     GameState.RendererRead.RenderAll();
+                }
 
                 if (DebugEnabled)
                 {
@@ -156,17 +153,21 @@ namespace GameProject
                 }
 
                 using (new GameProfiler(nameof(ShowFps)))
+                {
                     ShowFps(GameState.RendererRead);
+                }
 
                 using (new GameProfiler(nameof(GameState.RendererRead.Device.EndRender)))
+                {
                     GameState.RendererRead.Device.EndRender();
+                }
             }
         }
 
         private void DrawDebug()
         {
             var debugger = new DebugDraw(GameState.RendererRead);
-            
+
             foreach (var gameEntity in GameState.Entities)
                 gameEntity.DoForAllChildren(
                     c => c.DrawDebugOverlay(debugger),
@@ -220,7 +221,7 @@ namespace GameProject
             base.OnResize(e);
             if (GameState?.RendererRead?.Camera is null)
                 return;
-            
+
             GameState.RendererRead.Camera.ScreenSize = new Vector2F(Width, Height);
         }
 
@@ -230,11 +231,19 @@ namespace GameProject
             GameState.Keyboard.PushKey(e.KeyCode);
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), new Vector2F(Width, Height),
+                GameState.RendererRead.Camera.GetViewMatrix());
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             GameState.Mouse.PushKey(e.Button);
-            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.RendererRead.Camera.GetViewMatrix());
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), new Vector2F(Width, Height),
+                GameState.RendererRead.Camera.GetViewMatrix());
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -247,14 +256,16 @@ namespace GameProject
         {
             base.OnMouseUp(e);
             GameState.Mouse.ReleaseKey(e.Button);
-            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.RendererRead.Camera.GetViewMatrix());
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), new Vector2F(Width, Height),
+                GameState.RendererRead.Camera.GetViewMatrix());
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
             GameState.Mouse.SetWheel(e.Delta);
-            GameState.Mouse.SetPositions(new Vector2F(e.Location), GameState.RendererRead.Camera.GetViewMatrix());
+            GameState.Mouse.SetPositions(new Vector2F(e.Location), new Vector2F(Width, Height),
+                GameState.RendererRead.Camera.GetViewMatrix());
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)

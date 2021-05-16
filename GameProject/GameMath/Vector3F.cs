@@ -79,7 +79,7 @@ namespace GameProject.GameMath
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LengthSquared < 0.01f;
         }
-        
+
         /// <summary>
         ///     Create a 2-dimensional vector of X and Y components of this vector
         /// </summary>

@@ -17,6 +17,11 @@ namespace GameProject.GameLogic.Scripts
         private Vector2F position = new Vector2F(-8, -1f);
         private float impulse = 2f;
 
+        public void DrawDebugOverlay(DebugDraw debugDraw)
+        {
+            debugDraw.DrawVector(position, Vector2F.UnitX, Color.Red);
+        }
+
         protected override void Initialize()
         {
             marker = LevelUtility.CreateCircle(position, 0.2f, true);
@@ -48,11 +53,6 @@ namespace GameProject.GameLogic.Scripts
             b.GetComponent<PhysicsBody>().ApplyLinearImpulse(new Vector2F(impulse, 0));
             b.GetComponent<PhysicsBody>().FarseerBody.Position = position;
             b.Destroy(5);
-        }
-
-        public void DrawDebugOverlay(DebugDraw debugDraw)
-        {
-            debugDraw.DrawVector(position, Vector2F.UnitX, Color.Red);
         }
     }
 }

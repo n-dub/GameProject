@@ -22,7 +22,7 @@ namespace GameProject.GameLogic.Levels
 
             for (var i = -2; i <= 2; i++)
                 CreateWall(entities, i * LevelUtility.BrickSize.X * 2.1f);
-            
+
             return new SceneData
             {
                 Entities = entities

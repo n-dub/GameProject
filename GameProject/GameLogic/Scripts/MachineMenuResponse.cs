@@ -4,8 +4,8 @@
     {
         public IMachinePartFactory Factory { get; set; }
 
-        private bool IsComplete => Factory != null;
-        
+        public bool IsComplete { get; set; }
+
         public bool TryGetResult(out IMachinePartFactory factory)
         {
             factory = Factory;

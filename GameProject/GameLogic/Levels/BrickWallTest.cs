@@ -23,7 +23,7 @@ namespace GameProject.GameLogic.Levels
             CreateWall(entities, 0);
             CreateWall(entities, 2);
             CreateWall(entities, -2);
-            
+
             return new SceneData
             {
                 Entities = entities

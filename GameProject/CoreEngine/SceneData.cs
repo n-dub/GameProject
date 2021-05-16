@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using GameProject.Ecs;
-using GameProject.GameMath;
 
 namespace GameProject.CoreEngine
 {

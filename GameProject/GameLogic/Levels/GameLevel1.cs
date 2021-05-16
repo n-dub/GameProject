@@ -21,21 +21,23 @@ namespace GameProject.GameLogic.Levels
                 LevelUtility.CreateNoiseBackground()
             };
 
+            ground.AddComponent<CameraMovement>();
+
             var editor = new GameEntity();
             editor.AddComponent(new MachineEditor(5, 7));
             editor.Position = new Vector2F(-3, -6.25f);
             entities.Add(editor);
-            
+
             CreateWall(entities, 0);
             CreateWall(entities, 3);
-            
-            return new SceneData {Entities = entities, Camera = new Camera{Position = new Vector2F(-3, -6)}};
+
+            return new SceneData {Entities = entities, Camera = new Camera {Position = new Vector2F(-3, -6)}};
         }
-        
+
         private static void CreateWall(ICollection<GameEntity> entities, float positionX)
         {
             var wall = new GameEntity();
-            wall.AddComponent(new BrickWall(25, 0.5f));
+            wall.AddComponent(new BrickWall(25, 2f));
             wall.Position =
                 Vector2F.UnitX * positionX - Vector2F.UnitY * (12.5f * LevelUtility.BrickSize.Z + 5f);
 

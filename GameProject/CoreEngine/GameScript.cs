@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameProject.Ecs;
-using GameProject.GameDebug;
 
 namespace GameProject.CoreEngine
 {
@@ -27,8 +26,13 @@ namespace GameProject.CoreEngine
                 initialized = true;
                 return;
             }
+
             Update();
             UpdateCoroutines(state);
+        }
+
+        public virtual void Destroy(GameState state)
+        {
         }
 
         private void UpdateCoroutines(GameState state)
@@ -54,16 +58,12 @@ namespace GameProject.CoreEngine
         {
             coroutines.Add(coroutine().GetEnumerator());
         }
-        
+
         protected virtual void Update()
         {
         }
 
         protected virtual void Initialize()
-        {
-        }
-
-        public virtual void Destroy(GameState state)
         {
         }
     }
