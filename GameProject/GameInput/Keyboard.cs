@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 
 namespace GameProject.GameInput
 {
@@ -19,8 +18,8 @@ namespace GameProject.GameInput
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => States.TryGetValue(key, out var state)
-                    ? state
-                    : KeyState.None;
+                ? state
+                : KeyState.None;
         }
 
         private ConcurrentDictionary<TKey, KeyState> States { get; }

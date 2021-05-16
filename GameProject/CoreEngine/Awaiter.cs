@@ -2,21 +2,20 @@
 {
     internal sealed class Awaiter
     {
-        public float Seconds { get; private set; }
-        
-        public int Frames { get; private set; }
-        
-        public bool TimeScaled { get; private set; }
-
         public bool Completed => Seconds <= 0 && Frames <= 0;
-        
+        public float Seconds { get; private set; }
+
+        public int Frames { get; private set; }
+
+        public bool TimeScaled { get; }
+
         public bool IsLast { get; set; }
-        
+
         private Awaiter(int frames)
         {
             Frames = frames;
         }
-        
+
         private Awaiter(float seconds, bool timeScaled = true)
         {
             Seconds = seconds;

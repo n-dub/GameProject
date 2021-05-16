@@ -12,19 +12,19 @@ namespace GameProject.GameGraphics.RenderShapes
         ///     An index of layer
         /// </summary>
         int Layer { get; }
-        
+
         /// <summary>
         ///     Unique ID of the shape
         /// </summary>
         int Id { get; }
 
         RenderLayer RenderLayer { get; set; }
-        
+
         /// <summary>
         ///     Global transformation matrix of entity being drawn
         /// </summary>
         Matrix3F Transform { get; set; }
-        
+
         /// <summary>
         ///     Global offset of the shape
         /// </summary>

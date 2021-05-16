@@ -74,7 +74,7 @@
     <Compile Include="CoreEngine\GameProfiler.cs" />
     <Compile Include="CoreEngine\GameScript.cs" />
     <Compile Include="CoreEngine\GameState.cs" />
-    <Compile Include="CoreEngine\GeometryUtility.cs" />
+    <Compile Include="CoreEngine\GeometryUtils.cs" />
     <Compile Include="CoreEngine\ISceneFactory.cs" />
     <Compile Include="CoreEngine\ResourceHandle.cs" />
     <Compile Include="CoreEngine\ResourceManager.cs" />
@@ -115,10 +115,12 @@
     <Compile Include="GameLogic\Levels\WheelTest.cs" />
     <Compile Include="GameLogic\LevelUtility.cs" />
     <Compile Include="GameLogic\Scripts\BrickWall.cs" />
+    <Compile Include="GameLogic\Scripts\CameraMovement.cs" />
     <Compile Include="GameLogic\Scripts\IMachinePartFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineEditor.cs" />
     <Compile Include="GameLogic\Scripts\MachineMenu.cs" />
     <Compile Include="GameLogic\Scripts\MachineMenuResponse.cs" />
+    <Compile Include="GameLogic\Scripts\MachineParts\SmallWheelFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineParts\WoodenBoxFactory.cs" />
     <Compile Include="GameLogic\Scripts\NoiseAnimation.cs" />
     <Compile Include="GameLogic\Scripts\PartialBrickRow.cs" />

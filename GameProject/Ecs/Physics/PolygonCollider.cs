@@ -13,7 +13,7 @@ namespace GameProject.Ecs.Physics
     {
         public Vector2F[] Vertices { get; set; }
 
-        public override Shape GetFarseerShape()
+        protected override Shape GetFarseerShapeImpl()
         {
             return new PolygonShape(new Vertices(Vertices.Select(v => (Vector2) v)), 1.0f);
         }
@@ -22,7 +22,7 @@ namespace GameProject.Ecs.Physics
         {
             var mat = Entity.GlobalTransform;
 
-            foreach (var (a, b) in GeometryUtility.PolygonVerticesToEdges(Vertices))
+            foreach (var (a, b) in GeometryUtils.PolygonVerticesToEdges(Vertices))
                 debugDraw.DrawLine(a.TransformBy(mat), b.TransformBy(mat), Color.Green, 0.07f);
         }
     }

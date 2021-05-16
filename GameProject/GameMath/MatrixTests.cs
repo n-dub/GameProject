@@ -9,36 +9,6 @@ namespace GameProject.GameMath
     {
         private readonly Random random = new Random(24184718);
 
-        private Matrix3F GenerateRandomMatrix()
-        {
-            var array = new float[Matrix3F.Size, Matrix3F.Size];
-            for (var i = 0; i < Matrix3F.Size; ++i)
-            for (var j = 0; j < Matrix3F.Size; ++j)
-                array[i, j] = GetRandomFloat();
-
-            return Matrix3F.CreateFromArray(array);
-        }
-
-        private Vector2F GenerateRandomVector2(float factor = 1000f)
-        {
-            return new Vector2F(GetRandomFloat(factor), GetRandomFloat(factor));
-        }
-
-        private static Matrix3F CreateMatrixFromArray(IReadOnlyList<float> array)
-        {
-            var m = new float[Matrix3F.Size, Matrix3F.Size];
-            for (var i = 0; i < Matrix3F.Size; ++i)
-            for (var j = 0; j < Matrix3F.Size; ++j)
-                m[i, j] = array[Matrix3F.Size * i + j];
-
-            return Matrix3F.CreateFromArray(m);
-        }
-
-        private float GetRandomFloat(float factor = 1000f)
-        {
-            return (float) random.NextDouble() * factor;
-        }
-
         [Test]
         [Repeat(256)]
         public void TestAddSub()
@@ -166,6 +136,36 @@ namespace GameProject.GameMath
         {
             var matrix = GenerateRandomMatrix();
             Assert.IsTrue(Matrix3F.AreAlmostEqual(matrix * matrix.Inversed, Matrix3F.Identity, 1e-3f));
+        }
+
+        private Matrix3F GenerateRandomMatrix()
+        {
+            var array = new float[Matrix3F.Size, Matrix3F.Size];
+            for (var i = 0; i < Matrix3F.Size; ++i)
+            for (var j = 0; j < Matrix3F.Size; ++j)
+                array[i, j] = GetRandomFloat();
+
+            return Matrix3F.CreateFromArray(array);
+        }
+
+        private Vector2F GenerateRandomVector2(float factor = 1000f)
+        {
+            return new Vector2F(GetRandomFloat(factor), GetRandomFloat(factor));
+        }
+
+        private static Matrix3F CreateMatrixFromArray(IReadOnlyList<float> array)
+        {
+            var m = new float[Matrix3F.Size, Matrix3F.Size];
+            for (var i = 0; i < Matrix3F.Size; ++i)
+            for (var j = 0; j < Matrix3F.Size; ++j)
+                m[i, j] = array[Matrix3F.Size * i + j];
+
+            return Matrix3F.CreateFromArray(m);
+        }
+
+        private float GetRandomFloat(float factor = 1000f)
+        {
+            return (float) random.NextDouble() * factor;
         }
     }
 }

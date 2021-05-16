@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 using GameProject.CoreEngine;
 using GameProject.Ecs.Graphics;
@@ -10,19 +9,19 @@ namespace GameProject.GameGraphics.RenderShapes
     internal class PolygonRenderShape : IRenderShape
     {
         public int Layer { get; }
-        
+
         public int Id { get; }
 
         public RenderLayer RenderLayer { get; set; }
 
         public Matrix3F Transform { get; set; }
-        
+
         public Vector2F Offset { get; set; }
 
         public bool IsActive { get; set; } = true;
-        
+
         public Vector2F[] Points { get; set; }
-        
+
         /// <summary>
         ///     Color to use if <see cref="Image" /> is null
         /// </summary>
@@ -33,7 +32,7 @@ namespace GameProject.GameGraphics.RenderShapes
             Layer = layer;
             Id = RenderShapeIdGenerator.GetId();
         }
-        
+
         public void Initialize(IGraphicsDevice device)
         {
         }
@@ -50,7 +49,7 @@ namespace GameProject.GameGraphics.RenderShapes
             if (other is PolygonRenderShape s)
                 this.CopyPropertiesFrom(s);
         }
-        
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;

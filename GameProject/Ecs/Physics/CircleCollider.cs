@@ -15,7 +15,7 @@ namespace GameProject.Ecs.Physics
         /// </summary>
         public float Radius { get; set; } = 1f;
 
-        public override Shape GetFarseerShape()
+        protected override Shape GetFarseerShapeImpl()
         {
             return new CircleShape(Radius, 1.0f);
         }

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using GameProject.CoreEngine;
@@ -14,6 +16,21 @@ namespace GameProject.Ecs.Physics
     /// </summary>
     internal class PhysicsBody : IGameComponent, IDebuggable
     {
+        /// <summary>
+        ///     Indicates that the body is initialized and ready to use
+        /// </summary>
+        public bool ReadyToUse => FarseerBody != null;
+
+        /// <summary>
+        ///     A list of all colliders attached to this body
+        /// </summary>
+        public IReadOnlyList<Collider> Colliders => colliders;
+
+        /// <summary>
+        ///     List of all body collisions during the current frame
+        /// </summary>
+        public IReadOnlyList<CollisionInfo> Collisions => collisions;
+
         /// <summary>
         ///     If True this body's state won't be changed by any other bodies
         /// </summary>
@@ -35,26 +52,11 @@ namespace GameProject.Ecs.Physics
         public float LinearDamping { get; set; } = 1;
 
         public GameEntity Entity { get; set; }
-        
+
         /// <summary>
-        ///     The instance of Farseer physics native <see cref="Body"/> class
+        ///     The instance of Farseer physics native <see cref="Body" /> class
         /// </summary>
         public Body FarseerBody { get; private set; }
-
-        /// <summary>
-        ///     Indicates that the body is initialized and ready to use
-        /// </summary>
-        public bool ReadyToUse => FarseerBody != null;
-        
-        /// <summary>
-        ///     A list of all colliders attached to this body
-        /// </summary>
-        public IReadOnlyList<Collider> Colliders => colliders;
-
-        /// <summary>
-        ///     List of all body collisions during the current frame
-        /// </summary>
-        public IReadOnlyList<CollisionInfo> Collisions => collisions;
 
         private bool shapesDirty = true;
         private readonly List<Collider> colliders = new List<Collider>(1);
@@ -88,14 +90,14 @@ namespace GameProject.Ecs.Physics
         {
             if (FarseerBody is null)
                 return;
-            
+
             debugDraw.DrawVector(Entity.Position, new Vector2F(FarseerBody.LinearVelocity), Color.Blue);
 
             foreach (var collider in colliders)
                 if (collider is IDebuggable d)
                     d.DrawDebugOverlay(debugDraw);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ApplyLinearImpulse(Vector2F impulse)
         {
@@ -109,11 +111,11 @@ namespace GameProject.Ecs.Physics
             collider.Entity = Entity;
             shapesDirty = true;
         }
-        
+
         private void ResolveCollisions(ContactEdge contactList)
         {
             collisions.Clear();
-            
+
             while (contactList != null)
             {
                 var contact = contactList.Contact;
@@ -121,10 +123,8 @@ namespace GameProject.Ecs.Physics
                 {
                     contact.GetWorldManifold(out var normal, out var worldPoints);
                     for (var i = 0; i < contact.Manifold.PointCount; i++)
-                    {
                         collisions.Add(new CollisionInfo(new Vector2F(worldPoints[i]),
                             new Vector2F(normal), contact.Manifold.Points[i].NormalImpulse));
-                    }
                 }
 
                 contactList = contactList.Next;
@@ -138,7 +138,7 @@ namespace GameProject.Ecs.Physics
 
             foreach (var fixture in FarseerBody.FixtureList)
                 FarseerBody.DestroyFixture(fixture);
-            
+
             foreach (var collider in colliders)
             {
                 var fixture = FarseerBody.CreateFixture(collider.GetFarseerShape());

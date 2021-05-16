@@ -19,7 +19,7 @@ namespace GameProject.Ecs.Physics
         ///     Width and height of the collider rectangle
         /// </summary>
         public Vector2F Size { get; set; } = Vector2F.One;
-        
+
         /// <summary>
         ///     Offset of the collider rectangle
         /// </summary>
@@ -29,6 +29,21 @@ namespace GameProject.Ecs.Physics
         ///     If true the collider size will depend on entity's scale
         /// </summary>
         public bool Scaled { get; set; } = true;
+
+        protected override Shape GetFarseerShapeImpl()
+        {
+            return new PolygonShape(new Vertices(GetVertices()), 1.0f);
+        }
+
+        public void DrawDebugOverlay(DebugDraw debugDraw)
+        {
+            var mat = Entity.GlobalTransform;
+            if (!Scaled)
+                mat *= Matrix3F.CreateScale(new Vector2F(1f / Entity.Scale.X, 1f / Entity.Scale.Y));
+
+            foreach (var (a, b) in GeometryUtils.PolygonVerticesToEdges(GetVerticesUnscaled().ToArray()))
+                debugDraw.DrawLine(a.TransformBy(mat), b.TransformBy(mat), Color.Green, 0.07f);
+        }
 
         /// <summary>
         ///     Calculates position of rectangle vertices according to collider width,
@@ -45,24 +60,9 @@ namespace GameProject.Ecs.Physics
         private IEnumerable<Vector2> GetVerticesUnscaled()
         {
             var size = Size * MathF.Sqrt(2);
-            return GeometryUtility
+            return GeometryUtils
                 .GenerateRegularPolygon(Vector2F.Zero, size, MathF.PI / 4, 4)
                 .Select(v => (Vector2) (Offset + v));
-        }
-
-        public override Shape GetFarseerShape()
-        {
-            return new PolygonShape(new Vertices(GetVertices()), 1.0f);
-        }
-
-        public void DrawDebugOverlay(DebugDraw debugDraw)
-        {
-            var mat = Entity.GlobalTransform;
-            if (!Scaled)
-                mat *= Matrix3F.CreateScale(new Vector2F(1f / Entity.Scale.X, 1f / Entity.Scale.Y));
-
-            foreach (var (a, b) in GeometryUtility.PolygonVerticesToEdges(GetVerticesUnscaled().ToArray()))
-                debugDraw.DrawLine(a.TransformBy(mat), b.TransformBy(mat), Color.Green, 0.07f);
         }
     }
 }

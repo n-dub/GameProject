@@ -14,11 +14,11 @@ namespace GameProject.GameGraphics.Backend.Direct2D
     internal class D2DGraphicsDevice : IGraphicsDevice
     {
         public D2DGraphics Graphics { get; }
-        
+
         private InterpolationMode interpolationMode;
 
         private D2DDevice D2DDevice { get; }
-        
+
         private Form Form { get; }
 
         private D2DBitmapInterpolationMode D2DInterpolationMode
@@ -85,8 +85,8 @@ namespace GameProject.GameGraphics.Backend.Direct2D
 
         public void DrawRectangle(Vector2F location, Vector2F size, Color color)
         {
-            Graphics.ScaleTransform(0.5f, 0.5f);
-            Graphics.DrawRectangle(location, size, D2DColor.FromGDIColor(color));
+            // Graphics.ScaleTransform(0.5f, 0.5f);
+            Graphics.FillRectangle(location, size, D2DColor.FromGDIColor(color));
         }
 
         public void DrawLine(Vector2F start, Vector2F end, Color color, float weight)

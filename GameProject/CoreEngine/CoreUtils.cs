@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -7,6 +9,24 @@ namespace GameProject.CoreEngine
 {
     public static class CoreUtils
     {
+        public static void CopyPropertiesFrom<T>(this T destination, T source)
+        {
+            PropCopier<T>.Cloner(destination, source);
+            // foreach (var property in PropCopier<T>.Properties)
+            //     property.SetValue(destination, property.GetValue(source));
+        }
+
+        public static void InvokeAll(this IEnumerable<Action> delegates)
+        {
+            foreach (var action in delegates)
+                action();
+        }
+
+        public static int ToLinearIndex(this Point point, int columns)
+        {
+            return point.X + point.Y * columns;
+        }
+
         /// <summary>
         ///     Used for optimization of property getting
         /// </summary>
@@ -33,13 +53,6 @@ namespace GameProject.CoreEngine
                 var block = Expression.Block(expressions);
                 Cloner = Expression.Lambda<Action<T, T>>(block, destination, source).Compile();
             }
-        }
-
-        public static void CopyPropertiesFrom<T>(this T destination, T source)
-        {
-            PropCopier<T>.Cloner(destination, source);
-            // foreach (var property in PropCopier<T>.Properties)
-            //     property.SetValue(destination, property.GetValue(source));
         }
     }
 }

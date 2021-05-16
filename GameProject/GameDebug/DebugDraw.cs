@@ -24,9 +24,9 @@ namespace GameProject.GameDebug
         }
 
         /// <summary>
-        ///     Create a new <see cref="DebugDraw"/> using a certain <see cref="GameProject.GameGraphics.Renderer"/>
+        ///     Create a new <see cref="DebugDraw" /> using a certain <see cref="GameProject.GameGraphics.Renderer" />
         /// </summary>
-        /// <param name="renderer">An instance of <see cref="GameProject.GameGraphics.Renderer"/> to use</param>
+        /// <param name="renderer">An instance of <see cref="GameProject.GameGraphics.Renderer" /> to use</param>
         public DebugDraw(Renderer renderer)
         {
             Renderer = renderer;

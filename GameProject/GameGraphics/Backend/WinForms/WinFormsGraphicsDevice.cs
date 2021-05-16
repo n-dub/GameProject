@@ -81,7 +81,7 @@ namespace GameProject.GameGraphics.Backend.WinForms
 
         public void FillPolygon(IEnumerable<Vector2F> points, Color color)
         {
-            Graphics.FillPolygon(new SolidBrush(color), points.Select(x => (PointF)x).ToArray());
+            Graphics.FillPolygon(new SolidBrush(color), points.Select(x => (PointF) x).ToArray());
         }
     }
 }

@@ -10,21 +10,21 @@ namespace GameProject.GameLogic.Scripts
     {
         private readonly Random random = new Random();
         private IList<IRenderShape> shapes;
-        
+
         protected override void Initialize()
         {
             shapes = Entity.GetComponent<Sprite>().Shapes;
-            
+
             StartCoroutine(AnimCoroutine);
         }
 
         private IEnumerable<Awaiter> AnimCoroutine()
         {
             yield return Awaiter.WaitForFrames(2);
-            
+
             foreach (var shape in shapes)
                 shape.IsActive = false;
-            
+
             var prevIndex = 0;
             while (true)
             {

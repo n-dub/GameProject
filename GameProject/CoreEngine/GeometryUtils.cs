@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace GameProject.CoreEngine
 {
-    internal static class GeometryUtility
+    internal static class GeometryUtils
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Vector2F> GenerateRegularPolygon(Vector2F location, Vector2F radial,

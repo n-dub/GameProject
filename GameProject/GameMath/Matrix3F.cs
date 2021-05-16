@@ -10,21 +10,6 @@ namespace GameProject.GameMath
     /// </summary>
     internal struct Matrix3F
     {
-        private unsafe struct MatrixArray
-        {
-#pragma warning disable 649
-            private fixed float elements[Size * Size];
-#pragma warning restore 649
-
-            public float this[int x, int y]
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => elements[x * Size + y];
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                set => elements[x * Size + y] = value;
-            }
-        }
-        
         /// <summary>
         ///     An identity matrix
         /// </summary>
@@ -402,6 +387,20 @@ namespace GameProject.GameMath
                 matrix[i, j] *= scalar;
 
             return this;
+        }
+
+        private unsafe struct MatrixArray
+        {
+            public float this[int x, int y]
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => elements[x * Size + y];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => elements[x * Size + y] = value;
+            }
+#pragma warning disable 649
+            private fixed float elements[Size * Size];
+#pragma warning restore 649
         }
     }
 }

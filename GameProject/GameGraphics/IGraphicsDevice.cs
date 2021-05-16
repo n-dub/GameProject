@@ -43,7 +43,8 @@ namespace GameProject.GameGraphics
         /// </summary>
         /// <param name="bitmap">An instance of <see cref="IBitmap" /> to draw</param>
         /// <param name="location">Location of a bitmap to draw</param>
-        /// <param name="scale"></param>
+        /// <param name="scale">Scale of a bitmap to draw</param>
+        /// <param name="opacity">Opacity of a bitmap to draw</param>
         void DrawBitmap(IBitmap bitmap, Vector2F location, Vector2F scale, float opacity);
 
         /// <summary>

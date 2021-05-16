@@ -35,11 +35,6 @@ namespace GameProject.Ecs
         public Vector2F Up => -Vector2F.UnitY.Rotate(Rotation);
 
         /// <summary>
-        ///     Parent of this game entity
-        /// </summary>
-        public GameEntity Parent { get; private set; }
-
-        /// <summary>
         ///     Local transformation of this entity, will be recalculated
         ///     if transformation parameters have been changed after the last time
         /// </summary>
@@ -48,6 +43,11 @@ namespace GameProject.Ecs
             ?? Matrix3F.CreateTranslation(Position)
             * Matrix3F.CreateRotation(Rotation)
             * Matrix3F.CreateScale(Scale);
+
+        /// <summary>
+        ///     Parent of this game entity
+        /// </summary>
+        public GameEntity Parent { get; private set; }
 
         /// <summary>
         ///     Position of this entity (in meters)
@@ -95,7 +95,7 @@ namespace GameProject.Ecs
 
         private readonly Dictionary<Type, IGameComponent> components;
 
-        private readonly List<Action<GameEntity>> componentCommands;
+        private readonly List<Action> componentCommands;
 
         private Matrix3F? localTransform;
 
@@ -109,7 +109,7 @@ namespace GameProject.Ecs
         public GameEntity()
         {
             components = new Dictionary<Type, IGameComponent>(8);
-            componentCommands = new List<Action<GameEntity>>(4);
+            componentCommands = new List<Action>(4);
             children = new List<GameEntity>(4);
         }
 
@@ -120,44 +120,6 @@ namespace GameProject.Ecs
         public GameEntity(GameEntity parent) : this()
         {
             ConnectEntities(this, parent);
-        }
-
-        /// <summary>
-        ///     Connect two entities - a child and a parent
-        /// </summary>
-        /// <param name="child">A child entity</param>
-        /// <param name="parent">A parent entity</param>
-        /// <exception cref="ArgumentNullException">Thrown if child is null</exception>
-        private static void ConnectEntities(GameEntity child, GameEntity parent)
-        {
-            if (child is null)
-                throw new ArgumentNullException(nameof(child));
-            child.Parent?.children.Remove(child);
-            child.Parent = parent;
-            parent?.children.Add(child);
-        }
-
-        /// <summary>
-        ///     Internal helper function for adding/removing components.
-        ///     Null will delete existing components of a certain type.
-        ///     Non-null value will overwrite existing component.
-        /// </summary>
-        /// <param name="type">Type of component</param>
-        /// <param name="component">Component to set</param>
-        private void SetComponent(Type type, IGameComponent component)
-        {
-            if (components.TryGetValue(type, out var previous))
-            {
-                previous.Entity = null;
-                componentCommands.Add(e => components.Remove(type));
-            }
-
-            if (component is null)
-                return;
-
-            component.Entity?.components.Remove(type);
-            component.Entity = this;
-            componentCommands.Add(e => components[type] = component);
         }
 
         /// <summary>
@@ -198,7 +160,7 @@ namespace GameProject.Ecs
         public T AddComponent<T>() where T : class, IGameComponent, new()
         {
             if (HasComponent<T>())
-                throw new ArgumentException($"component of type {typeof(T).Name} already existed");
+                throw new ArgumentException($"component of type \"{typeof(T).Name}\" already existed");
             var component = new T();
             SetComponent(typeof(T), component);
             return component;
@@ -286,8 +248,7 @@ namespace GameProject.Ecs
         /// </summary>
         public void FlushComponents()
         {
-            foreach (var command in componentCommands)
-                command(this);
+            componentCommands.InvokeAll();
         }
 
         /// <summary>
@@ -324,6 +285,48 @@ namespace GameProject.Ecs
         public bool HasComponent<T>() where T : class, IGameComponent
         {
             return HasComponent(typeof(T));
+        }
+
+        /// <summary>
+        ///     Connect two entities - a child and a parent
+        /// </summary>
+        /// <param name="child">A child entity</param>
+        /// <param name="parent">A parent entity</param>
+        /// <exception cref="ArgumentNullException">Thrown if child is null</exception>
+        private static void ConnectEntities(GameEntity child, GameEntity parent)
+        {
+            if (child is null)
+                throw new ArgumentNullException(nameof(child));
+            child.Parent?.children.Remove(child);
+            child.Parent = parent;
+            parent?.children.Add(child);
+        }
+
+        /// <summary>
+        ///     Internal helper function for adding/removing components.
+        ///     Null will delete existing components of a certain type.
+        ///     Non-null value will overwrite existing component.
+        /// </summary>
+        /// <param name="type">Type of component</param>
+        /// <param name="component">Component to set</param>
+        private void SetComponent(Type type, IGameComponent component)
+        {
+            if (components.TryGetValue(type, out var previous))
+            {
+                previous.Entity = null;
+                componentCommands.Add(() => components.Remove(type));
+            }
+
+            if (component is null)
+                return;
+
+            var prevEntity = component.Entity;
+            component.Entity = this;
+            componentCommands.Add(() =>
+            {
+                prevEntity?.components.Remove(type);
+                components[type] = component;
+            });
         }
 
         private bool HasComponent(Type componentType)

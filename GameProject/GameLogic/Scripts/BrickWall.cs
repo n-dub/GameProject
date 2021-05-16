@@ -64,7 +64,8 @@ namespace GameProject.GameLogic.Scripts
             body.AddCollider(new BoxCollider
             {
                 Size = new Vector2F(LevelUtility.BrickSize.X * 2, LevelUtility.BrickSize.Z * rows),
-                Offset = new Vector2F(0, offset)
+                Offset = new Vector2F(0, offset),
+                Density = LevelUtility.BrickDensity
             });
 
             Entity.AddComponent<Sprite>();
@@ -185,7 +186,7 @@ namespace GameProject.GameLogic.Scripts
                 GameState.AddEntity(CreateDisposableBrick(position + offset));
             for (var i = 0; i < detachedCount; i++)
                 GameState.AddEntity(CreateDisposableBrick(position - offset));
-            
+
             for (var i = 0; i < detachedCount; i++)
                 GameState.AddEntity(CreateDisposableBrick(position + offset * 2));
             for (var i = 0; i < detachedCount; i++)
@@ -196,7 +197,7 @@ namespace GameProject.GameLogic.Scripts
         {
             var entity = LevelUtility.CreateBrick(position, true, Entity.Rotation);
             parts.Add(entity);
-            
+
             if (random.Next(2) == 0)
                 entity.Destroy(float.PositiveInfinity);
             else
