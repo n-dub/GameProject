@@ -68,16 +68,25 @@ namespace GameProject.GameLogic.Scripts
 
         protected override void Update()
         {
-            if (!Entity.HasComponent<Sprite>() || GameState.Mouse[MouseButtons.Left] != KeyState.Down)
+            if (!Entity.HasComponent<Sprite>())
                 return;
 
-            var cursor = (GameState.Mouse.ScreenPosition - CellIndexToOffset(Point.Empty)) / CellSize
-                         + Vector2F.One * 0.5f;
-            var index = new Point((int) MathF.Floor(cursor.X), (int) MathF.Floor(cursor.Y))
-                .ToLinearIndex(Columns);
+            var index = -1;
+            for (var i = 0; i < 10; i++)
+                if (GameState.Keyboard[Keys.D0 + i] != KeyState.None)
+                    index = i - 1;
+
+            if (GameState.Mouse[MouseButtons.Left] == KeyState.Down)
+            {
+                var cursor = (GameState.Mouse.ScreenPosition - CellIndexToOffset(Point.Empty)) / CellSize
+                             + Vector2F.One * 0.5f;
+                index = new Point((int) MathF.Floor(cursor.X), (int) MathF.Floor(cursor.Y))
+                    .ToLinearIndex(Columns);
+            }
+            
             if (index >= factories.Length || index < 0)
                 return;
-
+            
             Response.Factory = factories[index];
             Response.IsComplete = true;
             Entity.Destroy();
