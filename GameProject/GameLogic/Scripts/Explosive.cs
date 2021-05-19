@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.Ecs.Physics;
 using GameProject.GameMath;
-using Microsoft.Xna.Framework;
 
 namespace GameProject.GameLogic.Scripts
 {
@@ -39,10 +37,9 @@ namespace GameProject.GameLogic.Scripts
                         Vector2F.One * 0.1f, 0, rand.Next(3, 6)).ToArray());
                 StartCoroutine(ApplyFragImpulse);
                 GameState.AddEntity(frag);
-                frag.Destroy(0.3f);
+                frag.Destroy(0.6f * (float)rand.NextDouble() + 0.1f);
                 frags.Add(frag.GetComponent<PhysicsBody>());
                 
-                //GameState.PhysicsWorld.RayCast(RaycastCallback, body.FarseerBody.Position, direction);
                 direction = direction.Rotate(angle);
             }
         }
@@ -53,19 +50,12 @@ namespace GameProject.GameLogic.Scripts
             foreach (var frag in frags)
             {
                 var direction = frag.FarseerBody.Position - Entity.Position;
-                frag.FarseerBody.ApplyLinearImpulse(-direction);
+                frag.FarseerBody.ApplyLinearImpulse(-direction * ExplosionFragImpulse);
             }
             
             yield return Awaiter.WaitForNextFrame();
 
             Entity.Destroy();
-        }
-
-        private float RaycastCallback(Fixture fixture, Vector2 point1, Vector2 point2, float distance)
-        {
-            fixture.Body.ApplyLinearImpulse((point1 - point2) * distance * ExplosionFragImpulse);
-            fixture.Body.ApplyAngularImpulse(ExplosionFragImpulse / 10);
-            return distance;
         }
     }
 }

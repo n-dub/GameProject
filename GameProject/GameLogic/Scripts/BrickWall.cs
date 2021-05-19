@@ -92,7 +92,7 @@ namespace GameProject.GameLogic.Scripts
 
         private static int GetMaxBrokenRows(float normalImpulse)
         {
-            return (int) MathF.Clamp(MathF.Round(normalImpulse * 2.5f), 2, 10);
+            return (int) MathF.Clamp(MathF.Round(normalImpulse * 2.5f), 2, 5);
         }
 
         private IEnumerable<Awaiter> CreateSprites()
