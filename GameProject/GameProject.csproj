@@ -126,6 +126,7 @@
     <Compile Include="GameLogic\Scripts\MachineParts\WoodenBoxFactory.cs" />
     <Compile Include="GameLogic\Scripts\NoiseAnimation.cs" />
     <Compile Include="GameLogic\Scripts\PartialBrickRow.cs" />
+    <Compile Include="GameLogic\Scripts\SiegeMachine.cs" />
     <Compile Include="GameLogic\Scripts\TestCamera.cs" />
     <Compile Include="GameLogic\Scripts\TestCannon.cs" />
     <Compile Include="GameLogic\Scripts\WheelControl.cs" />
