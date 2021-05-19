@@ -6,8 +6,8 @@ namespace GameProject.GameLogic.Scripts.MachineParts
 {
     internal class SmallWheelFactory : IMachinePartFactory
     {
-        public string TexturePath { get; } = "Resources/machine_parts/small_wheel.png";
-        public bool HasBoxCollision { get; } = false;
+        public string TexturePath => "Resources/machine_parts/small_wheel.png";
+        public bool HasBoxCollision => false;
 
         public void CreatePart(Vector2F cellPosition, GameState gameState, GameEntity machine)
         {

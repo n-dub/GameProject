@@ -16,7 +16,8 @@ namespace GameProject.GameLogic.Scripts
         {
             null,
             new WoodenBoxFactory(),
-            new SmallWheelFactory()
+            new SmallWheelFactory(),
+            new BombBoxFactory()
         };
 
         private MachineMenuResponse Response { get; }

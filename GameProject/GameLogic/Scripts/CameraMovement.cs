@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using GameProject.CoreEngine;
 using GameProject.GameInput;
 using GameProject.GameMath;
@@ -16,22 +17,19 @@ namespace GameProject.GameLogic.Scripts
             var mousePosition = GameState.Mouse.ScreenPosition;
             var viewWidth = GameState.RendererWrite.Camera.ViewWidth;
             
-            if (GameState.Mouse[MouseButtons.Right] == KeyState.Down)
+            switch (GameState.Mouse[MouseButtons.Right])
             {
-                GameProfiler.MakeEvent($"MR down {mousePosition}");
-                previousMouse = mousePosition;
-                previousCamera = GameState.RendererWrite.Camera.Position;
-                return;
+                case KeyState.Down:
+                    previousMouse = mousePosition;
+                    previousCamera = GameState.RendererWrite.Camera.Position;
+                    return;
+                case KeyState.Pushing:
+                    var delta = mousePosition - previousMouse;
+                    GameState.RendererWrite.Camera.Position = previousCamera - delta * viewWidth;
+                    break;
             }
 
             GameState.RendererWrite.Camera.ViewWidth -= ZoomFactor * GameState.Mouse.WheelDelta * viewWidth;
-
-            if (GameState.Mouse[MouseButtons.Right] == KeyState.Pushing)
-            {
-                GameProfiler.MakeEvent($"MR push {mousePosition}");
-                var delta = mousePosition - previousMouse;
-                GameState.RendererWrite.Camera.Position = previousCamera - delta * viewWidth;
-            }
         }
     }
 }

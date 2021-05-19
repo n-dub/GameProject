@@ -79,7 +79,7 @@ namespace GameProject.GameLogic.Scripts
             if (!body.ReadyToUse)
                 return;
 
-            var collision = FindContact(body);
+            var collision = LevelUtility.FindMaximumImpulseContact(body);
 
             if (collision.NormalImpulse < Strength)
                 return;
@@ -93,14 +93,6 @@ namespace GameProject.GameLogic.Scripts
         private static int GetMaxBrokenRows(float normalImpulse)
         {
             return (int) MathF.Clamp(MathF.Round(normalImpulse * 2.5f), 2, 10);
-        }
-
-        private static CollisionInfo FindContact(PhysicsBody body)
-        {
-            return body.Collisions.Aggregate((0f, null as CollisionInfo?),
-                (t, x) => t.Item1 < x.NormalImpulse
-                    ? (x.NormalImpulse, x)
-                    : t).Item2.GetValueOrDefault();
         }
 
         private IEnumerable<Awaiter> CreateSprites()
