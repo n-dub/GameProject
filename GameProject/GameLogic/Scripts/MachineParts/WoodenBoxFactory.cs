@@ -11,8 +11,8 @@ namespace GameProject.GameLogic.Scripts.MachineParts
 {
     internal class WoodenBoxFactory : IMachinePartFactory
     {
-        public string TexturePath { get; } = "Resources/machine_parts/wooden_box.png";
-        public bool HasBoxCollision { get; } = true;
+        public string TexturePath => "Resources/machine_parts/wooden_box.png";
+        public bool HasBoxCollision => true;
 
         public void CreatePart(Vector2F cellPosition, GameState gameState, GameEntity machine)
         {

@@ -116,10 +116,12 @@
     <Compile Include="GameLogic\LevelUtility.cs" />
     <Compile Include="GameLogic\Scripts\BrickWall.cs" />
     <Compile Include="GameLogic\Scripts\CameraMovement.cs" />
+    <Compile Include="GameLogic\Scripts\Explosive.cs" />
     <Compile Include="GameLogic\Scripts\IMachinePartFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineEditor.cs" />
     <Compile Include="GameLogic\Scripts\MachineMenu.cs" />
     <Compile Include="GameLogic\Scripts\MachineMenuResponse.cs" />
+    <Compile Include="GameLogic\Scripts\MachineParts\BombBoxFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineParts\SmallWheelFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineParts\WoodenBoxFactory.cs" />
     <Compile Include="GameLogic\Scripts\NoiseAnimation.cs" />
@@ -191,6 +193,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\bricks\top_brick_connection.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\machine_parts\bomb_box.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\machine_parts\small_wheel.png">

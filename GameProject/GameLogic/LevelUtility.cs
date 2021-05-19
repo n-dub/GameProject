@@ -119,10 +119,18 @@ namespace GameProject.GameLogic
             }));
             var body = entity.AddComponent<PhysicsBody>();
             body.IsStatic = isStatic;
-            body.AddCollider(new PolygonCollider {Vertices = vertices});
+            body.AddCollider(new PolygonCollider {Vertices = vertices, Density = 15});
             entity.Position = position;
             entity.FlushComponents();
             return entity;
+        }
+
+        public static CollisionInfo FindMaximumImpulseContact(PhysicsBody body)
+        {
+            return body.Collisions.Aggregate((0f, null as CollisionInfo?),
+                (t, x) => t.Item1 < x.NormalImpulse
+                    ? (x.NormalImpulse, x)
+                    : t).Item2.GetValueOrDefault();
         }
     }
 }

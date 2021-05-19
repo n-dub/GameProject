@@ -164,17 +164,80 @@ namespace GameProject.GameLogic.Scripts
         private static void GenerateCollision(Vector2F?[,] collisionData, PhysicsBody body)
         {
             var (x, y) = (collisionData.GetLength(0), collisionData.GetLength(1));
+            var unvisited = new HashSet<(int, int)>();
+
             for (var i = 0; i < x; i++)
             for (var j = 0; j < y; j++)
             {
-                if (!collisionData[i, j].HasValue) continue;
+                if (collisionData[i, j].HasValue)
+                    unvisited.Add((i, j));
+            }
+            
+            if (!unvisited.Any())
+                return;
+
+            var result = new List<(Point, Point)>();
+
+            while (unvisited.Any())
+            {
+                var (i, j) = unvisited.First();
+                var xSpan = 0;
+                for (var k = i; k < x; k++)
+                {
+                    if (collisionData[k, j].HasValue)
+                    {
+                        ++xSpan;
+                        unvisited.Remove((k, j));
+                    }
+                    else break;
+                }
+
+                var ySpan = 1;
+                for (var k = j + 1; k < y; k++)
+                {
+                    var rowHasCollision = true;
+                    for (var l = i; l < i + xSpan; l++)
+                    {
+                        if (collisionData[l, k].HasValue) continue;
+                        rowHasCollision = false;
+                        break;
+                    }
+
+                    if (rowHasCollision)
+                    {
+                        ++ySpan;
+                        for (var l = i; l < i + xSpan; l++)
+                            unvisited.Remove((l, k));
+                    }
+                    else break;
+                }
+                
+                result.Add((new Point(i, j), new Point(i + xSpan - 1, j + ySpan - 1)));
+            }
+
+            foreach (var (p1, p2) in result)
+            {
+                var offset = 0.5f * (collisionData[p2.X, p2.Y].Value - collisionData[p1.X, p1.Y].Value);
+                
                 body.AddCollider(new BoxCollider
                 {
-                    Offset = collisionData[i, j].Value,
+                    Offset = offset,
                     Scaled = false,
-                    Size = Vector2F.One * CellSize
+                    Size = new Vector2F(p2.X - p1.X + 1, p2.Y - p1.Y + 1) * CellSize
                 });
             }
+            
+            // for (var i = 0; i < x; i++)
+            // for (var j = 0; j < y; j++)
+            // {
+            //     if (!collisionData[i, j].HasValue) continue;
+            //     body.AddCollider(new BoxCollider
+            //     {
+            //         Offset = collisionData[i, j].Value,
+            //         Scaled = false,
+            //         Size = Vector2F.One * CellSize
+            //     });
+            // }
         }
 
         private bool InBounds(bool playButton)

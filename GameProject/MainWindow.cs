@@ -75,7 +75,7 @@ namespace GameProject
             base.OnLoad(e);
         }
 
-        private void MakeFrame(bool singleThread = false)
+        private void MakeFrame(bool singleThread = true)
         {
             using (new GameProfiler(nameof(MakeFrame)))
             {
