@@ -136,11 +136,10 @@ namespace GameProject.GameLogic.Scripts
             var machine = new GameEntity{Position = Entity.Position};
             var body = machine.AddComponent<PhysicsBody>();
             machine.AddComponent<Sprite>();
-            // machine.FlushComponents();
             GameState.AddEntity(machine);
             yield return Awaiter.WaitForFrames(2);
 
-            var collisionData = new Vector2F?[Columns, Rows];
+            var collisionData = new bool[Columns, Rows];
             var cellCenter = new Vector2F(CellSize) * 0.5f;
             var center = new Vector2F(Columns, Rows) * CellSize * 0.5f - cellCenter;
             for (var i = 0; i < Columns; i++)
@@ -151,7 +150,7 @@ namespace GameProject.GameLogic.Scripts
                 
                 var cellPosition = new Vector2F(i, j) * CellSize - center;
                 if (parts[i, j].HasBoxCollision)
-                    collisionData[i, j] = cellPosition;
+                    collisionData[i, j] = true;
                 parts[i, j].CreatePart(cellPosition, GameState, machine);
             }
 
@@ -161,18 +160,11 @@ namespace GameProject.GameLogic.Scripts
             Entity.Destroy();
         }
 
-        private static void GenerateCollision(Vector2F?[,] collisionData, PhysicsBody body)
+        private void GenerateCollision(bool[,] collisionData, PhysicsBody body)
         {
             var (x, y) = (collisionData.GetLength(0), collisionData.GetLength(1));
-            var unvisited = new HashSet<(int, int)>();
+            var unvisited = GetUnvisited(collisionData, x, y);
 
-            for (var i = 0; i < x; i++)
-            for (var j = 0; j < y; j++)
-            {
-                if (collisionData[i, j].HasValue)
-                    unvisited.Add((i, j));
-            }
-            
             if (!unvisited.Any())
                 return;
 
@@ -181,63 +173,84 @@ namespace GameProject.GameLogic.Scripts
             while (unvisited.Any())
             {
                 var (i, j) = unvisited.First();
-                var xSpan = 0;
-                for (var k = i; k < x; k++)
-                {
-                    if (collisionData[k, j].HasValue)
-                    {
-                        ++xSpan;
-                        unvisited.Remove((k, j));
-                    }
-                    else break;
-                }
+                var xSpan = GetXSpan(collisionData, i, j, x, unvisited);
 
-                var ySpan = 1;
-                for (var k = j + 1; k < y; k++)
-                {
-                    var rowHasCollision = true;
-                    for (var l = i; l < i + xSpan; l++)
-                    {
-                        if (collisionData[l, k].HasValue) continue;
-                        rowHasCollision = false;
-                        break;
-                    }
+                var ySpan = GetYSpan(collisionData, i, j, y, xSpan, unvisited);
 
-                    if (rowHasCollision)
-                    {
-                        ++ySpan;
-                        for (var l = i; l < i + xSpan; l++)
-                            unvisited.Remove((l, k));
-                    }
-                    else break;
-                }
-                
                 result.Add((new Point(i, j), new Point(i + xSpan - 1, j + ySpan - 1)));
             }
 
             foreach (var (p1, p2) in result)
             {
-                var offset = 0.5f * (collisionData[p2.X, p2.Y].Value - collisionData[p1.X, p1.Y].Value);
+                var cellCenter = new Vector2F(CellSize) * 0.5f;
+                var center = new Vector2F(Columns, Rows) * CellSize * 0.5f - cellCenter;
+                var offset = new Vector2F(p1) * CellSize - center;
+                var size = new Vector2F(p2.X - p1.X + 1, p2.Y - p1.Y + 1) * CellSize;
                 
                 body.AddCollider(new BoxCollider
                 {
-                    Offset = offset,
+                    Offset = offset + size * 0.5f - Vector2F.One * CellSize * 0.5f,
                     Scaled = false,
-                    Size = new Vector2F(p2.X - p1.X + 1, p2.Y - p1.Y + 1) * CellSize
+                    Size = size
                 });
             }
-            
-            // for (var i = 0; i < x; i++)
-            // for (var j = 0; j < y; j++)
-            // {
-            //     if (!collisionData[i, j].HasValue) continue;
-            //     body.AddCollider(new BoxCollider
-            //     {
-            //         Offset = collisionData[i, j].Value,
-            //         Scaled = false,
-            //         Size = Vector2F.One * CellSize
-            //     });
-            // }
+        }
+
+        private static int GetYSpan(bool[,] collisionData, int initX, int initY, int height, int xSpan,
+            ICollection<(int, int)> unvisited)
+        {
+            var ySpan = 1;
+            for (var k = initY + 1; k < height; k++)
+            {
+                var rowHasCollision = true;
+                for (var l = initX; l < initX + xSpan; l++)
+                {
+                    if (collisionData[l, k]) continue;
+                    rowHasCollision = false;
+                    break;
+                }
+
+                if (rowHasCollision)
+                {
+                    ++ySpan;
+                    for (var l = initX; l < initX + xSpan; l++)
+                        unvisited.Remove((l, k));
+                }
+                else break;
+            }
+
+            return ySpan;
+        }
+
+        private static int GetXSpan(bool[,] collisionData, int initX, int initY, int width,
+            ICollection<(int, int)> unvisited)
+        {
+            var xSpan = 0;
+            for (var k = initX; k < width; k++)
+            {
+                if (collisionData[k, initY])
+                {
+                    ++xSpan;
+                    unvisited.Remove((k, initY));
+                }
+                else break;
+            }
+
+            return xSpan;
+        }
+
+        private static HashSet<(int, int)> GetUnvisited(bool[,] collisionData, int x, int y)
+        {
+            var unvisited = new HashSet<(int, int)>();
+
+            for (var i = 0; i < x; i++)
+            for (var j = 0; j < y; j++)
+            {
+                if (collisionData[i, j])
+                    unvisited.Add((i, j));
+            }
+
+            return unvisited;
         }
 
         private bool InBounds(bool playButton)
