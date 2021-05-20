@@ -98,7 +98,7 @@ namespace GameProject.GameLogic.Scripts
 
         private IEnumerable<Awaiter> FinishMachineBreak()
         {
-            yield return Awaiter.WaitForFrames(4);
+            yield return Awaiter.WaitForFrames(6);
             var body = Entity.GetComponent<PhysicsBody>();
             foreach (var machine in createdMachines)
             {
