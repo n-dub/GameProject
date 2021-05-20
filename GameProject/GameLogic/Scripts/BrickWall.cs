@@ -79,7 +79,7 @@ namespace GameProject.GameLogic.Scripts
             if (!body.ReadyToUse)
                 return;
 
-            var collision = LevelUtility.FindMaximumImpulseContact(body);
+            var collision = CoreUtils.FindMaximumImpulseContact(body);
 
             if (collision.NormalImpulse < Strength)
                 return;

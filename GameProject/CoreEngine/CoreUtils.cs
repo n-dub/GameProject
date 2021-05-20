@@ -4,16 +4,17 @@ using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using GameProject.Ecs.Physics;
+using GameProject.GameGraphics.RenderShapes;
+using GameProject.GameMath;
 
 namespace GameProject.CoreEngine
 {
-    public static class CoreUtils
+    internal static class CoreUtils
     {
         public static void CopyPropertiesFrom<T>(this T destination, T source)
         {
             PropCopier<T>.Cloner(destination, source);
-            // foreach (var property in PropCopier<T>.Properties)
-            //     property.SetValue(destination, property.GetValue(source));
         }
 
         public static void InvokeAll(this IEnumerable<Action> delegates)
@@ -53,6 +54,49 @@ namespace GameProject.CoreEngine
                 var block = Expression.Block(expressions);
                 Cloner = Expression.Lambda<Action<T, T>>(block, destination, source).Compile();
             }
+        }
+
+        public static CollisionInfo FindMaximumImpulseContact(PhysicsBody body)
+        {
+            return body.Collisions.Aggregate((0f, null as CollisionInfo?),
+                (t, x) => t.Item1 < x.NormalImpulse
+                    ? (x.NormalImpulse, x)
+                    : t).Item2.GetValueOrDefault();
+        }
+
+        public static T[,] RunBreadthFirstSearch<T>(T[,] map, Point start, HashSet<Point> visited = null)
+        {
+            var width = map.GetLength(0);
+            var height = map.GetLength(1);
+            var result = new T[width, height];
+            visited = visited ?? new HashSet<Point>();
+
+            var queue = new Queue<Point>();
+            queue.Enqueue(start);
+            while (queue.Count != 0)
+            {
+                var point = queue.Dequeue();
+                visited.Add(point);
+                result[point.X, point.Y] = map[point.X, point.Y];
+
+                for (var dy = -1; dy <= 1; dy++)
+                for (var dx = -1; dx <= 1; dx++)
+                {
+                    var p = new Point(point.X + dx, point.Y + dy);
+                    if (dx != 0 && dy != 0) continue;
+                    if (p.X < 0 || p.X >= width || p.Y < 0 || p.Y >= height
+                        || map[p.X, p.Y] == null || visited.Contains(p))
+                        continue;
+                    queue.Enqueue(p);
+                }
+            }
+
+            return result;
+        }
+
+        public static Vector2F GetGlobalPosition(this IRenderShape shape)
+        {
+            return shape.Offset.TransformBy(shape.Transform);
         }
     }
 }

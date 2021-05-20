@@ -114,9 +114,8 @@ namespace GameProject.GameLogic.Scripts
                 else if (InBounds(true))
                 {
                     closed = true;
-                    var machine = new GameEntity {Position = Entity.Position};
-                    machine.AddComponent(new SiegeMachine(parts));
-                    GameState.AddEntity(machine);
+                    foreach (var machine in SiegeMachine.CreateMachines(parts, Entity.Position))
+                        GameState.AddEntity(machine);
                     Entity.Destroy();
                     return;
                 }

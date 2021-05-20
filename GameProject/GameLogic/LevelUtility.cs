@@ -101,7 +101,7 @@ namespace GameProject.GameLogic
                 ImagePath = imagePath
             }));
             var body = entity.AddComponent<PhysicsBody>();
-            body.AddCollider(new CircleCollider {Radius = radius, Density = 2});
+            body.AddCollider(new CircleCollider {Radius = radius, Density = 5});
             body.AngularDamping = 2;
             entity.Position = position;
             entity.Scale = new Vector2F(radius) * 2;
@@ -123,14 +123,6 @@ namespace GameProject.GameLogic
             entity.Position = position;
             entity.FlushComponents();
             return entity;
-        }
-
-        public static CollisionInfo FindMaximumImpulseContact(PhysicsBody body)
-        {
-            return body.Collisions.Aggregate((0f, null as CollisionInfo?),
-                (t, x) => t.Item1 < x.NormalImpulse
-                    ? (x.NormalImpulse, x)
-                    : t).Item2.GetValueOrDefault();
         }
     }
 }

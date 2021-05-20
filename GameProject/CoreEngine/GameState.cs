@@ -95,7 +95,7 @@ namespace GameProject.CoreEngine
         /// </summary>
         public void RemoveDestroyed()
         {
-            entities.RemoveAll(e => e.Destroyed);
+            entities.RemoveAll(e => e?.Destroyed ?? true);
         }
     }
 }

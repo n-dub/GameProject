@@ -9,5 +9,7 @@ namespace GameProject.GameLogic.Scripts
         string TexturePath { get; }
         bool HasBoxCollision { get; }
         void CreatePart(Vector2F cellPosition, GameState gameState, GameEntity machine);
+        void CleanUp();
+        GameEntity CreateDestroyedPart(Vector2F position, float rotation);
     }
 }
