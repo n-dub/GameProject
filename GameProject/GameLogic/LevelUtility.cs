@@ -93,7 +93,7 @@ namespace GameProject.GameLogic
             return entity;
         }
 
-        public static GameEntity CreateWheel(Vector2F position, float radius, string imagePath)
+        public static GameEntity CreateWheel(Vector2F position, float radius, string imagePath, float collisionRadius = 1)
         {
             var entity = new GameEntity();
             entity.AddComponent(new Sprite(new QuadRenderShape(1)
@@ -101,7 +101,7 @@ namespace GameProject.GameLogic
                 ImagePath = imagePath
             }));
             var body = entity.AddComponent<PhysicsBody>();
-            body.AddCollider(new CircleCollider {Radius = radius, Density = 5});
+            body.AddCollider(new CircleCollider {Radius = radius * collisionRadius, Density = 5});
             body.AngularDamping = 2;
             entity.Position = position;
             entity.Scale = new Vector2F(radius) * 2;

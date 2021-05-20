@@ -16,7 +16,7 @@
             Frames = frames;
         }
 
-        private Awaiter(float seconds, bool timeScaled = true)
+        private Awaiter(float seconds, bool timeScaled)
         {
             Seconds = seconds;
             TimeScaled = timeScaled;

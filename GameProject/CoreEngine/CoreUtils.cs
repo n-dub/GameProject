@@ -34,8 +34,7 @@ namespace GameProject.CoreEngine
         /// <typeparam name="T"></typeparam>
         private abstract class PropCopier<T>
         {
-            // ReSharper disable once StaticMemberInGenericType
-            public static readonly PropertyInfo[] Properties = typeof(T).GetProperties()
+            private static readonly PropertyInfo[] properties = typeof(T).GetProperties()
                 .Where(p => p.CanRead && p.CanWrite)
                 .ToArray();
 
@@ -45,7 +44,7 @@ namespace GameProject.CoreEngine
             {
                 var destination = Expression.Parameter(typeof(T), "destination");
                 var source = Expression.Parameter(typeof(T), "source");
-                var expressions = Properties
+                var expressions = properties
                     .Select(property => Expression
                         .Call(destination, property.SetMethod, Expression
                             .Call(source, property.GetMethod)))

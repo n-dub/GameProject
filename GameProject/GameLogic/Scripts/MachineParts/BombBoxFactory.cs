@@ -19,10 +19,9 @@ namespace GameProject.GameLogic.Scripts.MachineParts
             if (destroyedCells.Any(c => c == cellPosition))
                 return;
             var bomb = LevelUtility.CreateWheel(cellPosition + machine.Position,
-                0.3f * MachineEditor.CellSize, TexturePath);
+                0.3f * MachineEditor.CellSize, TexturePath, 0.7f);
             cleanupList.Add(bomb);
             gameState.AddEntity(bomb);
-            // bomb.AddComponent(new WheelControl {Torque = 0, Machine = machine});
             var explosive = new Explosive {Strength = 1};
             explosive.OnExplode += () => destroyedCells.Add(cellPosition);
             bomb.AddComponent(explosive);
