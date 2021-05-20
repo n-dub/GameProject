@@ -13,6 +13,10 @@ namespace GameProject.GameLogic.Scripts
         public float ExplosionRadius { get; set; } = 5;
         public float ExplosionFragImpulse { get; set; } = 2;
         public int ExplosionFragCount { get; set; } = 20;
+        public bool ForceExplodeOnStart { get; set; }
+        public float MinLifetime { get; set; } = 0.1f;
+        public float MaxLifetime { get; set; } = 0.8f;
+        public event Action OnExplode;
 
         private readonly List<PhysicsBody> frags = new List<PhysicsBody>();
         
@@ -22,9 +26,7 @@ namespace GameProject.GameLogic.Scripts
             if (!body.ReadyToUse || frags.Any())
                 return;
 
-            var collision = LevelUtility.FindMaximumImpulseContact(body);
-            
-            if (collision.NormalImpulse < Strength)
+            if (!ForceExplodeOnStart && CoreUtils.FindMaximumImpulseContact(body).NormalImpulse < Strength)
                 return;
 
             var direction = Vector2F.UnitY * ExplosionRadius;
@@ -37,11 +39,13 @@ namespace GameProject.GameLogic.Scripts
                         Vector2F.One * 0.1f, 0, rand.Next(3, 6)).ToArray());
                 StartCoroutine(ApplyFragImpulse);
                 GameState.AddEntity(frag);
-                frag.Destroy(0.6f * (float)rand.NextDouble() + 0.1f);
+                frag.Destroy((MaxLifetime - MinLifetime) * (float)rand.NextDouble() + MinLifetime);
                 frags.Add(frag.GetComponent<PhysicsBody>());
                 
                 direction = direction.Rotate(angle);
             }
+            
+            OnExplode?.Invoke();
         }
 
         private IEnumerable<Awaiter> ApplyFragImpulse()

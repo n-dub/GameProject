@@ -26,9 +26,9 @@ namespace GameProject.Ecs
         /// <summary>
         ///     Global transformation matrix, is recalculated on-demand
         /// </summary>
-        public Matrix3F GlobalTransform => Parent is null
+        public Matrix3F GlobalTransform => /*Parent is null
             ? LocalTransform
-            : Parent.GlobalTransform * LocalTransform;
+            : Parent.GlobalTransform * */LocalTransform;
 
         public Vector2F Right => Vector2F.UnitX.Rotate(Rotation);
 
@@ -38,7 +38,7 @@ namespace GameProject.Ecs
         ///     Local transformation of this entity, will be recalculated
         ///     if transformation parameters have been changed after the last time
         /// </summary>
-        public Matrix3F LocalTransform =>
+        private Matrix3F LocalTransform =>
             localTransform
             ?? Matrix3F.CreateTranslation(Position)
             * Matrix3F.CreateRotation(Rotation)
@@ -240,6 +240,9 @@ namespace GameProject.Ecs
             FlushComponents();
             timeLeft -= state.Time.DeltaTime;
             Destroyed = timeLeft <= 0;
+            if (Destroyed)
+                return;
+            
             DoForAllChildren(c => c.Update(state), c => c.Update(state), false);
         }
 

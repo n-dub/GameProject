@@ -16,6 +16,8 @@ namespace GameProject.GameLogic.Scripts
         public float Torque { get; set; }
         public GameEntity Machine { get; set; }
 
+        private readonly List<Joint> joints = new List<Joint>(4);
+
         protected override void Initialize()
         {
             StartCoroutine(FinishInit);
@@ -30,7 +32,7 @@ namespace GameProject.GameLogic.Scripts
             if (!machine.ReadyToUse || !wheel.ReadyToUse)
                 throw new Exception();
 
-            wheel.Friction = 5;
+            wheel.Friction = 10;
             const float f = 0.1f;
             var wheelPosition = wheel.FarseerBody.Position;
             var machinePosition = machine.FarseerBody.Position;
@@ -51,10 +53,11 @@ namespace GameProject.GameLogic.Scripts
                 wheelPosition, machinePosition - Vector2.UnitY * f));
         }
 
-        private static void InitializeJoint(DistanceJoint joint)
+        private void InitializeJoint(DistanceJoint joint)
         {
             joint.CollideConnected = false;
             joint.Frequency = 50;
+            joints.Add(joint);
         }
 
         protected override void Update()
@@ -65,9 +68,17 @@ namespace GameProject.GameLogic.Scripts
 
             var dt = GameState.Time.DeltaTime;
             if (GameState.Keyboard[Keys.A] == KeyState.Pushing)
-                body.FarseerBody.ApplyAngularImpulse(-Torque * dt);
+                body.FarseerBody.ApplyTorque(-Torque * dt);
             if (GameState.Keyboard[Keys.D] == KeyState.Pushing)
-                body.FarseerBody.ApplyAngularImpulse(Torque * dt);
+                body.FarseerBody.ApplyTorque(Torque * dt);
+        }
+
+        public override void Destroy(GameState state)
+        {
+            foreach (var joint in joints)
+            {
+                state.PhysicsWorld.RemoveJoint(joint);
+            }
         }
     }
 }

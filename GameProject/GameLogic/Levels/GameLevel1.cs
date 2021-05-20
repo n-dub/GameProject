@@ -28,6 +28,8 @@ namespace GameProject.GameLogic.Levels
             editor.Position = new Vector2F(-3, -6.25f);
             entities.Add(editor);
 
+            // entities.Add(LevelUtility.CreateCircle(new Vector2F(-3, -10), 0.5f));
+
             CreateWall(entities, 0);
             CreateWall(entities, 3);
 

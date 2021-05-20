@@ -7,19 +7,30 @@ using GameProject.GameMath;
 
 namespace GameProject.GameLogic.Scripts.MachineParts
 {
-    internal class WoodenBoxFactory : IMachinePartFactory
+    internal class OpenWoodenPipeFactory : IMachinePartFactory
     {
-        public string TexturePath => "Resources/machine_parts/wooden_box.png";
-        public bool HasBoxCollision => true;
+        public string TexturePath => "Resources/machine_parts/wooden_pipe_open.png";
+        public bool HasBoxCollision => false;
+
+        private const float Width = 0.1f;
 
         public void CreatePart(Vector2F cellPosition, GameState gameState, GameEntity machine)
         {
             var sprite = machine.GetComponent<Sprite>();
+            var body = machine.GetComponent<PhysicsBody>();
             sprite.AddShape(gameState, new QuadRenderShape(1)
             {
                 ImagePath = TexturePath,
                 Offset = cellPosition,
                 Scale = Vector2F.One * MachineEditor.CellSize
+            });
+            const float colliderOffset = 0.5f - Width + Width * 0.5f;
+            
+            body.AddCollider(new BoxCollider
+            {
+                Offset = cellPosition + colliderOffset * MachineEditor.CellSize * Vector2F.UnitY,
+                Scaled = false,
+                Size = new Vector2F(1, Width) * MachineEditor.CellSize
             });
         }
 
@@ -29,11 +40,11 @@ namespace GameProject.GameLogic.Scripts.MachineParts
 
         public GameEntity CreateDestroyedPart(Vector2F position, float rotation)
         {
-            var entity = new GameEntity{Position = position, Rotation = rotation};
+            var entity = new GameEntity {Position = position, Rotation = rotation};
             entity.AddComponent(new Explosive
             {
                 ForceExplodeOnStart = true,
-                ExplosionFragCount = 20,
+                ExplosionFragCount = 5,
                 ExplosionRadius = 1,
                 ExplosionFragImpulse = 0.01f,
                 MinLifetime = 2f,

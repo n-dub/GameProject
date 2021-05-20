@@ -71,6 +71,7 @@
     <Compile Include="CoreEngine\Awaiter.cs" />
     <Compile Include="CoreEngine\Camera.cs" />
     <Compile Include="CoreEngine\CoreUtils.cs" />
+    <Compile Include="CoreEngine\CoreUtilsTests.cs" />
     <Compile Include="CoreEngine\GameProfiler.cs" />
     <Compile Include="CoreEngine\GameScript.cs" />
     <Compile Include="CoreEngine\GameState.cs" />
@@ -122,8 +123,10 @@
     <Compile Include="GameLogic\Scripts\MachineMenu.cs" />
     <Compile Include="GameLogic\Scripts\MachineMenuResponse.cs" />
     <Compile Include="GameLogic\Scripts\MachineParts\BombBoxFactory.cs" />
+    <Compile Include="GameLogic\Scripts\MachineParts\OpenWoodenPipeFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineParts\SmallWheelFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineParts\WoodenBoxFactory.cs" />
+    <Compile Include="GameLogic\Scripts\MachineParts\WoodenPipeFactory.cs" />
     <Compile Include="GameLogic\Scripts\NoiseAnimation.cs" />
     <Compile Include="GameLogic\Scripts\PartialBrickRow.cs" />
     <Compile Include="GameLogic\Scripts\SiegeMachine.cs" />
@@ -206,6 +209,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\machine_parts\wooden_box.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\machine_parts\wooden_pipe.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\machine_parts\wooden_pipe_open.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\noise\noise_0.png">

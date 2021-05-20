@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
@@ -11,23 +12,120 @@ namespace GameProject.GameLogic.Scripts
 {
     internal class SiegeMachine : GameScript
     {
+        public float BreakImpulse { get; set; } = 3f;
+
         private readonly IMachinePartFactory[,] partsMatrix;
+        private readonly Dictionary<Vector2F, Point> partOffsets;
 
         private int Rows => partsMatrix.GetLength(1);
         private int Columns => partsMatrix.GetLength(0);
 
         private bool initialized;
-        
-        public SiegeMachine(IMachinePartFactory[,] matrix)
+        private List<GameEntity> createdMachines;
+        private CollisionInfo breakCollision;
+
+        public static IEnumerable<GameEntity> CreateMachines(IMachinePartFactory[,] parts,
+            Vector2F position, float rotation = 0)
+        {
+            var visited = new HashSet<Point>();
+            
+            for (var i = 0; i < parts.GetLength(0); i++)
+            for (var j = 0; j < parts.GetLength(1); j++)
+            {
+                var start = new Point(i, j);
+                if (parts[i, j] is null || visited.Contains(start))
+                    continue;
+                
+                var p = CoreUtils.RunBreadthFirstSearch(parts, start, visited);
+                var machine = new GameEntity {Position = position, Rotation = rotation};
+                machine.AddComponent(new SiegeMachine(p));
+                yield return machine;
+            }
+        }
+
+        private SiegeMachine(IMachinePartFactory[,] matrix)
         {
             partsMatrix = matrix;
+            partOffsets = new Dictionary<Vector2F, Point>(matrix.Length);
+        }
+
+        protected override void Update()
+        {
+            if (!initialized)
+                return;
+
+            breakCollision = CoreUtils.FindMaximumImpulseContact(Entity.GetComponent<PhysicsBody>());
+            if (breakCollision.NormalImpulse < BreakImpulse)
+                return;
+
+            var minDistance = float.PositiveInfinity;
+            var minDistancePart = partOffsets.First().Value;
+            var transform = Entity.GlobalTransform;
+
+            foreach (var (position, part) in partOffsets.Select(pair => (pair.Key, pair.Value)))
+            {
+                var pos = position.TransformBy(transform);
+                var distance = (breakCollision.Point - pos).LengthSquared;
+                if (distance > minDistance) continue;
+                minDistance = distance;
+                minDistancePart = part;
+            }
+
+            var newParts = new IMachinePartFactory[Columns, Rows];
+            for (var i = 0; i < Columns; i++)
+            for (var j = 0; j < Rows; j++)
+            {
+                if (new Point(i, j) != minDistancePart)
+                    newParts[i, j] = partsMatrix[i, j];
+                else
+                {
+                    var cellPosition = GetLocalCellPosition(i, j).TransformBy(Entity.GlobalTransform);
+                    var destroyed = partsMatrix[i, j].CreateDestroyedPart(cellPosition, Entity.Rotation);
+                    GameState.AddEntity(destroyed);
+                }
+            }
+
+            createdMachines = CreateMachines(newParts, Entity.Position, Entity.Rotation).ToList();
+            foreach (var machine in createdMachines)
+                GameState.AddEntity(machine);
+
+            foreach (var part in partsMatrix)
+                part?.CleanUp();
+            
+            StartCoroutine(FinishMachineBreak);
+            initialized = false;
+        }
+
+        private IEnumerable<Awaiter> FinishMachineBreak()
+        {
+            yield return Awaiter.WaitForFrames(4);
+            var body = Entity.GetComponent<PhysicsBody>();
+            foreach (var machine in createdMachines)
+            {
+                // machine.GetComponent<PhysicsBody>().FarseerBody
+                //     .ApplyLinearImpulse(breakCollision.Normal, breakCollision.Point);
+                CopyVelocity(body.FarseerBody, machine.GetComponent<PhysicsBody>().FarseerBody);
+            }
+
+            yield return Awaiter.WaitForNextFrame();
+            Entity.Destroy();
+        }
+
+        private static void CopyVelocity(Body source, Body destination)
+        {
+            if (destination is null || source is null)
+                return;
+
+            destination.AngularDamping = source.AngularDamping;
+            destination.AngularVelocity = source.AngularVelocity;
+            destination.LinearVelocity = source.LinearVelocity * 1.5f;
         }
 
         protected override void Initialize()
         {
             StartCoroutine(BuildMachine);
         }
-        
+
         private IEnumerable<Awaiter> BuildMachine()
         {
             var body = Entity.AddComponent<PhysicsBody>();
@@ -35,25 +133,31 @@ namespace GameProject.GameLogic.Scripts
             yield return Awaiter.WaitForFrames(2);
 
             var collisionData = new bool[Columns, Rows];
-            var cellCenter = new Vector2F(MachineEditor.CellSize) * 0.5f;
-            var center = new Vector2F(Columns, Rows) * MachineEditor.CellSize * 0.5f - cellCenter;
             for (var i = 0; i < Columns; i++)
             for (var j = 0; j < Rows; j++)
             {
                 if (partsMatrix[i, j] is null)
                     continue;
-                
-                var cellPosition = new Vector2F(i, j) * MachineEditor.CellSize - center;
+
                 if (partsMatrix[i, j].HasBoxCollision)
                     collisionData[i, j] = true;
+                var cellPosition = GetLocalCellPosition(i, j);
                 partsMatrix[i, j].CreatePart(cellPosition, GameState, Entity);
+                partOffsets.Add(cellPosition, new Point(i, j));
             }
 
-            GenerateCollision(collisionData, body);
+            GenerateCollision(collisionData, body, Rows, Columns);
             initialized = true;
         }
-        
-        private void GenerateCollision(bool[,] collisionData, PhysicsBody body)
+
+        private Vector2F GetLocalCellPosition(int i, int j)
+        {
+            var cellCenter = new Vector2F(MachineEditor.CellSize) * 0.5f;
+            var center = new Vector2F(Columns, Rows) * MachineEditor.CellSize * 0.5f - cellCenter;
+            return new Vector2F(i, j) * MachineEditor.CellSize - center;
+        }
+
+        private static void GenerateCollision(bool[,] collisionData, PhysicsBody body, int rows, int columns)
         {
             var (x, y) = (collisionData.GetLength(0), collisionData.GetLength(1));
             var unvisited = GetUnvisited(collisionData, x, y);
@@ -75,10 +179,10 @@ namespace GameProject.GameLogic.Scripts
             foreach (var (p1, p2) in result)
             {
                 var cellCenter = new Vector2F(MachineEditor.CellSize) * 0.5f;
-                var center = new Vector2F(Columns, Rows) * MachineEditor.CellSize * 0.5f - cellCenter;
+                var center = new Vector2F(columns, rows) * MachineEditor.CellSize * 0.5f - cellCenter;
                 var offset = new Vector2F(p1) * MachineEditor.CellSize - center;
                 var size = new Vector2F(p2.X - p1.X + 1, p2.Y - p1.Y + 1) * MachineEditor.CellSize;
-                
+
                 body.AddCollider(new BoxCollider
                 {
                     Offset = offset + size * 0.5f - Vector2F.One * MachineEditor.CellSize * 0.5f,
