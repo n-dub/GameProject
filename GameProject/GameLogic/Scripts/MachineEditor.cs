@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
 using GameProject.Ecs.Graphics;
-using GameProject.Ecs.Physics;
 using GameProject.GameGraphics.RenderShapes;
 using GameProject.GameInput;
 using GameProject.GameMath;
@@ -24,12 +24,14 @@ namespace GameProject.GameLogic.Scripts
         private bool closed;
 
         private readonly IMachinePartFactory[,] parts;
+        private readonly float[,] partRotations;
 
         public MachineEditor(int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
             parts = new IMachinePartFactory[columns, rows];
+            partRotations = new float[columns, rows];
         }
 
         public override void Destroy(GameState state)
@@ -87,13 +89,22 @@ namespace GameProject.GameLogic.Scripts
                 var sprite = Entity.GetComponent<Sprite>();
                 var oldShape = sprite.Shapes[selectedCell.ToLinearIndex(Columns)];
                 var shape = new QuadRenderShape(1);
+                partRotations[selectedCell.X, selectedCell.Y] += menuResponse.Rotation;
                 shape.CopyDataFrom(oldShape);
+                shape.Rotation += menuResponse.Rotation;
                 shape.ImagePath = factory?.TexturePath ?? "Resources/ui/machine_slot.png";
                 shape.Image = null;
                 sprite.ReplaceShape(GameState, selectedCell.ToLinearIndex(Columns), shape);
                 parts[selectedCell.X, selectedCell.Y] = factory;
-                menuResponse = null;
-                selectedCell = new Point(-1, -1);
+                if (Math.Abs(menuResponse.Rotation - float.Epsilon) <= float.Epsilon)
+                {
+                    menuResponse = null;
+                    selectedCell = new Point(-1, -1);
+                }
+                else
+                {
+                    RunMenu();
+                }
             }
             else if (menuResponse != null)
             {
@@ -106,15 +117,12 @@ namespace GameProject.GameLogic.Scripts
                 selectedCell = GetCellIndex(worldClickPos);
                 if (InBounds(false))
                 {
-                    menuResponse = new MachineMenuResponse();
-                    var entity = new GameEntity();
-                    GameState.AddEntity(entity);
-                    entity.AddComponent(new MachineMenu(menuResponse));
+                    RunMenu();
                 }
-                else if (InBounds(true))
+                if (InBounds(true))
                 {
                     closed = true;
-                    foreach (var machine in SiegeMachine.CreateMachines(parts, Entity.Position))
+                    foreach (var machine in SiegeMachine.CreateMachines(parts, partRotations, Entity.Position))
                         GameState.AddEntity(machine);
                     Entity.Destroy();
                     return;
@@ -131,6 +139,18 @@ namespace GameProject.GameLogic.Scripts
                     ? Vector2F.One * CellSize * 0.9f
                     : Vector2F.One * CellSize;
             }
+        }
+
+        private void RunMenu()
+        {
+            menuResponse = new MachineMenuResponse
+            {
+                Factory = parts[selectedCell.X, selectedCell.Y],
+                Rotation = partRotations[selectedCell.X, selectedCell.Y]
+            };
+            var entity = new GameEntity();
+            GameState.AddEntity(entity);
+            entity.AddComponent(new MachineMenu(menuResponse));
         }
 
         private bool InBounds(bool playButton)

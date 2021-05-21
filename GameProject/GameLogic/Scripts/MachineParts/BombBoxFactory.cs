@@ -2,6 +2,7 @@
 using System.Linq;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
+using GameProject.Ecs.Physics;
 using GameProject.GameMath;
 
 namespace GameProject.GameLogic.Scripts.MachineParts
@@ -10,16 +11,18 @@ namespace GameProject.GameLogic.Scripts.MachineParts
     {
         public string TexturePath => "Resources/machine_parts/bomb_box.png";
         public bool HasBoxCollision => false;
+        public bool Connectible => false;
 
         private readonly List<GameEntity> cleanupList = new List<GameEntity>();
         private readonly List<Vector2F> destroyedCells = new List<Vector2F>();
 
-        public void CreatePart(Vector2F cellPosition, GameState gameState, GameEntity machine)
+        public void CreatePart(Vector2F cellPosition, float rotation, GameState gameState, GameEntity machine)
         {
             if (destroyedCells.Any(c => c == cellPosition))
                 return;
             var bomb = LevelUtility.CreateWheel(cellPosition + machine.Position,
                 0.3f * MachineEditor.CellSize, TexturePath, 0.7f);
+            bomb.GetComponent<PhysicsBody>().Colliders.First().Density = 5;
             cleanupList.Add(bomb);
             gameState.AddEntity(bomb);
             var explosive = new Explosive {Strength = 1};

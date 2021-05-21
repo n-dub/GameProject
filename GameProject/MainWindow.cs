@@ -14,7 +14,6 @@ using GameProject.GameGraphics;
 using GameProject.GameGraphics.Backend.Direct2D;
 using GameProject.GameGraphics.Backend.WinForms;
 using GameProject.GameInput;
-using GameProject.GameLogic.Scripts;
 using GameProject.GameMath;
 using Microsoft.Xna.Framework;
 using unvell.D2DLib;

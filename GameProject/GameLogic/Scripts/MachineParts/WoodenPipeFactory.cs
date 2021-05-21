@@ -11,10 +11,11 @@ namespace GameProject.GameLogic.Scripts.MachineParts
     {
         public string TexturePath => "Resources/machine_parts/wooden_pipe.png";
         public bool HasBoxCollision => false;
+        public bool Connectible => true;
 
         private const float Width = 0.1f;
 
-        public void CreatePart(Vector2F cellPosition, GameState gameState, GameEntity machine)
+        public void CreatePart(Vector2F cellPosition, float rotation, GameState gameState, GameEntity machine)
         {
             var sprite = machine.GetComponent<Sprite>();
             var body = machine.GetComponent<PhysicsBody>();
@@ -22,21 +23,24 @@ namespace GameProject.GameLogic.Scripts.MachineParts
             {
                 ImagePath = TexturePath,
                 Offset = cellPosition,
-                Scale = Vector2F.One * MachineEditor.CellSize
+                Scale = Vector2F.One * MachineEditor.CellSize,
+                Rotation = rotation
             });
-            const float colliderOffset = 0.5f - Width + Width * 0.5f;
-            
+            const float colliderOffset = 0.5f - Width * 0.5f;
+
+            var size = new Vector2F(1, Width).Rotate(rotation) * MachineEditor.CellSize;
+            var offset = colliderOffset * MachineEditor.CellSize * Vector2F.UnitY.Rotate(rotation);
             body.AddCollider(new BoxCollider
             {
-                Offset = cellPosition + colliderOffset * MachineEditor.CellSize * Vector2F.UnitY,
+                Offset = cellPosition + offset,
                 Scaled = false,
-                Size = new Vector2F(1, Width) * MachineEditor.CellSize
+                Size = size
             });
             body.AddCollider(new BoxCollider
             {
-                Offset = cellPosition - colliderOffset * MachineEditor.CellSize * Vector2F.UnitY,
+                Offset = cellPosition - offset,
                 Scaled = false,
-                Size = new Vector2F(1, Width) * MachineEditor.CellSize
+                Size = size
             });
         }
 

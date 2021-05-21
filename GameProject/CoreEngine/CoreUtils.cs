@@ -63,12 +63,26 @@ namespace GameProject.CoreEngine
                     : t).Item2.GetValueOrDefault();
         }
 
+
         public static T[,] RunBreadthFirstSearch<T>(T[,] map, Point start, HashSet<Point> visited = null)
+        {
+            return RunBreadthFirstSearch(map, start, x => x == null, visited);
+        }
+
+        public static T[,] RunBreadthFirstSearch<T>(T[,] map, Point start, Func<T, bool> predicate,
+            HashSet<Point> visited = null)
         {
             var width = map.GetLength(0);
             var height = map.GetLength(1);
             var result = new T[width, height];
             visited = visited ?? new HashSet<Point>();
+
+            if (predicate(map[start.X, start.Y]))
+            {
+                visited.Add(start);
+                result[start.X, start.Y] = map[start.X, start.Y];
+                return result;
+            }
 
             var queue = new Queue<Point>();
             queue.Enqueue(start);
@@ -84,7 +98,7 @@ namespace GameProject.CoreEngine
                     var p = new Point(point.X + dx, point.Y + dy);
                     if (dx != 0 && dy != 0) continue;
                     if (p.X < 0 || p.X >= width || p.Y < 0 || p.Y >= height
-                        || map[p.X, p.Y] == null || visited.Contains(p))
+                        || predicate(map[p.X, p.Y]) || visited.Contains(p))
                         continue;
                     queue.Enqueue(p);
                 }
