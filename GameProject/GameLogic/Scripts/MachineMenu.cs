@@ -73,25 +73,50 @@ namespace GameProject.GameLogic.Scripts
             if (!Entity.HasComponent<Sprite>())
                 return;
 
-            var index = -1;
+            var factory = null as IMachinePartFactory;
+            var nullSelected = false;
             for (var i = 0; i < 10; i++)
                 if (GameState.Keyboard[Keys.D0 + i] != KeyState.None)
-                    index = i - 1;
+                    factory = GetFactoryAt(i - 1, out nullSelected);
 
             if (GameState.Mouse[MouseButtons.Left] == KeyState.Down)
             {
                 var cursor = (GameState.Mouse.ScreenPosition - CellIndexToOffset(Point.Empty)) / CellSize
                              + Vector2F.One * 0.5f;
-                index = new Point((int) MathF.Floor(cursor.X), (int) MathF.Floor(cursor.Y))
+                var index = new Point((int) MathF.Floor(cursor.X), (int) MathF.Floor(cursor.Y))
                     .ToLinearIndex(Columns);
+                factory = GetFactoryAt(index, out nullSelected);
             }
-            
-            if (index >= factories.Length || index < 0)
+
+            var rotation = GetRotationFromInput();
+
+            if (factory is null && !nullSelected && rotation == 0)
                 return;
             
-            Response.Factory = factories[index];
+            Response.Factory = rotation == 0 ? factory : Response.Factory;
+            Response.Rotation = rotation;
             Response.IsComplete = true;
             Entity.Destroy();
+        }
+
+        private float GetRotationFromInput()
+        {
+            if (GameState.Keyboard[Keys.Left] == KeyState.Down)
+                return MathF.PI / 2;
+            if (GameState.Keyboard[Keys.Right] == KeyState.Down)
+                return MathF.PI / -2;
+            if (GameState.Keyboard[Keys.Enter] == KeyState.Down)
+                return float.Epsilon;
+            return 0;
+        }
+
+        private static IMachinePartFactory GetFactoryAt(int index, out bool nullSelected)
+        {
+            nullSelected = false;
+            if (index >= factories.Length || index < 0)
+                return null;
+            nullSelected = factories[index] is null;
+            return factories[index];
         }
 
         private Vector2F CellIndexToOffset(Point coords)

@@ -3,6 +3,7 @@
     internal class MachineMenuResponse
     {
         public IMachinePartFactory Factory { get; set; }
+        public float Rotation { get; set; }
 
         public bool IsComplete { get; set; }
 

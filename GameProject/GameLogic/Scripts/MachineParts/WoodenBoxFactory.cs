@@ -11,15 +11,17 @@ namespace GameProject.GameLogic.Scripts.MachineParts
     {
         public string TexturePath => "Resources/machine_parts/wooden_box.png";
         public bool HasBoxCollision => true;
+        public bool Connectible => true;
 
-        public void CreatePart(Vector2F cellPosition, GameState gameState, GameEntity machine)
+        public void CreatePart(Vector2F cellPosition, float rotation, GameState gameState, GameEntity machine)
         {
             var sprite = machine.GetComponent<Sprite>();
             sprite.AddShape(gameState, new QuadRenderShape(1)
             {
                 ImagePath = TexturePath,
                 Offset = cellPosition,
-                Scale = Vector2F.One * MachineEditor.CellSize
+                Scale = Vector2F.One * MachineEditor.CellSize,
+                Rotation = rotation
             });
         }
 

@@ -17,6 +17,27 @@ namespace GameProject.CoreEngine
             };
             MakeBfsTest(testMatrix, Point.Empty, testMatrix);
         }
+
+        [Test]
+        public void TestBfsStartWithNull()
+        {
+            var testMatrix = new int?[,]
+            {
+                {1, 1, null, null, null},
+                {1, 1, null, null, null},
+                {1, 1, null, null, null},
+                {1, 1, null, null, null},
+                {1, 1, 1, 1, 1},
+                {1, 1, null, 1, 1},
+                {1, 1, 1, 1, 1}
+            };
+
+            var nullMatrix = new int?[testMatrix.GetLength(0), testMatrix.GetLength(1)];
+            
+            MakeBfsTest(testMatrix, new Point(0, 2), nullMatrix);
+            MakeBfsTest(testMatrix, new Point(0, 3), nullMatrix);
+            MakeBfsTest(testMatrix, new Point(5, 2), nullMatrix);
+        }
         
         [Test]
         public void TestBfsSeparate1()

@@ -15,6 +15,7 @@ namespace GameProject.GameLogic.Scripts
         public float BreakImpulse { get; set; } = 3f;
 
         private readonly IMachinePartFactory[,] partsMatrix;
+        private readonly float[,] partRotations;
         private readonly Dictionary<Vector2F, Point> partOffsets;
 
         private int Rows => partsMatrix.GetLength(1);
@@ -25,6 +26,7 @@ namespace GameProject.GameLogic.Scripts
         private CollisionInfo breakCollision;
 
         public static IEnumerable<GameEntity> CreateMachines(IMachinePartFactory[,] parts,
+            float[,] rotations,
             Vector2F position, float rotation = 0)
         {
             var visited = new HashSet<Point>();
@@ -36,16 +38,18 @@ namespace GameProject.GameLogic.Scripts
                 if (parts[i, j] is null || visited.Contains(start))
                     continue;
                 
-                var p = CoreUtils.RunBreadthFirstSearch(parts, start, visited);
+                var p = CoreUtils.RunBreadthFirstSearch(parts, start,
+                    factory => factory is null || !factory.Connectible, visited);
                 var machine = new GameEntity {Position = position, Rotation = rotation};
-                machine.AddComponent(new SiegeMachine(p));
+                machine.AddComponent(new SiegeMachine(p, rotations));
                 yield return machine;
             }
         }
 
-        private SiegeMachine(IMachinePartFactory[,] matrix)
+        private SiegeMachine(IMachinePartFactory[,] matrix, float[,] rotations)
         {
             partsMatrix = matrix;
+            partRotations = rotations;
             partOffsets = new Dictionary<Vector2F, Point>(matrix.Length);
         }
 
@@ -85,7 +89,7 @@ namespace GameProject.GameLogic.Scripts
                 }
             }
 
-            createdMachines = CreateMachines(newParts, Entity.Position, Entity.Rotation).ToList();
+            createdMachines = CreateMachines(newParts, partRotations, Entity.Position, Entity.Rotation).ToList();
             foreach (var machine in createdMachines)
                 GameState.AddEntity(machine);
 
@@ -142,7 +146,7 @@ namespace GameProject.GameLogic.Scripts
                 if (partsMatrix[i, j].HasBoxCollision)
                     collisionData[i, j] = true;
                 var cellPosition = GetLocalCellPosition(i, j);
-                partsMatrix[i, j].CreatePart(cellPosition, GameState, Entity);
+                partsMatrix[i, j].CreatePart(cellPosition, partRotations[i, j], GameState, Entity);
                 partOffsets.Add(cellPosition, new Point(i, j));
             }
 

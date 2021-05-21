@@ -202,6 +202,12 @@
     <Content Include="Resources\machine_parts\bomb_box.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\machine_parts\shell.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\machine_parts\shell_back.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\machine_parts\small_wheel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

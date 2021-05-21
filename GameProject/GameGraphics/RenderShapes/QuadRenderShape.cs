@@ -3,6 +3,7 @@ using System.IO;
 using GameProject.CoreEngine;
 using GameProject.Ecs.Graphics;
 using GameProject.GameMath;
+using Microsoft.Xna.Framework;
 
 namespace GameProject.GameGraphics.RenderShapes
 {
@@ -38,6 +39,11 @@ namespace GameProject.GameGraphics.RenderShapes
         public string ImagePath { get; set; }
 
         /// <summary>
+        ///     Rotation relative to the shape in radians
+        /// </summary>
+        public float Rotation { get; set; }
+
+        /// <summary>
         ///     Create a new render shape with certain layer
         /// </summary>
         /// <param name="layer">Layer index of the shape</param>
@@ -59,11 +65,14 @@ namespace GameProject.GameGraphics.RenderShapes
         public void Draw(IGraphicsDevice device, Matrix3F viewMatrix)
         {
             device.SetInterpolationMode(InterpolationMode.Linear);
-            device.SetTransform(viewMatrix * Transform);
+            device.SetTransform(viewMatrix
+                                * Transform
+                                * Matrix3F.CreateTranslation(Offset)
+                                * Matrix3F.CreateRotation(Rotation));
             if (Image is null)
-                device.DrawRectangle(Offset, Scale, Color);
+                device.DrawRectangle(Vector2F.Zero, Scale, Color);
             else
-                device.DrawBitmap(Image, Offset, Scale, Color.A / 255f);
+                device.DrawBitmap(Image, Vector2F.Zero, Scale, Color.A / 255f);
         }
 
         public void CopyDataFrom(IRenderShape other)
