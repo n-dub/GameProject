@@ -290,6 +290,11 @@ namespace GameProject.Ecs
             return HasComponent(typeof(T));
         }
 
+        public T GetOrAddComponent<T>() where T : class, IGameComponent, new()
+        {
+            return HasComponent<T>() ? GetComponent<T>() : AddComponent<T>();
+        }
+
         /// <summary>
         ///     Connect two entities - a child and a parent
         /// </summary>

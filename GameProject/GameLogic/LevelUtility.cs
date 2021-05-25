@@ -44,13 +44,14 @@ namespace GameProject.GameLogic
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static GameEntity CreatePhysicalRectangle(Vector2F position, Vector2F size,
-            bool isStatic = false, float density = 1)
+            bool isStatic = false, float density = 1, bool hasCollision = true)
         {
             var entity = new GameEntity();
             entity.AddComponent(new Sprite(new QuadRenderShape(1)));
             var body = entity.AddComponent<PhysicsBody>();
             body.IsStatic = isStatic;
-            body.AddCollider(new BoxCollider());
+            if (hasCollision)
+                body.AddCollider(new BoxCollider());
             entity.Position = position;
             entity.Scale = size;
             entity.FlushComponents();

@@ -13,8 +13,6 @@ namespace GameProject.GameLogic.Scripts.MachineParts
         public bool HasBoxCollision => false;
         public bool Connectible => true;
 
-        private const float Width = 0.1f;
-
         public void CreatePart(Vector2F cellPosition, float rotation, GameState gameState, GameEntity machine)
         {
             var sprite = machine.GetComponent<Sprite>();
@@ -26,13 +24,32 @@ namespace GameProject.GameLogic.Scripts.MachineParts
                 Scale = Vector2F.One * MachineEditor.CellSize,
                 Rotation = rotation
             });
-            const float colliderOffset = 0.5f - Width * 0.5f;
+            const float colliderOffsetY = 0.5f - WoodenPipeFactory.Width * 0.5f;
+            const float colliderOffsetX = 0.5f - BombFactory.Radius * 0.5f;
+
+            var sizeBottom = new Vector2F(1, WoodenPipeFactory.Width).Rotate(rotation) * MachineEditor.CellSize;
+            var sizeTop = new Vector2F(0.5f - BombFactory.Radius, WoodenPipeFactory.Width)
+                .Rotate(rotation) * MachineEditor.CellSize;
+            var offsetY = colliderOffsetY * MachineEditor.CellSize * Vector2F.UnitY.Rotate(rotation);
+            var offsetX = colliderOffsetX * MachineEditor.CellSize * Vector2F.UnitX.Rotate(rotation);
             
             body.AddCollider(new BoxCollider
             {
-                Offset = cellPosition + colliderOffset * MachineEditor.CellSize * Vector2F.UnitY.Rotate(rotation),
+                Offset = cellPosition - offsetY - offsetX,
                 Scaled = false,
-                Size = new Vector2F(1, Width).Rotate(rotation) * MachineEditor.CellSize
+                Size = sizeTop
+            });
+            body.AddCollider(new BoxCollider
+            {
+                Offset = cellPosition - offsetY + offsetX,
+                Scaled = false,
+                Size = sizeTop
+            });
+            body.AddCollider(new BoxCollider
+            {
+                Offset = cellPosition + offsetY,
+                Scaled = false,
+                Size = sizeBottom
             });
         }
 

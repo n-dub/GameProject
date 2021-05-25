@@ -7,8 +7,9 @@ using GameProject.GameMath;
 
 namespace GameProject.GameLogic.Scripts.MachineParts
 {
-    internal class BombBoxFactory : IMachinePartFactory
+    internal class BombFactory : IMachinePartFactory
     {
+        public const float Radius = 0.3f * 0.8f;
         public string TexturePath => "Resources/machine_parts/bomb_box.png";
         public bool HasBoxCollision => false;
         public bool Connectible => false;
@@ -21,8 +22,8 @@ namespace GameProject.GameLogic.Scripts.MachineParts
             if (destroyedCells.Any(c => c == cellPosition))
                 return;
             var bomb = LevelUtility.CreateWheel(cellPosition + machine.Position,
-                0.3f * MachineEditor.CellSize, TexturePath, 0.7f);
-            bomb.GetComponent<PhysicsBody>().Colliders.First().Density = 5;
+                Radius / 0.8f * MachineEditor.CellSize, TexturePath, 0.7f);
+            //bomb.GetComponent<PhysicsBody>().Colliders.First().Density = 5;
             cleanupList.Add(bomb);
             gameState.AddEntity(bomb);
             var explosive = new Explosive {Strength = 1};

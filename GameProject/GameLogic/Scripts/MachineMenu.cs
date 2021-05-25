@@ -17,9 +17,11 @@ namespace GameProject.GameLogic.Scripts
             null,
             new WoodenBoxFactory(),
             new SmallWheelFactory(),
-            new BombBoxFactory(),
+            new BombFactory(),
             new WoodenPipeFactory(),
-            new OpenWoodenPipeFactory()
+            new OpenWoodenPipeFactory(),
+            new ShellFactory(),
+            new ShellHummerFactory()
         };
 
         private MachineMenuResponse Response { get; }

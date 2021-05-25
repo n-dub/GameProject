@@ -16,7 +16,7 @@ namespace GameProject.GameLogic.Scripts
         {
             var mousePosition = GameState.Mouse.ScreenPosition;
             var viewWidth = GameState.RendererWrite.Camera.ViewWidth;
-            
+
             switch (GameState.Mouse[MouseButtons.Right])
             {
                 case KeyState.Down:
@@ -29,7 +29,8 @@ namespace GameProject.GameLogic.Scripts
                     break;
             }
 
-            GameState.RendererWrite.Camera.ViewWidth -= ZoomFactor * GameState.Mouse.WheelDelta * viewWidth;
+            var v = GameState.RendererWrite.Camera.ViewWidth - ZoomFactor * GameState.Mouse.WheelDelta * viewWidth;
+            GameState.RendererWrite.Camera.ViewWidth = MathF.Clamp(v, 1.5f, 30f);
         }
     }
 }
