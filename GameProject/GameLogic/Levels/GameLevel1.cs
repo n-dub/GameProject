@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
+using GameProject.Ecs.Graphics;
+using GameProject.GameGraphics.RenderShapes;
 using GameProject.GameLogic.Scripts;
 using GameProject.GameMath;
 
@@ -21,17 +24,20 @@ namespace GameProject.GameLogic.Levels
                 LevelUtility.CreateNoiseBackground()
             };
 
-            ground.AddComponent<CameraMovement>();
+            ground.AddComponent<PlayerControl>();
 
             var editor = new GameEntity();
-            editor.AddComponent(new MachineEditor(5, 7));
+            var winRect = new RectangleF(8, -8, 4, 4);
+            editor.AddComponent(new MachineEditor(5, 7) {WinRect = winRect});
             editor.Position = new Vector2F(-3, -6.25f);
             entities.Add(editor);
 
-            // entities.Add(LevelUtility.CreateCircle(new Vector2F(-3, -10), 0.5f));
+            var winZone = new GameEntity {Position = winRect.GetCenter(), Scale = winRect.GetSize()};
+            winZone.AddComponent(new Sprite(new QuadRenderShape(0) {Color = Color.Aqua}));
+            entities.Add(winZone);
 
             CreateWall(entities, 0);
-            CreateWall(entities, 3);
+            // CreateWall(entities, 3);
 
             return new SceneData {Entities = entities, Camera = new Camera {Position = new Vector2F(-3, -6)}};
         }
@@ -39,9 +45,9 @@ namespace GameProject.GameLogic.Levels
         private static void CreateWall(ICollection<GameEntity> entities, float positionX)
         {
             var wall = new GameEntity();
-            wall.AddComponent(new BrickWall(25, 2f));
-            wall.Position =
-                Vector2F.UnitX * positionX - Vector2F.UnitY * (12.5f * LevelUtility.BrickSize.Z + 5f);
+            const int rows = 20;
+            wall.AddComponent(new BrickWall(rows, 1.5f));
+            wall.Position = Vector2F.UnitX * positionX - Vector2F.UnitY * (rows * 0.5f * LevelUtility.BrickSize.Z + 5f);
 
             entities.Add(wall);
         }

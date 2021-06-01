@@ -3,11 +3,18 @@ using GameProject.GameMath;
 
 namespace GameProject.GameInput
 {
+    /// <summary>
+    ///     Represents current state of mouse input
+    /// </summary>
     internal class Mouse : Keyboard<MouseButtons>
     {
-        public Vector2F WorldPosition => RawPosition.TransformBy(View.Inversed);
+        public Vector2F WorldPosition { get; private set; }
+
         public float WheelDelta { get; private set; }
 
+        /// <summary>
+        ///     Position of the cursor on the screen
+        /// </summary>
         public Vector2F ScreenPosition { get; private set; }
 
         private Matrix3F View { get; set; } = Matrix3F.Identity;
@@ -17,6 +24,7 @@ namespace GameProject.GameInput
         {
             ScreenPosition = new Vector2F(screen.X / size.X - 0.5f, (screen.Y / size.Y - 0.5f) * size.Y / size.X);
             RawPosition = screen;
+            WorldPosition = RawPosition.TransformBy(View.Inversed);
             View = view;
         }
 

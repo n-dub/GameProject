@@ -54,6 +54,10 @@ namespace GameProject.CoreEngine
             coroutines.RemoveAll(c => c.Current?.IsLast ?? false);
         }
 
+        /// <summary>
+        ///     Start a coroutine
+        /// </summary>
+        /// <param name="coroutine">Function that returns instances of <see cref="Awaiter"/></param>
         protected void StartCoroutine(Func<IEnumerable<Awaiter>> coroutine)
         {
             coroutines.Add(coroutine().GetEnumerator());

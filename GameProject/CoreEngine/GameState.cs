@@ -44,6 +44,9 @@ namespace GameProject.CoreEngine
         /// </summary>
         public World PhysicsWorld { get; }
 
+        /// <summary>
+        ///     Collection of all current game entities
+        /// </summary>
         public IEnumerable<GameEntity> Entities => entities;
 
         private readonly List<GameEntity> entities = new List<GameEntity>();
@@ -66,7 +69,12 @@ namespace GameProject.CoreEngine
             newEntities = entities;
         }
 
-        public void SwapRenderers()
+        /// <summary>
+        ///     Copy data of <see cref="RendererWrite"/> to <see cref="RendererRead"/>.
+        ///     This method is used to ensure thread safety by having two separate copies of all rendering
+        ///     data for the two main threads: the consumer (Rendering thread) and the producer (Game update thread).
+        /// </summary>
+        public void ExchangeRenderData()
         {
             RendererWrite.Camera.ScreenSize = RendererRead.Camera.ScreenSize;
             RendererRead.CopyDataFrom(RendererWrite);

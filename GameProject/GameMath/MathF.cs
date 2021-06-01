@@ -90,14 +90,14 @@ namespace GameProject.GameMath
         {
             return min + (max - min) * factor;
         }
-        
-        /// <inheritdoc cref="Interpolate(float,float,float)"/>
+
+        /// <inheritdoc cref="Interpolate(float,float,float)" />
         public static Vector2F Interpolate(Vector2F min, Vector2F max, float factor)
         {
             return min + (max - min) * factor;
         }
-        
-        /// <inheritdoc cref="Interpolate(float,float,float)"/>
+
+        /// <inheritdoc cref="Interpolate(float,float,float)" />
         public static Vector3F Interpolate(Vector3F min, Vector3F max, float factor)
         {
             return min + (max - min) * factor;

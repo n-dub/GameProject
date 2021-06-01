@@ -91,9 +91,9 @@ namespace GameProject
                     task.Wait();
                 }
 
-                using (new GameProfiler(nameof(GameState.SwapRenderers)))
+                using (new GameProfiler(nameof(GameState.ExchangeRenderData)))
                 {
-                    GameState.SwapRenderers();
+                    GameState.ExchangeRenderData();
                     Invalidate();
                 }
             }

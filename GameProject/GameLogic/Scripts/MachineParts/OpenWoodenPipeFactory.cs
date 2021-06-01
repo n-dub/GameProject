@@ -32,7 +32,7 @@ namespace GameProject.GameLogic.Scripts.MachineParts
                 .Rotate(rotation) * MachineEditor.CellSize;
             var offsetY = colliderOffsetY * MachineEditor.CellSize * Vector2F.UnitY.Rotate(rotation);
             var offsetX = colliderOffsetX * MachineEditor.CellSize * Vector2F.UnitX.Rotate(rotation);
-            
+
             body.AddCollider(new BoxCollider
             {
                 Offset = cellPosition - offsetY - offsetX,

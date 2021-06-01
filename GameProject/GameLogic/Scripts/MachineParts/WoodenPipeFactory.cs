@@ -9,11 +9,10 @@ namespace GameProject.GameLogic.Scripts.MachineParts
 {
     internal class WoodenPipeFactory : IMachinePartFactory
     {
+        public const float Width = 0.5f - BombFactory.Radius;
         public string TexturePath => "Resources/machine_parts/wooden_pipe.png";
         public bool HasBoxCollision => false;
         public bool Connectible => true;
-
-        public const float Width = 0.5f - BombFactory.Radius;
 
         public void CreatePart(Vector2F cellPosition, float rotation, GameState gameState, GameEntity machine)
         {

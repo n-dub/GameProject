@@ -13,17 +13,17 @@ namespace GameProject.Ecs.Physics
     {
         public Vector2F[] Vertices { get; set; }
 
-        protected override Shape GetFarseerShapeImpl()
-        {
-            return new PolygonShape(new Vertices(Vertices.Select(v => (Vector2) v)), 1.0f);
-        }
-
         public void DrawDebugOverlay(DebugDraw debugDraw)
         {
             var mat = Entity.GlobalTransform;
 
             foreach (var (a, b) in GeometryUtils.PolygonVerticesToEdges(Vertices))
                 debugDraw.DrawLine(a.TransformBy(mat), b.TransformBy(mat), Color.Green, 0.07f);
+        }
+
+        protected override Shape GetFarseerShapeImpl()
+        {
+            return new PolygonShape(new Vertices(Vertices.Select(v => (Vector2) v)), 1.0f);
         }
     }
 }

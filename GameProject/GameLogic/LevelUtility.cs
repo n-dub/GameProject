@@ -94,7 +94,8 @@ namespace GameProject.GameLogic
             return entity;
         }
 
-        public static GameEntity CreateWheel(Vector2F position, float radius, string imagePath, float collisionRadius = 1)
+        public static GameEntity CreateWheel(Vector2F position, float radius, string imagePath,
+            float collisionRadius = 1)
         {
             var entity = new GameEntity();
             entity.AddComponent(new Sprite(new QuadRenderShape(1)

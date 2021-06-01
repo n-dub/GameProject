@@ -20,7 +20,7 @@ namespace GameProject.Ecs.Physics
             shape.Density = Density;
             return shape;
         }
-        
+
         protected abstract Shape GetFarseerShapeImpl();
     }
 }

@@ -94,7 +94,7 @@ namespace GameProject.GameLogic.Scripts
 
             if (factory is null && !nullSelected && rotation == 0)
                 return;
-            
+
             Response.Factory = rotation == 0 ? factory : Response.Factory;
             Response.Rotation = rotation;
             Response.IsComplete = true;

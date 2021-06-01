@@ -15,15 +15,15 @@ namespace GameProject.Ecs.Physics
         /// </summary>
         public float Radius { get; set; } = 1f;
 
-        protected override Shape GetFarseerShapeImpl()
-        {
-            return new CircleShape(Radius, 1.0f);
-        }
-
         public void DrawDebugOverlay(DebugDraw debugDraw)
         {
             debugDraw.DrawEllipse(Entity.Position - new Vector2F(Radius),
                 new Vector2F(Radius * 2), Color.Green, 0.07f);
+        }
+
+        protected override Shape GetFarseerShapeImpl()
+        {
+            return new CircleShape(Radius, 1.0f);
         }
     }
 }

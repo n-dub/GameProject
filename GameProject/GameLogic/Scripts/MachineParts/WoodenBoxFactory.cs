@@ -31,7 +31,7 @@ namespace GameProject.GameLogic.Scripts.MachineParts
 
         public GameEntity CreateDestroyedPart(Vector2F position, float rotation)
         {
-            var entity = new GameEntity{Position = position, Rotation = rotation};
+            var entity = new GameEntity {Position = position, Rotation = rotation};
             entity.AddComponent(new Explosive
             {
                 ForceExplodeOnStart = true,

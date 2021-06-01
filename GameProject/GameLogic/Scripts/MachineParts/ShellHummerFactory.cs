@@ -12,7 +12,7 @@ namespace GameProject.GameLogic.Scripts.MachineParts
         public string TexturePath => "Resources/machine_parts/shell_hammer.png";
         public bool HasBoxCollision => true;
         public bool Connectible => true;
-        
+
         public void CreatePart(Vector2F cellPosition, float rotation, GameState gameState, GameEntity machine)
         {
             var sprite = machine.GetComponent<Sprite>();
@@ -32,7 +32,7 @@ namespace GameProject.GameLogic.Scripts.MachineParts
 
         public GameEntity CreateDestroyedPart(Vector2F position, float rotation)
         {
-            var entity = new GameEntity{Position = position, Rotation = rotation};
+            var entity = new GameEntity {Position = position, Rotation = rotation};
             entity.AddComponent(new Explosive
             {
                 ForceExplodeOnStart = true,

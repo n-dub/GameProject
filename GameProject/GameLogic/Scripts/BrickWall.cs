@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
@@ -189,11 +188,7 @@ namespace GameProject.GameLogic.Scripts
         {
             var entity = LevelUtility.CreateBrick(position, true, Entity.Rotation);
             parts.Add(entity);
-
-            if (random.Next(2) == 0)
-                entity.Destroy(float.PositiveInfinity);
-            else
-                entity.Destroy(random.Next(5, 30));
+            entity.Destroy(random.Next(2, 10));
 
             return entity;
         }

@@ -16,10 +16,9 @@ namespace GameProject.GameLogic.Scripts
         public bool ForceExplodeOnStart { get; set; }
         public float MinLifetime { get; set; } = 0.1f;
         public float MaxLifetime { get; set; } = 0.8f;
-        public event Action OnExplode;
 
         private readonly List<PhysicsBody> frags = new List<PhysicsBody>();
-        
+
         protected override void Update()
         {
             var body = Entity.GetComponent<PhysicsBody>();
@@ -39,12 +38,12 @@ namespace GameProject.GameLogic.Scripts
                         Vector2F.One * 0.1f, 0, rand.Next(3, 6)).ToArray());
                 StartCoroutine(ApplyFragImpulse);
                 GameState.AddEntity(frag);
-                frag.Destroy((MaxLifetime - MinLifetime) * (float)rand.NextDouble() + MinLifetime);
+                frag.Destroy((MaxLifetime - MinLifetime) * (float) rand.NextDouble() + MinLifetime);
                 frags.Add(frag.GetComponent<PhysicsBody>());
-                
+
                 direction = direction.Rotate(angle);
             }
-            
+
             OnExplode?.Invoke();
         }
 
@@ -56,10 +55,12 @@ namespace GameProject.GameLogic.Scripts
                 var direction = frag.FarseerBody.Position - Entity.Position;
                 frag.FarseerBody.ApplyLinearImpulse(-direction * ExplosionFragImpulse);
             }
-            
+
             yield return Awaiter.WaitForNextFrame();
 
             Entity.Destroy();
         }
+
+        public event Action OnExplode;
     }
 }
