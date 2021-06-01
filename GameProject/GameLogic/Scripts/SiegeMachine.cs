@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using FarseerPhysics.Dynamics;
 using GameProject.CoreEngine;
 using GameProject.Ecs;
@@ -12,7 +13,9 @@ namespace GameProject.GameLogic.Scripts
 {
     internal class SiegeMachine : GameScript
     {
-        public float BreakImpulse { get; set; } = 3f;
+        private RectangleF WinRect { get; }
+
+        private const float BreakImpulse = 3f;
 
         private readonly IMachinePartFactory[,] partsMatrix;
         private readonly float[,] partRotations;
@@ -25,38 +28,45 @@ namespace GameProject.GameLogic.Scripts
         private List<GameEntity> createdMachines;
         private CollisionInfo breakCollision;
 
+        private SiegeMachine(IMachinePartFactory[,] matrix, float[,] rotations, RectangleF winRect)
+        {
+            WinRect = winRect;
+            partsMatrix = matrix;
+            partRotations = rotations;
+            partOffsets = new Dictionary<Vector2F, Point>(matrix.Length);
+        }
+
         public static IEnumerable<GameEntity> CreateMachines(IMachinePartFactory[,] parts,
-            float[,] rotations,
-            Vector2F position, float rotation = 0)
+            float[,] rotations, Vector2F position, RectangleF winRect, float rotation = 0)
         {
             var visited = new HashSet<Point>();
-            
+
             for (var i = 0; i < parts.GetLength(0); i++)
             for (var j = 0; j < parts.GetLength(1); j++)
             {
                 var start = new Point(i, j);
                 if (parts[i, j] is null || visited.Contains(start))
                     continue;
-                
+
                 var p = CoreUtils.RunBreadthFirstSearch(parts, start,
                     factory => factory is null || !factory.Connectible, visited);
                 var machine = new GameEntity {Position = position, Rotation = rotation};
-                machine.AddComponent(new SiegeMachine(p, rotations));
+                machine.AddComponent(new SiegeMachine(p, rotations, winRect));
                 yield return machine;
             }
-        }
-
-        private SiegeMachine(IMachinePartFactory[,] matrix, float[,] rotations)
-        {
-            partsMatrix = matrix;
-            partRotations = rotations;
-            partOffsets = new Dictionary<Vector2F, Point>(matrix.Length);
         }
 
         protected override void Update()
         {
             if (!initialized)
                 return;
+
+            if (WinRect.Contains(Entity.Position))
+            {
+                if (MessageBox.Show(@"You won!") == DialogResult.OK) Application.Exit();
+                initialized = false;
+                return;
+            }
 
             breakCollision = CoreUtils.FindMaximumImpulseContact(Entity.GetComponent<PhysicsBody>());
             if (breakCollision.NormalImpulse < BreakImpulse)
@@ -78,25 +88,27 @@ namespace GameProject.GameLogic.Scripts
             var newParts = new IMachinePartFactory[Columns, Rows];
             for (var i = 0; i < Columns; i++)
             for (var j = 0; j < Rows; j++)
-            {
                 if (new Point(i, j) != minDistancePart)
+                {
                     newParts[i, j] = partsMatrix[i, j];
+                }
                 else
                 {
                     var cellPosition = GetLocalCellPosition(i, j).TransformBy(Entity.GlobalTransform);
                     var destroyed = partsMatrix[i, j].CreateDestroyedPart(cellPosition, Entity.Rotation);
                     GameState.AddEntity(destroyed);
                 }
-            }
 
-            createdMachines = CreateMachines(newParts, partRotations, Entity.Position, Entity.Rotation).ToList();
+            createdMachines = CreateMachines(newParts, partRotations, Entity.Position, WinRect, Entity.Rotation)
+                .ToList();
             foreach (var machine in createdMachines)
                 GameState.AddEntity(machine);
 
             foreach (var part in partsMatrix)
                 part?.CleanUp();
-            
+
             StartCoroutine(FinishMachineBreak);
+            GameState.Time.TimeScale = 0f;
             initialized = false;
         }
 
@@ -105,11 +117,7 @@ namespace GameProject.GameLogic.Scripts
             yield return Awaiter.WaitForFrames(6);
             var body = Entity.GetComponent<PhysicsBody>();
             foreach (var machine in createdMachines)
-            {
-                // machine.GetComponent<PhysicsBody>().FarseerBody
-                //     .ApplyLinearImpulse(breakCollision.Normal, breakCollision.Point);
                 CopyVelocity(body.FarseerBody, machine.GetComponent<PhysicsBody>().FarseerBody);
-            }
 
             yield return Awaiter.WaitForNextFrame();
             Entity.Destroy();
@@ -134,7 +142,7 @@ namespace GameProject.GameLogic.Scripts
         {
             var body = Entity.AddComponent<PhysicsBody>();
             Entity.AddComponent<Sprite>();
-            yield return Awaiter.WaitForFrames(2);
+            yield return Awaiter.WaitForNextFrame();
 
             var collisionData = new bool[Columns, Rows];
             for (var i = 0; i < Columns; i++)
@@ -152,6 +160,8 @@ namespace GameProject.GameLogic.Scripts
 
             GenerateCollision(collisionData, body, Rows, Columns);
             initialized = true;
+            yield return Awaiter.WaitForFrames(3);
+            GameState.Time.TimeScale = 1;
         }
 
         private Vector2F GetLocalCellPosition(int i, int j)
@@ -216,7 +226,10 @@ namespace GameProject.GameLogic.Scripts
                     for (var l = initX; l < initX + xSpan; l++)
                         unvisited.Remove((l, k));
                 }
-                else break;
+                else
+                {
+                    break;
+                }
             }
 
             return ySpan;
@@ -227,14 +240,15 @@ namespace GameProject.GameLogic.Scripts
         {
             var xSpan = 0;
             for (var k = initX; k < width; k++)
-            {
                 if (collisionData[k, initY])
                 {
                     ++xSpan;
                     unvisited.Remove((k, initY));
                 }
-                else break;
-            }
+                else
+                {
+                    break;
+                }
 
             return xSpan;
         }
@@ -245,10 +259,8 @@ namespace GameProject.GameLogic.Scripts
 
             for (var i = 0; i < x; i++)
             for (var j = 0; j < y; j++)
-            {
                 if (collisionData[i, j])
                     unvisited.Add((i, j));
-            }
 
             return unvisited;
         }

@@ -9,6 +9,9 @@ using System.Threading;
 
 namespace GameProject.CoreEngine
 {
+    /// <summary>
+    ///     Used to profile the game using Chrome Tracing
+    /// </summary>
     internal sealed class GameProfiler : IDisposable
     {
         private static readonly List<(string name, long time, long tid, bool start)> events
@@ -34,6 +37,10 @@ namespace GameProject.CoreEngine
             previousEvent = name;
         }
 
+        /// <summary>
+        ///     Save profiling session in JSON
+        /// </summary>
+        /// <param name="fileName"></param>
         public static void Save(string fileName)
         {
             var lines = new List<string> {"["};

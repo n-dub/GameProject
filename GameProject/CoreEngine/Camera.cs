@@ -33,8 +33,15 @@ namespace GameProject.CoreEngine
         /// </summary>
         public float ViewWidth { get; set; } = 7f;
 
+        /// <summary>
+        ///     Indicates how mush slower the background should move compared to foreground entities
+        /// </summary>
         public float BackgroundMoveFactor { get; set; } = 20f;
 
+        /// <summary>
+        ///     Copy data from another instance of <see cref="Camera" />
+        /// </summary>
+        /// <param name="camera"></param>
         public void CopyDataFrom(Camera camera)
         {
             this.CopyPropertiesFrom(camera);

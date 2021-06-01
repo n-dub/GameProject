@@ -23,10 +23,10 @@ namespace GameProject.GameLogic.Scripts.MachineParts
                 return;
             var bomb = LevelUtility.CreateWheel(cellPosition + machine.Position,
                 Radius / 0.8f * MachineEditor.CellSize, TexturePath, 0.7f);
-            //bomb.GetComponent<PhysicsBody>().Colliders.First().Density = 5;
+            bomb.GetComponent<PhysicsBody>().Friction = 0;
             cleanupList.Add(bomb);
             gameState.AddEntity(bomb);
-            var explosive = new Explosive {Strength = 1};
+            var explosive = new Explosive {Strength = 0.7f};
             explosive.OnExplode += () => destroyedCells.Add(cellPosition);
             bomb.AddComponent(explosive);
         }

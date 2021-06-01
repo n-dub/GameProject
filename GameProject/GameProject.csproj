@@ -116,7 +116,7 @@
     <Compile Include="GameLogic\Levels\WheelTest.cs" />
     <Compile Include="GameLogic\LevelUtility.cs" />
     <Compile Include="GameLogic\Scripts\BrickWall.cs" />
-    <Compile Include="GameLogic\Scripts\CameraMovement.cs" />
+    <Compile Include="GameLogic\Scripts\PlayerControl.cs" />
     <Compile Include="GameLogic\Scripts\Explosive.cs" />
     <Compile Include="GameLogic\Scripts\IMachinePartFactory.cs" />
     <Compile Include="GameLogic\Scripts\MachineEditor.cs" />

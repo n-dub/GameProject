@@ -1,12 +1,11 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using GameProject.CoreEngine;
 using GameProject.GameInput;
 using GameProject.GameMath;
 
 namespace GameProject.GameLogic.Scripts
 {
-    internal class CameraMovement : GameScript
+    internal class PlayerControl : GameScript
     {
         private const float ZoomFactor = 0.0007f;
         private Vector2F previousMouse;
@@ -14,6 +13,9 @@ namespace GameProject.GameLogic.Scripts
 
         protected override void Update()
         {
+            if (GameState.Keyboard[Keys.R] == KeyState.Down && !MachineEditor.HasInstance)
+                Application.Restart();
+
             var mousePosition = GameState.Mouse.ScreenPosition;
             var viewWidth = GameState.RendererWrite.Camera.ViewWidth;
 

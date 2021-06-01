@@ -33,12 +33,12 @@ namespace GameProject.CoreEngine
             };
 
             var nullMatrix = new int?[testMatrix.GetLength(0), testMatrix.GetLength(1)];
-            
+
             MakeBfsTest(testMatrix, new Point(0, 2), nullMatrix);
             MakeBfsTest(testMatrix, new Point(0, 3), nullMatrix);
             MakeBfsTest(testMatrix, new Point(5, 2), nullMatrix);
         }
-        
+
         [Test]
         public void TestBfsSeparate1()
         {
@@ -56,7 +56,7 @@ namespace GameProject.CoreEngine
             };
             MakeBfsTest(testMatrix, Point.Empty, expMatrix);
         }
-        
+
         [Test]
         public void TestBfsSeparate2()
         {
@@ -74,7 +74,7 @@ namespace GameProject.CoreEngine
             };
             MakeBfsTest(testMatrix, new Point(2, 4), expMatrix);
         }
-        
+
         private static void MakeBfsTest<T>(T[,] source, Point start, T[,] expected)
         {
             var result = CoreUtils.RunBreadthFirstSearch(source, start);

@@ -14,7 +14,7 @@ namespace GameProject.GameLogic.Scripts.MachineParts
         public string TexturePath => "Resources/machine_parts/shell.png";
         public bool HasBoxCollision => false;
         public bool Connectible => false;
-        
+
         private readonly List<Vector2F> destroyedCells = new List<Vector2F>();
 
         public void CreatePart(Vector2F cellPosition, float rotation, GameState gameState, GameEntity machine)
@@ -28,7 +28,7 @@ namespace GameProject.GameLogic.Scripts.MachineParts
                 shape.ImagePath = TexturePath;
             ShellScript.Shells.Add(shell);
             gameState.AddEntity(shell);
-            var explosive = new ShellScript {Impulse = Vector2F.UnitX * 7f};
+            var explosive = new ShellScript {Impulse = 7f};
             explosive.OnExplode += () => destroyedCells.Add(cellPosition);
             shell.AddComponent(explosive);
         }

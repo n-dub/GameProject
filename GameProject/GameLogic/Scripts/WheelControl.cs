@@ -18,6 +18,11 @@ namespace GameProject.GameLogic.Scripts
 
         private readonly List<Joint> joints = new List<Joint>(4);
 
+        public override void Destroy(GameState state)
+        {
+            foreach (var joint in joints) state.PhysicsWorld.RemoveJoint(joint);
+        }
+
         protected override void Initialize()
         {
             StartCoroutine(FinishInit);
@@ -38,7 +43,7 @@ namespace GameProject.GameLogic.Scripts
             var machinePosition = machine.FarseerBody.Position;
             // var wheelPosition = Entity.Position;
             // var machinePosition = Machine.Position;
-            
+
             InitializeJoint(JointFactory.CreateDistanceJoint(GameState.PhysicsWorld,
                 wheel.FarseerBody, machine.FarseerBody,
                 wheelPosition, machinePosition + Vector2.UnitX * f));
@@ -71,14 +76,6 @@ namespace GameProject.GameLogic.Scripts
                 body.FarseerBody.ApplyTorque(-Torque * dt);
             if (GameState.Keyboard[Keys.D] == KeyState.Pushing)
                 body.FarseerBody.ApplyTorque(Torque * dt);
-        }
-
-        public override void Destroy(GameState state)
-        {
-            foreach (var joint in joints)
-            {
-                state.PhysicsWorld.RemoveJoint(joint);
-            }
         }
     }
 }

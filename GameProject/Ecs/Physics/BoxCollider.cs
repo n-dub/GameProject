@@ -30,11 +30,6 @@ namespace GameProject.Ecs.Physics
         /// </summary>
         public bool Scaled { get; set; } = true;
 
-        protected override Shape GetFarseerShapeImpl()
-        {
-            return new PolygonShape(new Vertices(GetVertices()), 1.0f);
-        }
-
         public void DrawDebugOverlay(DebugDraw debugDraw)
         {
             var mat = Entity.GlobalTransform;
@@ -43,6 +38,11 @@ namespace GameProject.Ecs.Physics
 
             foreach (var (a, b) in GeometryUtils.PolygonVerticesToEdges(GetVerticesUnscaled().ToArray()))
                 debugDraw.DrawLine(a.TransformBy(mat), b.TransformBy(mat), Color.Green, 0.07f);
+        }
+
+        protected override Shape GetFarseerShapeImpl()
+        {
+            return new PolygonShape(new Vertices(GetVertices()), 1.0f);
         }
 
         /// <summary>

@@ -3,7 +3,6 @@ using System.IO;
 using GameProject.CoreEngine;
 using GameProject.Ecs.Graphics;
 using GameProject.GameMath;
-using Microsoft.Xna.Framework;
 
 namespace GameProject.GameGraphics.RenderShapes
 {

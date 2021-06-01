@@ -35,16 +35,6 @@ namespace GameProject.Ecs
         public Vector2F Up => -Vector2F.UnitY.Rotate(Rotation);
 
         /// <summary>
-        ///     Local transformation of this entity, will be recalculated
-        ///     if transformation parameters have been changed after the last time
-        /// </summary>
-        private Matrix3F LocalTransform =>
-            localTransform
-            ?? Matrix3F.CreateTranslation(Position)
-            * Matrix3F.CreateRotation(Rotation)
-            * Matrix3F.CreateScale(Scale);
-
-        /// <summary>
         ///     Parent of this game entity
         /// </summary>
         public GameEntity Parent { get; private set; }
@@ -89,6 +79,17 @@ namespace GameProject.Ecs
         }
 
         internal bool Destroyed { get; private set; }
+
+        /// <summary>
+        ///     Local transformation of this entity, will be recalculated
+        ///     if transformation parameters have been changed after the last time
+        /// </summary>
+        private Matrix3F LocalTransform =>
+            localTransform
+            ?? Matrix3F.CreateTranslation(Position)
+            * Matrix3F.CreateRotation(Rotation)
+            * Matrix3F.CreateScale(Scale);
+
         private float timeLeft = float.PositiveInfinity;
 
         private readonly List<GameEntity> children;
@@ -242,7 +243,7 @@ namespace GameProject.Ecs
             Destroyed = timeLeft <= 0;
             if (Destroyed)
                 return;
-            
+
             DoForAllChildren(c => c.Update(state), c => c.Update(state), false);
         }
 

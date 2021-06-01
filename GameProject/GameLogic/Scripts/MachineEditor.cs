@@ -15,6 +15,9 @@ namespace GameProject.GameLogic.Scripts
     internal class MachineEditor : GameScript
     {
         public const float CellSize = 0.5f;
+        public static bool HasInstance { get; private set; }
+
+        public RectangleF WinRect { get; set; }
 
         private int Rows { get; }
         private int Columns { get; }
@@ -28,6 +31,7 @@ namespace GameProject.GameLogic.Scripts
 
         public MachineEditor(int rows, int columns)
         {
+            HasInstance = true;
             Rows = rows;
             Columns = columns;
             parts = new IMachinePartFactory[columns, rows];
@@ -36,12 +40,13 @@ namespace GameProject.GameLogic.Scripts
 
         public override void Destroy(GameState state)
         {
-            GameState.Time.TimeScale = 1;
+            GameState.Time.TimeScale = 1f;
+            HasInstance = false;
         }
 
         protected override void Initialize()
         {
-            GameState.Time.TimeScale = 0;
+            GameState.Time.TimeScale = 0f;
 
             var shapes = new List<IRenderShape>(Rows * Columns);
 
@@ -115,14 +120,12 @@ namespace GameProject.GameLogic.Scripts
             {
                 var worldClickPos = GameState.Mouse.WorldPosition;
                 selectedCell = GetCellIndex(worldClickPos);
-                if (InBounds(false))
-                {
-                    RunMenu();
-                }
+                if (InBounds(false)) RunMenu();
                 if (InBounds(true))
                 {
                     closed = true;
-                    foreach (var machine in SiegeMachine.CreateMachines(parts, partRotations, Entity.Position))
+                    foreach (var machine in SiegeMachine
+                        .CreateMachines(parts, partRotations, Entity.Position, WinRect))
                         GameState.AddEntity(machine);
                     Entity.Destroy();
                     return;
