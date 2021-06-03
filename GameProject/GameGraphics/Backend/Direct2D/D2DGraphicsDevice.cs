@@ -85,7 +85,6 @@ namespace GameProject.GameGraphics.Backend.Direct2D
 
         public void DrawRectangle(Vector2F location, Vector2F size, Color color)
         {
-            // Graphics.ScaleTransform(0.5f, 0.5f);
             Graphics.FillRectangle(location, size, D2DColor.FromGDIColor(color));
         }
 
@@ -113,6 +112,7 @@ namespace GameProject.GameGraphics.Backend.Direct2D
         {
 #pragma warning disable 618
             // the new method doesn't work properly, so I have to use the obsolete one here
+            // that's why the warning is disabled
             Graphics.FillPolygon(points.Select(x => (D2DPoint) x).ToArray(), D2DColor.FromGDIColor(color));
 #pragma warning restore 618
         }
