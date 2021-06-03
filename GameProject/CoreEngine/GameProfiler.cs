@@ -20,21 +20,12 @@ namespace GameProject.CoreEngine
         private static readonly Stopwatch startTime = Stopwatch.StartNew();
 
         private readonly string name;
-        private static string previousEvent;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GameProfiler(string name)
         {
             this.name = name;
             StartEvent(name);
-        }
-
-        public static void MakeEvent(string name)
-        {
-            if (previousEvent != null)
-                events.Add((previousEvent, startTime.ElapsedTicks, 10, false));
-            events.Add((name, startTime.ElapsedTicks, 10, true));
-            previousEvent = name;
         }
 
         /// <summary>
