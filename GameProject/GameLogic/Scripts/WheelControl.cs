@@ -71,11 +71,10 @@ namespace GameProject.GameLogic.Scripts
             if (!body.ReadyToUse)
                 return;
 
-            var dt = GameState.Time.DeltaTime;
             if (GameState.Keyboard[Keys.A] == KeyState.Pushing)
-                body.FarseerBody.ApplyTorque(-Torque * dt);
+                body.FarseerBody.ApplyTorque(-Torque * 0.02f);
             if (GameState.Keyboard[Keys.D] == KeyState.Pushing)
-                body.FarseerBody.ApplyTorque(Torque * dt);
+                body.FarseerBody.ApplyTorque(Torque * 0.02f);
         }
     }
 }
